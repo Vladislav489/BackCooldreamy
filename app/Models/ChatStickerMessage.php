@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class ChatStickerMessage extends Model {
+    use HasFactory;
+
+    protected $fillable = [
+        'sticker_id',
+    ];
+
+    public function chat_message() {
+        return $this->morphOne(ChatMessage::class, 'chat_messageable');
+    }
+
+    public function sticker() {
+        return $this->belongsTo(Sticker::class);
+    }
+
+    public function gifts() {
+        return $this->belongsToMany(Gift::class, 'gifts_in_chat_gift_messages', 'chat_gift_message_id', 'gift_id');
+    }
+
+    public function get_price() {
+        $setting = ChatSetting::firstorfail();
+        return $setting->send_sticker_price;
+    }
+}
