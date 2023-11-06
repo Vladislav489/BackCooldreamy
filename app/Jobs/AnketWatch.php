@@ -46,7 +46,7 @@ class AnketWatch implements ShouldQueue
 
                 $this->user->addViewedUser($this->watchUser);
 
-                SympathyEvent::dispatch($this->watchUser->id, AnketProbabilityService::WATCH, $this->user);
+                //SympathyEvent::dispatch($this->watchUser->id, AnketProbabilityService::WATCH, $this->user);
 
                 $log->info("[AnketWatch::handle] Add Watch from anket: {$this->user->id} to user: {$this->watchUser->id}");
             } else {

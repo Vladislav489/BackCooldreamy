@@ -435,7 +435,7 @@ class ChatRepository
 
         $chatMessage->load(['chat_messageable']);
         $chatListItem = $this->getCurrentChatList($chat, true);
-        ObjectNewChatEvent::dispatch($chat->recepient_id, $chatMessage, $chatListItem);
+        //ObjectNewChatEvent::dispatch($chat->recepient_id, $chatMessage, $chatListItem);
         $this->updateChat($chat);
         return $chatMessage;
     }

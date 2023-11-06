@@ -292,7 +292,7 @@ class OperatorChatController extends Controller
             }
             $chatMessage->is_read_by_recepient = true;
             $chatMessage->save();
-            LetChatMessageNewReadEvent::dispatch($chatMessage->sender_user_id, $chatMessage->chat_id, $chatMessage->id);
+           // LetChatMessageNewReadEvent::dispatch($chatMessage->sender_user_id, $chatMessage->chat_id, $chatMessage->id);
 
 //            if (AceLog::where('chat_message_id', $chat_message->id)->exists()) {
 //                OperatorLimitController::addChatLimits($chat_message->recepient_user_id, 7);

@@ -57,7 +57,7 @@ class OnlineService
         }
 
         $this->log->info("Пользователю {$user->id} пришло сообщение от мужчины ");
-        SetOnlineJob::dispatch($user)->onQueue('queue_online')->delay($timeout);
+        //SetOnlineJob::dispatch($user)->onQueue('queue_online')->delay($timeout);
     }
 
     /**
@@ -68,7 +68,7 @@ class OnlineService
     {
         $chatMessage->is_read_by_recepient = true;
         $chatMessage->save();
-        LetChatMessageNewReadEvent::dispatch($chatMessage->sender_user_id, $chatMessage->chat_id, $chatMessage->id);
+       // LetChatMessageNewReadEvent::dispatch($chatMessage->sender_user_id, $chatMessage->chat_id, $chatMessage->id);
 
         return $chatMessage;
     }

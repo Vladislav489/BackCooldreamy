@@ -140,8 +140,8 @@ class LimitChatOperatorCronLogic extends LimitChatOperatorLogic {
                     ]);
                 }
             }
-            foreach ($list as $item)
-                SympathyEvent::dispatch($item['send_user'], AnketProbabilityService::LIKE, $item['id']);
+           // foreach ($list as $item)
+             //   SympathyEvent::dispatch($item['send_user'], AnketProbabilityService::LIKE, $item['id']);
 
             return $list;
     }

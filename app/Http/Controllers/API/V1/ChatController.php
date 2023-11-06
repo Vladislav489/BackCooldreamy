@@ -507,7 +507,7 @@ class ChatController extends Controller
 
         $chat_message->chat_messageable = $chat_message->chat_messageable;
         $chatListItem = self::get_current_chat_list_item($request->chat_id,$user, true);
-        ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
+        //ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
         $this->setChatAnswered($chat);
         $this->sendOperatorEvent($recepient_user_id, $chat_message, $chatListItem['chat']);
 
@@ -576,7 +576,7 @@ class ChatController extends Controller
 
         $chat_message->chat_messageable = $chat_message->chat_messageable;
         $chatListItem = self::get_current_chat_list_item($request->chat_id, $user,true);
-        ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
+        //ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
         $this->setChatAnswered($chat);
         $this->sendOperatorEvent($recepient_user_id, $chat_message, $chatListItem['chat']);
         OperatorLimitController::addChatLimits($recepient_user_id, 9, $chat->id);
@@ -597,7 +597,7 @@ class ChatController extends Controller
             if ($recepient->operator) {
                 $operator = $recepient->operator->operator;
                 if ($operator) {
-                    ObjectOperatorChatEvent::dispatch($operator->id, $chat_message, $chatListItem);
+                   //ObjectOperatorChatEvent::dispatch($operator->id, $chat_message, $chatListItem);
                     $this->setChatAnswered($chat_message->chat);
                 }
             }
@@ -657,7 +657,7 @@ class ChatController extends Controller
         $chat_sticker_message->chat_message()->save($chat_message);
         $chat_message->chat_messageable->sticker = $chat_message->chat_messageable->sticker;
         $chatListItem = self::get_current_chat_list_item($request->chat_id,$user, true);
-        ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
+        //ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
         $this->sendOperatorEvent($recepient_user_id, $chat_message, $chatListItem['chat']);
         OperatorLimitController::addChatLimits($recepient_user_id, 8, $chat->id);
         return (self::get_current_chat_list_item($request->chat_id,$user));
@@ -779,7 +779,7 @@ class ChatController extends Controller
         $chatListItem = self::get_current_chat_list_item($chat->id,$user, true);
 
 
-        ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
+        //ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
         $this->sendOperatorEvent($recepient_user_id, $chat_message, $chatListItem['chat']);
         $another_user = User::find($recepient_user_id);
         if (!$another_user->is_real) {
@@ -810,14 +810,14 @@ class ChatController extends Controller
             }
             $chat_message->is_read_by_recepient = true;
             $chat_message->save();
-            LetChatMessageNewReadEvent::dispatch($chat_message->sender_user_id, $chat_message->chat_id, $chat_message->id);
+            //LetChatMessageNewReadEvent::dispatch($chat_message->sender_user_id, $chat_message->chat_id, $chat_message->id);
             $sender = User::findOrFail($chat_message->sender_user_id);
             if ($sender->is_real == false) {
                 if ($sender->operator) {
                     $operator = $sender->operator->operator;
-                    if ($operator) {
-                        TestOperatorChatReadEvent::dispatch($operator->id, $chat_message->chat_id, $chat_message->id);
-                    }
+                    //if ($operator) {
+                    //    TestOperatorChatReadEvent::dispatch($operator->id, $chat_message->chat_id, $chat_message->id);
+                  //  }
                 }
             }
 
@@ -973,7 +973,7 @@ class ChatController extends Controller
         $chat_message->chat_messageable = $chat_message->chat_messageable;
 
         $chatListItem = self::get_current_chat_list_item($chat->id,$user, true);
-        ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
+        //ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
         $this->sendOperatorEvent($recepient_user_id, $chat_message, $chatListItem['chat']);
 
         $chat->save();

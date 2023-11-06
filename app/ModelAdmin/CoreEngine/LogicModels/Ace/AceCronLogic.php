@@ -202,7 +202,7 @@ class AceCronLogic extends AceLogic  {
                  Mail::to($recepient)->send(new MessageUserMail($recepient, User::find($item['send_user'])));
              }
              $chat_message->chat_messageable = $chat_message->chat_messageable;
-             LetChatMessageNewReadEvent::dispatch($item['send_user'], $item['chat_id'], $chat_message->id);
+             //LetChatMessageNewReadEvent::dispatch($item['send_user'], $item['chat_id'], $chat_message->id);
              $addViewedUser[] = [
                  'user_id' => $item['send_user'],
                  'target_user_id' => $item['id'],
@@ -240,7 +240,7 @@ class AceCronLogic extends AceLogic  {
                 usleep(400);
                 FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","{$user->name} sent you a message", $user->avatar_url);
              }
-             SympathyEvent::dispatch($item['send_user'], AnketProbabilityService::LIKE, $item['id']);
+            // SympathyEvent::dispatch($item['send_user'], AnketProbabilityService::LIKE, $item['id']);
          }
          return $list;
      }catch (\Throwable $e){

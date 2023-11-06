@@ -63,7 +63,7 @@ class ProfileController extends Controller
 
         $user->is_liked = $user->liked_me()->where('users.id', $authUser->id)->exists();
         $user->is_favorite = $authUser->favorite_users_with_disabled()->where('users.id', $user->id)->exists();
-        SympathyEvent::dispatch($user->id, AnketProbabilityService::WATCH, $authUser);
+        //SympathyEvent::dispatch($user->id, AnketProbabilityService::WATCH, $authUser);
 
         UserWatch::create([
             'user_id' => $authUser->id,
@@ -154,7 +154,7 @@ class ProfileController extends Controller
                }
                $user->is_email_verified = false;
                $user->save();
-               
+
                Mail::to($request->get('email'))->send(new VerificationMail($user->token, $user));
            }
         }

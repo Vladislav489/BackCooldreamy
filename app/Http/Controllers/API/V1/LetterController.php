@@ -220,7 +220,7 @@ class LetterController extends Controller
         if (!User::find($recepient_user_id)->is_real) {
             OperatorLetterLimitController::addLetterLimits($recepient_user_id, OperatorLetterLimitController::SEND_MESSAGE, $letter->id);
         }
-        letterEvent::dispatch($recepient_user_id, $letter_message, $letter);
+        //letterEvent::dispatch($recepient_user_id, $letter_message, $letter);
         $this->sendOperatorEvent($recepient_user_id, $letter_message, $letter);
 
         return (self::get_current_letter_list_item($request->letter_id));
@@ -240,7 +240,7 @@ class LetterController extends Controller
             if ($recepient->operator) {
                 $operator = $recepient->operator->operator;
                 if ($operator) {
-                    NewWOperatorLettersEvent::dispatch($operator->id, $letter_message, $letterListItem);
+                   // NewWOperatorLettersEvent::dispatch($operator->id, $letter_message, $letterListItem);
                     $letter = $letter_message->letter;
                     $letter->is_answered_by_operator = false;
                     $letter->updated_at = now();
@@ -309,7 +309,7 @@ class LetterController extends Controller
 
         $letter_message->letter_messageable = $letter_message->letter_messageable;
         $letterListItem = self::get_current_letter_list_item($request->chat_id, true);
-        LetterEvent::dispatch($recepient_user_id, $letter_message, $letterListItem['letter']);
+       // LetterEvent::dispatch($recepient_user_id, $letter_message, $letterListItem['letter']);
         $this->setChatAnswered($letter);
         $this->sendOperatorEvent($recepient_user_id, $letter_message, $letterListItem['letter']);
         //OperatorLimitController::addChatLimits($recepient_user_id, 9, $letter->id);
@@ -363,7 +363,7 @@ class LetterController extends Controller
         ]);
         $letter_sticker_message->letter_message()->save($letter_message);
         $letter_message->letter_messageable->sticker = $letter_message->letter_messageable->sticker;
-        letterEvent::dispatch($recepient_user_id, $letter_message, $letter);
+        //letterEvent::dispatch($recepient_user_id, $letter_message, $letter);
         $this->sendOperatorEvent($recepient_user_id, $letter_message, $letter);
         return (self::get_current_letter_list_item($request->letter_id));
     }
@@ -421,7 +421,7 @@ class LetterController extends Controller
         ]);
         $letter_gift_message->letter_message()->save($letter_message);
         $letter_message->letter_messageable->gifts = $letter_message->letter_messageable->gifts;
-        letterEvent::dispatch($recepient_user_id, $letter_message, $letter);
+        //letterEvent::dispatch($recepient_user_id, $letter_message, $letter);
         $this->sendOperatorEvent($recepient_user_id, $letter_message, $letter);
         return (self::get_current_letter_list_item($request->letter_id));
     }
@@ -444,16 +444,16 @@ class LetterController extends Controller
         }
         $letter_message->is_read_by_recepient = true;
         $letter_message->save();
-        AbstractLetterMessageReadEvent::dispatch($letter_message->sender_user_id, $letter_message->letter_id, $letter_message->id);
+        //AbstractLetterMessageReadEvent::dispatch($letter_message->sender_user_id, $letter_message->letter_id, $letter_message->id);
         $sender = User::findOrFail($letter_message->sender_user_id);
         if ($sender->is_real == false) {
 
             OperatorLetterLimitController::addLetterLimits($sender->id, OperatorLetterLimitController::OPEN, $letter_message->letter_id);
             if ($sender->operator) {
                 $operator = $sender->operator->operator;
-                if ($operator) {
-                    OperatorLetterMessageReadEvent::dispatch($letter_message->sender_user_id, $letter_message->letter_id, $letter_message->id);
-                }
+                //if ($operator) {
+                 //   OperatorLetterMessageReadEvent::dispatch($letter_message->sender_user_id, $letter_message->letter_id, $letter_message->id);
+               // }
             }
         }
 

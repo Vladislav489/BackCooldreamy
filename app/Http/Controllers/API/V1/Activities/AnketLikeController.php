@@ -45,7 +45,7 @@ class AnketLikeController extends Controller
 
     public function openUserProfile($id)
     {
-        OpenUserProfileEvent::dispatch($id, Auth::id());
+       // OpenUserProfileEvent::dispatch($id, Auth::id());
 
         return response()->json(['message' => 'success']);
     }

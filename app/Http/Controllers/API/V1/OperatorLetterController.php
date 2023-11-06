@@ -252,7 +252,7 @@ class OperatorLetterController extends Controller
      */
     private function sendEvent($letter, $message, $user, $id)
     {
-        LetterEvent::dispatch($letter->recepient_id, $message, $letter);
+        //LetterEvent::dispatch($letter->recepient_id, $message, $letter);
     }
 
     /**
@@ -359,7 +359,7 @@ class OperatorLetterController extends Controller
 
         $this->letterRepository->readMessage($letterMessage);
 
-        AbstractLetterMessageReadEvent::dispatch($letterMessage->sender_user_id, $letterMessage->letter_id, $letterMessage->id);
+        //AbstractLetterMessageReadEvent::dispatch($letterMessage->sender_user_id, $letterMessage->letter_id, $letterMessage->id);
 
         return response()->json(['message' => 'success'], 200);
     }

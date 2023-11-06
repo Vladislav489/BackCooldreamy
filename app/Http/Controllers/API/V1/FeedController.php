@@ -81,7 +81,7 @@ class FeedController extends Controller
         $feed->save();
         // Отправляем евент человеку которому ставим лайк
         FireBaseService::sendPushFireBase($another_user,"СoolDreamy","You have a new like",$sender->avatar_url);
-        SympathyEvent::dispatch($another_user->id, AnketProbabilityService::LIKE, Auth::user());
+        //SympathyEvent::dispatch($another_user->id, AnketProbabilityService::LIKE, Auth::user());
         if ($another_user->gender == 'female' && $another_user->is_real == false) {
             $service = new AnketProbabilityService();
             $service->like($another_user,$sender);
