@@ -32,6 +32,13 @@ class CreditsController extends Controller
 //        $this->subscriptionService = $subscriptionService;
 //    }
 
+    public function get_free_message(){
+      $user = User::find(Auth::id());
+      $prices = ServicePrices::find(1);
+      return response(['count_free_message'=>ceil($prices->credits/$prices->price)]);
+    }
+
+
     // получае счёт пользователя
     public function get_my_credits()
     {
