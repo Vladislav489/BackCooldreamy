@@ -24,6 +24,10 @@ class ImageController extends Controller
     use ImageStoreTrait;
 
     public function store(Request $request) {
+        logger(json_encode($request));
+        logger(json_encode($_FILES));
+        logger(json_encode($request->header()));
+
         $validator = Validator::make($request->all(), [
             'image' => ['required'],
             'category_id' => ['required', Rule::exists('image_categories', 'id'),]
