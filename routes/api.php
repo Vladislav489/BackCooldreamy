@@ -36,7 +36,9 @@ Route::get('library/countries', [\App\Http\Controllers\API\V1\Library\LibraryCon
 // Geo
 Route::get('/location', [\App\Http\Controllers\API\V1\AuthController::class, 'geoLocation']);
 Route::get('pages/', [\App\Http\Controllers\PageController::class, 'index']);
-
+Route::get('/time/server',  function (Request $request) {
+    return response()->json(['data' => now()]);
+});
 
 
 Route::post('register', [\App\Http\Controllers\API\V1\AuthController::class, 'register']);
@@ -146,6 +148,8 @@ Route::get('activities/get_my_watchers', [\App\Http\Controllers\API\V1\Activitie
 Route::get('activities/get_my_watched', [\App\Http\Controllers\API\V1\Activities\AnketWatchController::class, 'getMyWatched'])->middleware('auth:sanctum');
 Route::get('activities/get_mutual_watched_users', [\App\Http\Controllers\API\V1\Activities\AnketWatchController::class, 'getMutualWatchedUsers'])->middleware('auth:sanctum');
 
+Route::get('profile/get_free_message', [\App\Http\Controllers\API\V1\CreditsController::class, 'get_free_message'])->middleware('auth:sanctum');
+
 Route::get('activities/get_my_favorite', [\App\Http\Controllers\API\V1\Activities\AnketFavoriteController::class, 'getMyFavorite'])->middleware('auth:sanctum');
 Route::get('activities/get_favorited_me', [\App\Http\Controllers\API\V1\Activities\AnketFavoriteController::class, 'getFavoritedMe'])->middleware('auth:sanctum');
 Route::get('activities/get_mutual_favorite', [\App\Http\Controllers\API\V1\Activities\AnketFavoriteController::class, 'getMutualFavorite'])->middleware('auth:sanctum');
@@ -157,6 +161,7 @@ Route::get('activities/get_liked_me', [\App\Http\Controllers\API\V1\Activities\A
 Route::get('activities/get_mutual_likes', [\App\Http\Controllers\API\V1\Activities\AnketLikeController::class, 'getMutualLikedUsers'])->middleware('auth:sanctum');
 
 Route::get('profile/get_my_credits', [\App\Http\Controllers\API\V1\CreditsController::class, 'get_my_credits'])->middleware('auth:sanctum');
+
 Route::post('profile/check_payment', [\App\Http\Controllers\API\V1\CreditsController::class, 'check_payment'])->middleware('auth:sanctum');
 Route::post('profile/get_services_cost', [\App\Http\Controllers\API\V1\CreditsController::class, 'get_services_cost'])->middleware('auth:sanctum');
 Route::post('profile/put_service_cost', [\App\Http\Controllers\API\V1\CreditsController::class, 'put_service_cost'])->middleware('auth:sanctum');
