@@ -154,8 +154,11 @@ class ProfileController extends Controller
                }
                $user->is_email_verified = false;
                $user->save();
-
-               Mail::to($request->get('email'))->send(new VerificationMail($user->token, $user));
+                try {
+                    Mail::to($request->get('email'))->send(new VerificationMail($user->token, $user));
+                }catch (\Throwable $e){
+                    var_dump($e->getMessage());
+                }
            }
         }
         $user->update($request->all());
