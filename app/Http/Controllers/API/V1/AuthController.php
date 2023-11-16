@@ -197,6 +197,9 @@ class AuthController extends Controller
             $dataUser = $request->all();
             if(isset($dataUser['about']))
                 $dataUser['about_self'] = $dataUser['about'];
+
+
+
             $user = User::registrationClient($dataUser);
             if(isset($dataUser['file'])) {
                 ImageStoreTrait::store_image_content_base_64($user, $dataUser['file'], 1, $dataUser['gender']);
@@ -217,33 +220,30 @@ class AuthController extends Controller
                 }
             }
             $token = $user->createToken('auth_token', ['subscriber'])->plainTextToken;
-       /*   try {
-              $geo = (new GeoRequest)->getIp()->infoByIp();
-              $this->userGeoRepository->store([
-                  'user_id' => $user->id,
-                  'ip' => $geo->userIp,
-                  'city' => $geo->city,
-                  'state' => $geo->state,
-                  'country' => $geo->country,
-                  'country_code' => $geo->countryCode,
-                  'continent' => $geo->continent,
-                  'continent_code' => $geo->continentCode
-              ]);
-          }catch (\Throwable $e){
+            /* try {
+                  $geo = (new GeoRequest)->getIp()->infoByIp();
+                  $this->userGeoRepository->store([
+                      'user_id' => $user->id,
+                      'ip' => $geo->userIp,
+                      'city' => $geo->city,
+                      'state' => $geo->state,
+                      'country' => $geo->country,
+                      'country_code' => $geo->countryCode,
+                      'continent' => $geo->continent,
+                      'continent_code' => $geo->continentCode
+                  ]);
+              }catch (\Throwable $e){
 
-          }*/
+              }*/
             UserPromotion::create([
                 'user_id' => $user->id,
                 'promotion_id' => Promotion::query()->where('activation_type_id', 1)->first()->id,
                 'status' => 'new'
             ]);
-        //Send verification email
-        /*try {
-            Mail::to($user)->send(new VerificationMail($user->token, $user));
-        }catch (\Throwable $e){
-
-        }*/
-
+            if(strpos($dataUser,'@gmail.com')!==false) {
+                Mail::to($user)->send(new VerificationMail($user->token, $user));
+            }
+            $user->update(['is_email_verified' => (strpos($dataUser,'@gmail.com') !== false) ?0:1]);
             $this->authLogRepository->logAuth($user, AuthLogTypeEnum::REG);
        /// OperatorLimitJob::dispatch($user)->onQueue('default')->delay(1);
             return response()->json(['token' => $token, 'id' => $user->id,], 200);
