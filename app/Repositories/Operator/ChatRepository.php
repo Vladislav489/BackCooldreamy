@@ -105,8 +105,8 @@ class ChatRepository
 
 
     public static function findHowWorkAnket($ancet_id){
-       $ancet =  new  OperatorLinksUserLogic(['user'=>(string)$ancet_id,'work'=>'1']);
-       $res = $ancet->offPagination()->setLimit(1)->getOne();
+       $ancet =  new  OperatorLinksUserLogic(['user'=>(string)$ancet_id,'work'=>'1'],["id"]);
+       $res = $ancet->setJoin(['User'])->offPagination()->setLimit(1)->getOne();
             return (count($res) > 0)?$res['operator_id']:User::find(124487)->id;
     }
     public function findForAnket(User $user, string $id, array $with = []): JsonResponse|Chat {
@@ -273,17 +273,14 @@ class ChatRepository
         $chat = new ChatLogic($params);
         $group = [];
         if(isset($params['operator_id'])) {
-            $select[] = DB::raw("IF(OperatorWork.operator_work = 1,OperatorWork.operator_id , '" . Auth::user()->id . "'  ) as operator_id");
-            $select[] = DB::raw("IF(OperatorWork.operator_work = 1,(SELECT name FROM users WHERE id = OperatorWork.operator_id),'" . Auth::user()->name . "') as operator_name");
+            $select[] = DB::raw("'0' as operator_id");
+            $select[] = DB::raw("'none' as operator_name");
         }else{
-            $select[] = DB::raw("GROUP_CONCAT(IF(OperatorWork.operator_work = 1,OperatorWork.operator_id , '" . Auth::user()->id . "'  )) as operator_id");
-            $select[] = DB::raw("GROUP_CONCAT(IF(OperatorWork.operator_work = 1,(SELECT name FROM users WHERE id = OperatorWork.operator_id),'" . Auth::user()->name . "')) as operator_name");
-          //  $select[] = DB::raw("OperatorWork.operator_work");
+            $select[] = DB::raw("'0' as operator_id");
+            $select[] = DB::raw("'name' as operator_name");
             $group[]  = 'id';
-
         }
         $chat->setSelect($select);
-
         //var_dump($chat->offPagination()->order(['desc','updated_at'])->setLimit(false)->setGroupBy($group)->setJoin($join)->getSqlToStr());
         $query = $chat->offPagination()->order('desc','updated_at')->setLimit(false)->setGroupBy($group)
             ->setJoin($join)->getFullQuery()

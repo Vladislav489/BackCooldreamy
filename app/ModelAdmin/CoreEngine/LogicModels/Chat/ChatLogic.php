@@ -234,10 +234,7 @@ class ChatLogic extends CoreEngine {
             ],
             "custom_select" => [],
             "relatedModel" => [
-                "ChatMessage" => [
-                    "entity" =>new ChatMessage(),
-                    "relationship" => ['id','chat_id'],
-                ],
+
                 "FirstUser" => [
                     "entity" => DB::raw((new User())->getTable()." as FirstUser  ON
                         FirstUser.id = first_user_id  OR  FirstUser.id = second_user_id"),

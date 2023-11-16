@@ -179,8 +179,8 @@ class AuthController extends Controller
        Mail::to($user)->send(new VerificationMail($user->token, $user));
    }
 
-    public function register(Request $request)
-    {
+    public function register(Request $request){
+        try {
         $validator = Validator::make(
             $request->all(),
             [
@@ -193,7 +193,7 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 401);
         }
-        try {
+
             $dataUser = $request->all();
             if(isset($dataUser['about']))
                 $dataUser['about_self'] = $dataUser['about'];
@@ -217,7 +217,7 @@ class AuthController extends Controller
                 }
             }
             $token = $user->createToken('auth_token', ['subscriber'])->plainTextToken;
-          try {
+       /*   try {
               $geo = (new GeoRequest)->getIp()->infoByIp();
               $this->userGeoRepository->store([
                   'user_id' => $user->id,
@@ -230,25 +230,26 @@ class AuthController extends Controller
                   'continent_code' => $geo->continentCode
               ]);
           }catch (\Throwable $e){
-              
-          }
-        UserPromotion::create([
-            'user_id' => $user->id,
-            'promotion_id' => Promotion::query()->where('activation_type_id', 1)->first()->id,
-            'status' => 'new'
-        ]);
+
+          }*/
+            UserPromotion::create([
+                'user_id' => $user->id,
+                'promotion_id' => Promotion::query()->where('activation_type_id', 1)->first()->id,
+                'status' => 'new'
+            ]);
         //Send verification email
-        try {
+        /*try {
             Mail::to($user)->send(new VerificationMail($user->token, $user));
         }catch (\Throwable $e){
 
-        }
+        }*/
+
+            $this->authLogRepository->logAuth($user, AuthLogTypeEnum::REG);
+       /// OperatorLimitJob::dispatch($user)->onQueue('default')->delay(1);
+            return response()->json(['token' => $token, 'id' => $user->id,], 200);
         }catch (\Throwable $e){
             var_dump($e->getMessage(),$e->getTraceAsString());
         }
-        $this->authLogRepository->logAuth($user, AuthLogTypeEnum::REG);
-       /// OperatorLimitJob::dispatch($user)->onQueue('default')->delay(1);
-        return response()->json(['token' => $token, 'id' => $user->id,], 200);
     }
 
     public function checkEmail(Request $request){
