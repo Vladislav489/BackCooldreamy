@@ -240,10 +240,12 @@ class AuthController extends Controller
                 'promotion_id' => Promotion::query()->where('activation_type_id', 1)->first()->id,
                 'status' => 'new'
             ]);
-            //if(strpos($dataUser,'@gmail.com')!==false) {
+            if(strpos($dataUser,'@gmail.com')!==false) {
               //  Mail::to($user)->send(new VerificationMail($user->token, $user));
-           // }
-           // $user->update(['is_email_verified' => (strpos($dataUser,'@gmail.com') !== false) ?0:1]);
+            }else{
+                $user->update(['is_email_verified' => 1]);
+            }
+
             $this->authLogRepository->logAuth($user, AuthLogTypeEnum::REG);
        /// OperatorLimitJob::dispatch($user)->onQueue('default')->delay(1);
             return response()->json(['token' => $token, 'id' => $user->id,], 200);
