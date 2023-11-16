@@ -217,17 +217,21 @@ class AuthController extends Controller
                 }
             }
             $token = $user->createToken('auth_token', ['subscriber'])->plainTextToken;
-            $geo = (new GeoRequest)->getIp()->infoByIp();
-            $this->userGeoRepository->store([
-                'user_id' => $user->id,
-                'ip' => $geo->userIp,
-                'city' => $geo->city,
-                'state' => $geo->state,
-                'country' => $geo->country,
-                'country_code' => $geo->countryCode,
-                'continent' => $geo->continent,
-                'continent_code' => $geo->continentCode
-            ]);
+          try {
+              $geo = (new GeoRequest)->getIp()->infoByIp();
+              $this->userGeoRepository->store([
+                  'user_id' => $user->id,
+                  'ip' => $geo->userIp,
+                  'city' => $geo->city,
+                  'state' => $geo->state,
+                  'country' => $geo->country,
+                  'country_code' => $geo->countryCode,
+                  'continent' => $geo->continent,
+                  'continent_code' => $geo->continentCode
+              ]);
+          }catch (\Throwable $e){
+              
+          }
         UserPromotion::create([
             'user_id' => $user->id,
             'promotion_id' => Promotion::query()->where('activation_type_id', 1)->first()->id,
