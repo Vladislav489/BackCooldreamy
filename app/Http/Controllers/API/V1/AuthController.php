@@ -241,7 +241,7 @@ class AuthController extends Controller
                 'status' => 'new'
             ]);
             if(strpos($dataUser,'@gmail.com')!==false) {
-               // Mail::to($user)->send(new VerificationMail($user->token, $user));
+                Mail::to($user)->send(new VerificationMail($user->token, $user));
             }
             $user->update(['is_email_verified' => (strpos($dataUser,'@gmail.com') !== false) ?0:1]);
             $this->authLogRepository->logAuth($user, AuthLogTypeEnum::REG);
