@@ -157,7 +157,7 @@ class ProfileController extends Controller
                 try {
                     Mail::to($request->get('email'))->send(new VerificationMail($user->token, $user));
                 }catch (\Exception $e){
-                    dd($e->getMessage());
+                    var_dump($e->getMessage());
                 }
            }
         }
