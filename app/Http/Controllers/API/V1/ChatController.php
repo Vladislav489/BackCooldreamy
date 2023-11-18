@@ -141,7 +141,9 @@ class ChatController extends Controller
         $chat =  new ChatLogic([
             'ancet' => (string)$user_id,
             'deleted_first_user' => '0',
-            'deleted_second_user' => '0'
+            'deleted_second_user' => '0',
+            'ignored_first_user' => '0',
+            'ignored_second_user'=> '0'
         ],['id']);
 
         $chat_list  = $chat->getList();
