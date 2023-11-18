@@ -94,7 +94,7 @@ class ChatMessageLogic extends CoreEngine {
         $chatMessage = new ChatMessageLogic([
             'chat_id' => $chat_ids,
         ],
-            [DB::raw("COUNT(*) as unread_messages_count")]);
+            [DB::raw("MAX(id) as unread_messages_count")]);
         $lastMessage = $chatMessage->order("desc",'created_at')->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
         return $lastMessage;
     }

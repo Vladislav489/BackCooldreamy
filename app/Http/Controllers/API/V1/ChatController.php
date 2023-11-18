@@ -143,6 +143,8 @@ class ChatController extends Controller
             array_push($chat_id,(string)$item['id']);
         $chatNotRead = (new ChatMessageLogic())->getChatNotReadUser($user_id,$chat_id);
         $lastMessage = (new ChatMessageLogic())->getChatLastMessage($user_id,$chat_id);
+        
+
         dd($lastMessage);
         $temp = [];
         foreach ($chatNotRead as $item) $temp[$item['chat_id']] = $item;
