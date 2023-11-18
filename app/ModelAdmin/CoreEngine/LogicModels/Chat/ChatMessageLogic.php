@@ -100,6 +100,7 @@ class ChatMessageLogic extends CoreEngine {
              'GiftMessageSub','ImageMessageSub',
              'WinkMessageSub','TextMessageSub'])
             ->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
+        ////ModelAdmin/CoreEngine/Core/CoreEngine.php on line 647
         return $lastMessage;
     }
 

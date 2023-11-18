@@ -618,36 +618,45 @@ class CoreEngine{
         return $this;
     }
     //КОНФИГУРАЦИИ СВЯЗ ТАБЛИЦ
-    private function relatedConfig($config) {
-        $joinOn  = "";
-        if(is_string($config['entity'])) {
-            if(stripos($config['entity']," as ")!= false){
-                $joinOn = sprintf("%s.%s",substr($config['entity'],stripos($config['entity']," as ")+strlen(" as ")),$config['relationship'][0]);
-            }else{
-                $joinOn = sprintf("%s.%s",$config['entity'],$config['relationship'][0]);
+    private function relatedConfig($config)
+    {
+        $joinOn = "";
+        if (is_string($config['entity'])) {
+            if (stripos($config['entity'], " as ") != false) {
+                $joinOn = sprintf("%s.%s", substr($config['entity'], stripos($config['entity'], " as ") + strlen(" as ")), $config['relationship'][0]);
+            } else {
+                $joinOn = sprintf("%s.%s", $config['entity'], $config['relationship'][0]);
             }
-        }else if(is_array($config['entity'])){
-            $join =  each($config['entity']);
-            $joinOn = (empty($join['value']))?$config['relationship'][0]:sprintf("%s.%s",$join['value'] , $config['relationship'][0]);
-        }else{
-            $joinOn = sprintf("%s.%s",$config['entity']->getTable(),$config['relationship'][0]);
+        } else if (is_array($config['entity'])) {
+            $join = each($config['entity']);
+            $joinOn = (empty($join['value'])) ? $config['relationship'][0] : sprintf("%s.%s", $join['value'], $config['relationship'][0]);
+        } else {
+            $joinOn = sprintf("%s.%s", $config['entity']->getTable(), $config['relationship'][0]);
         }
         $joinOnMore = "";
         if (isset($config['relationship_more'])) {
-            if(is_array($config['relationship_more'])) {
+            if (is_array($config['relationship_more'])) {
                 foreach ($config['relationship_more'] as $field => $value)
                     $joinOnMore .= (!is_array($value)) ?
-                        sprintf(" AND %s = %s", $field, $value):sprintf(" AND %s %s %s", $value[0], $value[2], $value[1]);
+                        sprintf(" AND %s = %s", $field, $value) : sprintf(" AND %s %s %s", $value[0], $value[2], $value[1]);
 
-            } else if(is_string($config['relationship_more'])) {
-                $joinOnMore .= "AND ". $config['relationship_more'];
+            } else if (is_string($config['relationship_more'])) {
+                $joinOnMore .= "AND " . $config['relationship_more'];
             }
         }
         //собирает условие в одну кучу джойна
-        $return = sprintf("%s.%s  =  %s %s",
-            $this->engine->getTable(), $config['relationship'][1],
-            $joinOn, $joinOnMore
-        );
+        if (!is_object($config['relationship'][1])){
+            $return = sprintf("%s.%s  =  %s %s",
+                $this->engine->getTable(), $config['relationship'][1],
+                $joinOn, $joinOnMore
+            );
+        } else {
+            dd($config['relationship'][1]);
+            $return = sprintf("%s.%s  =  %s %s",
+                $this->engine->getTable(), $config['relationship'][1],
+                $joinOn, $joinOnMore
+            );
+        }
         return  (isset($config['pаrams_filter']))?$this->replaceParamsFlag($return,$config['pаrams_filter']):$return;
     }
     private function replaceParamsFlag($strSql,$params){
