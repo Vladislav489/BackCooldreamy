@@ -140,7 +140,7 @@ class ChatController extends Controller
 
         $chat =  new ChatLogic(['ancet'=>(string)$user_id],['id']);
 
-        $chat_list  = $chat->offPagination()->getList();
+        $chat_list  = count($chat->offPagination()->getList()['result']);
         //unread_messages_count
         //last_message chat_messageable text
         //last_message is_read_by_recepient
