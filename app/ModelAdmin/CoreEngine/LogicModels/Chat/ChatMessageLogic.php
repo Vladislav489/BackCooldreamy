@@ -101,7 +101,7 @@ class ChatMessageLogic extends CoreEngine {
             DB::raw("ChatMessageSub.is_read_by_recepient")]);
         //['ChatMessageSub','TextMessageSub','ImageMessageSub','GiftMessageSub','StickerMessageSub','WinkMessageSub']
         $lastMessage = $chatMessage->setJoin(
-            ['ChatMessageSub','TextMessageSub','ImageMessageSub'])
+            ['ChatMessageSub','TextMessageSub','GiftMessageSub','StickerMessageSub','WinkMessageSub'])
             ->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
         foreach ($lastMessage as &$item){
             $item['chat_messageable'] = json_decode($item['chat_messageable'],true);
@@ -261,8 +261,8 @@ class ChatMessageLogic extends CoreEngine {
                 ],
                 "TextMessageSub" => [
                     "entity" =>DB::raw((new ChatTextMessage())->getTable()." as TextMessageSub  ON
-                         ChatMessageSub.chat_messageable_id = TextMessageSub.id  AND
-                         ChatMessageSub.chat_messageable_type LIKE '%ChatTextMessage%'"),
+                         (ChatMessageSub.chat_messageable_id = TextMessageSub.id  AND
+                         ChatMessageSub.chat_messageable_type LIKE '%ChatTextMessage%')"),
                     'field'=>['json_object("id",TextMessageSub.id,"text",TextMessageSub.text,"gifts",NULL,"sticker",NULL) as chat_messageable']
                 ],
                 "WinkMessageSub" => [
