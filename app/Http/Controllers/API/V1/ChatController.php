@@ -156,7 +156,7 @@ class ChatController extends Controller
         $chat_list = $chat->offPagination()->getList()['result'];
         $chat_id = [];
         foreach ($chat_list as $id)
-            array_push($id['id']);
+            array_push($chat_id,$id['id']);
         $chatMessage = new ChatMessageLogic([
          'chat_id' => $chat_id,
          'read_by_recepient' =>'0'
