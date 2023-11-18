@@ -163,7 +163,11 @@ class ChatController extends Controller
         ],
         [DB::raw("COUNT(*) as unread_messages_count")]);
         $countNotReadMessage =  $chatMessage->setGroupBy(['chat_id'])->offPagination()->getGroup();
-        dd($countNotReadMessage);
+        $temp = [];
+        foreach ($countNotReadMessage as $itemMessage)
+            $temp[$itemMessage['id']]  = $itemMessage;
+        $countNotReadMessage = $temp;
+        unset($temp);
         //unread_messages_count
         //last_message chat_messageable text
         //last_message is_read_by_recepient
@@ -172,7 +176,8 @@ class ChatController extends Controller
         //sender online
         //sender age
         //name
-        foreach ($chat_list as &$item){
+        foreach ($chat_list as &$item) {
+             $item['unread_messages_count']= $countNotReadMessage[$item['id']]['unread_messages_count'];
              $item['first_user'] = json_decode($item['first_user'],true);
              $item['second_user'] = json_decode($item['second_user'],true);
              if($item['first_user']['id'] ==  $user_id){
