@@ -96,7 +96,7 @@ class ChatMessageLogic extends CoreEngine {
         ],[DB::raw("MAX(".$this->engine->getTable().".id) as id"),
             DB::raw("ChatMessageSub.chat_messageable_type") ]);
         $lastMessage = $chatMessage->setJoin(
-            ['ChatMessageSub'])
+            ['ChatMessageSub','TextMessageSub'])
             ->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
         return $lastMessage;
     }
