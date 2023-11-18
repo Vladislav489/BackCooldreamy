@@ -93,9 +93,8 @@ class ChatMessageLogic extends CoreEngine {
         $chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;
         $chatMessage = new ChatMessageLogic([
             'chat_id' => $chat_ids,
-            ''
         ],[DB::raw("MAX(id) as id")]);
-        $lastMessage = $chatMessage->offPagination()->getGroup()['result'];
+        $lastMessage = $chatMessage->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
         return $lastMessage;
     }
 
