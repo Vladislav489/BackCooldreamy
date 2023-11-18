@@ -34,9 +34,9 @@ class ChatLogic extends CoreEngine {
             [   "field" =>$tab.'.id', "params" => 'id',"validate" =>$validate ,
                 "type" => 'string|array', "action" => 'IN', "concat" => 'AND'],
 
-            [   "field" =>'1', "params" => 'exist_message',"validate" =>$validate ,
+            [   "field" =>'(select IF(`chat_messages`.`id` IS NULL ,0,1) from `chat_messages`
+                   where `chats`.`id` = `chat_messages`.`chat_id` ORDER BY  `chat_messages`.`id`  LIMIT 1)', "params" => 'exist_message',"validate" =>$validate ,
                 "type" => 'string', "action" => '=', "concat" => 'AND',
-                'relatedModel'=>"ChatMessageExist"
             ],
 
 
@@ -262,13 +262,6 @@ class ChatLogic extends CoreEngine {
                 "ChatMessage"=>[
                     "entity" => DB::raw((new ChatMessage())->getTable()." as ChatMessage ON
                       chats.id = ChatMessage.chat_id "),
-                ],
-
-                "ChatMessageExist"=>[
-                    "entity" => DB::raw("(select * from `chat_messages`
-                   where `chats`.`id` = `chat_messages`.`chat_id` ORDER BY  `chat_messages`.`id`  LIMIT 1) as ChatMessage
-                    ON chats.id = ChatMessage.chat_id"),
-                    'type'=>'inner'
                 ],
 
                 "ChatLimit" =>[
