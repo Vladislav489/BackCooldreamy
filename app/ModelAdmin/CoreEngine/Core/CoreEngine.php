@@ -645,16 +645,14 @@ class CoreEngine{
             }
         }
         //собирает условие в одну кучу джойна
-        if (!is_object($config['relationship'][1])){
+        if (strpos($config['relationship'][1],'.') !== false){
             $return = sprintf("%s.%s  =  %s %s",
                 $this->engine->getTable(), $config['relationship'][1],
                 $joinOn, $joinOnMore
             );
         } else {
-            dd( $config['relationship'][1]::__toString());
-
             $return = sprintf("%s  =  %s %s",
-                $config['relationship'][1]->getValue(),
+                $config['relationship'][1],
                 $joinOn, $joinOnMore
             );
         }
