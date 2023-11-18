@@ -652,7 +652,7 @@ class CoreEngine{
             );
         } else {
             $return = sprintf("%s  =  %s %s",
-                 $config['relationship'][1]->value,
+                $config['relationship'][1]->getValue(),
                 $joinOn, $joinOnMore
             );
         }
