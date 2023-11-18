@@ -135,6 +135,12 @@ sec_to_time(CEILING(( (SELECT UNIX_TIMESTAMP(created_at) FROM chat_messages AS t
                 "type" => 'date', "action" => '>=', "concat" => 'AND'
             ],
 
+            [   "field" => 'is_read_by_recepient', "params" => 'read_by_recepient',
+                "validate" => ["string" => true, "empty" => true],
+                "type" => 'string', "action" => '=', "concat" => 'AND',
+                'relatedModel'=>'OperatorChat'
+            ],
+
             [   "field" => 'OperatorChat.model_id', "params" => 'operator',
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => '=', "concat" => 'AND',
@@ -163,6 +169,7 @@ sec_to_time(CEILING(( (SELECT UNIX_TIMESTAMP(created_at) FROM chat_messages AS t
             "select" => [],
             "by" => [
                 'operator_id'=>'operator_id',
+                'chat_id'=>'chat_id',
                 'model_id'=>'OperatorChat.model_id'
             ],
             "custom_select" => [],

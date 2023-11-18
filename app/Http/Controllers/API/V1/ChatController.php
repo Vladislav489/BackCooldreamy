@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\MessageUserMail;
 use App\Mail\MyVerificationMail;
 use App\ModelAdmin\CoreEngine\LogicModels\Chat\ChatLogic;
+use App\ModelAdmin\CoreEngine\LogicModels\Chat\ChatMessageLogic;
 use App\Models\AceLog;
 use App\Models\Chat;
 use App\Models\ChatGiftMessage;
@@ -139,6 +140,7 @@ class ChatController extends Controller
 
         $chat =  new ChatLogic(['ancet' => (string)$user_id, 'deleted_first_user' => '0', 'deleted_second_user' => '0', 'exist_message' => '1'],
         ['id',
+         'is_answered_by_operator',
             DB::raw('(SELECT  json_object(
             "id",id,
             "avatar_url_thumbnail",avatar_url_thumbnail,
@@ -151,7 +153,17 @@ class ChatController extends Controller
             "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = second_user_id) as second_user')
         ]);
 
-        $chat_list  = $chat->offPagination()->getList()['result'];
+        $chat_list = $chat->offPagination()->getList()['result'];
+        $chat_id = [];
+        foreach ($chat_list as $id)
+            array_push($id['id']);
+        $chatMessage = new ChatMessageLogic([
+         'chat_id' => $chat_id,
+         'read_by_recepient' =>'0'
+        ],
+        [DB::raw("COUNT(*) as unread_messages_count"),'chat_id']);
+        $countNotReadMessage =  $chatMessage->setGroupBy(['chat_id'])->offPagination()->getGroup();
+        dd($countNotReadMessage);
         //unread_messages_count
         //last_message chat_messageable text
         //last_message is_read_by_recepient
@@ -172,7 +184,7 @@ class ChatController extends Controller
                  $item['my_self_user'] = $item['second_user'];
                  unset($item['second_user']);
                  $item['another_user'] = $item['first_user'];
-                 unset($item['first_user']);   
+                 unset($item['first_user']);
              }
         }
 
