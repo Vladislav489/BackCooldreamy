@@ -256,22 +256,22 @@ class ChatMessageLogic extends CoreEngine {
                 ],
                 "TextMessageSub" => [
                     "entity" => new ChatTextMessage(),
-                    "relationship" => ['id',DB::raw('ChatMessageSub.chat_messageable_id')],
+                    "relationship" => ['id','ChatMessageSub.chat_messageable_id'],
                     'field'=>['text as message_body']
                 ],
                 "WinkMessageSub" => [
                     "entity" => new ChatWinkMessage(),
-                    "relationship" => ['id',DB::raw('ChatMessageSub.chat_messageable_id')],
+                    "relationship" => ['id','ChatMessageSub.chat_messageable_id'],
                     'field'=>['from_user_id','to_user_id']
                 ],
                 "ImageMessageSub" => [
                     "entity" => new ChatImageMessage(),
-                    "relationship" => ['id',DB::raw('ChatMessageSub.chat_messageable_id')],
+                    "relationship" => ['id','ChatMessageSub.chat_messageable_id'],
                     'field'=>['thumbnail_url as message_body','image_url as message_body']
                 ],
                 "GiftMessageSub" => [
                     "entity" => new ChatGiftMessage(),
-                    "relationship" => ['id',DB::raw('ChatMessageSub.chat_messageable_id')],
+                    "relationship" => ['id','ChatMessageSub.chat_messageable_id'],
                     'field'=>['id as message_body']
                 ],
                 "StickerMessageSub" => [
