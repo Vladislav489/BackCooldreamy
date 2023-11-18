@@ -144,7 +144,7 @@ class ChatController extends Controller
             'deleted_second_user' => '0'
         ],['id']);
 
-        $chat_list  = $chat->getList()['result'];
+        $chat_list  = $chat->getList();
         //unread_messages_count
         //last_message chat_messageable text
         //last_message is_read_by_recepient
