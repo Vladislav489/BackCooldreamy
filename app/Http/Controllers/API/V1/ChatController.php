@@ -156,8 +156,7 @@ class ChatController extends Controller
             "online",SecondUser.online,
             "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(SecondUser.birthday)), "%Y")+0) as my_self_user')
         ]);
-
-        $chat->setQuery($chat->getQuery()->groupBy('id'));
+        
         $chat_list  = $chat->setJoin(["FirstUser","SecondUser"])->offPagination()->getList();
         //unread_messages_count
         //last_message chat_messageable text
