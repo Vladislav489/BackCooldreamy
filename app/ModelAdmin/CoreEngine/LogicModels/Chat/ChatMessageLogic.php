@@ -264,6 +264,7 @@ class ChatMessageLogic extends CoreEngine {
                          (ChatMessageSub.chat_messageable_id = TextMessageSub.id  AND
                          ChatMessageSub.chat_messageable_type LIKE '%ChatTextMessage%')"),
                     'field'=>['json_object("id",TextMessageSub.id,"text",TextMessageSub.text,"gifts",NULL,"sticker",NULL) as chat_messageable']
+                    ,'type'=>'inner'
                 ],
                 "WinkMessageSub" => [
                     "entity" =>DB::raw((new ChatWinkMessage())->getTable()." as WinkMessageSub  ON
@@ -271,6 +272,7 @@ class ChatMessageLogic extends CoreEngine {
                          ChatMessageSub.chat_messageable_type LIKE '%ChatWinkMessage%'"),
                     'field'=>['json_object("id",WinkMessageSub.id,"from_user_id",WinkMessageSub.from_user_id,
                     "to_user_id ",WinkMessageSub.to_user_id,"gifts",NULL,"sticker",NULL) as chat_messageable']
+                    ,'type'=>'inner'
                 ],
                 "ImageMessageSub" => [
                     "entity" =>DB::raw((new ChatImageMessage())->getTable()." as ImageMessageSub  ON
@@ -278,12 +280,14 @@ class ChatMessageLogic extends CoreEngine {
                          ChatMessageSub.chat_messageable_type LIKE '%ChatImageMessage%'"),
                     'field'=>['json_object("id",ImageMessageSub.id,"thumbnail_url",
                     ImageMessageSub.thumbnail_url,"image_url",ImageMessageSub.image_url,"gifts",NULL,"sticker",NULL) as chat_messageable']
+                    ,'type'=>'inner'
                 ],
                 "GiftMessageSub" => [
                     "entity" =>DB::raw((new ChatGiftMessage())->getTable()." as GiftMessageSub ON
                          ChatMessageSub.chat_messageable_id = GiftMessageSub.id  AND
                          ChatMessageSub.chat_messageable_type LIKE '%ChatGiftMessage%'"),
                     'field'=>['json_object("id",GiftMessageSub.id,"gifts",NULL,"sticker",NULL) as chat_messageable']
+                    ,'type'=>'inner'
                 ],
                 "StickerMessageSub" => [
                     "entity" => new ChatStickerMessage(),
@@ -291,6 +295,7 @@ class ChatMessageLogic extends CoreEngine {
                          ChatMessageSub.chat_messageable_id = StickerMessageSub.id  AND
                          ChatMessageSub.chat_messageable_type LIKE '%ChatStickerMessage%'"),
                     'field'=>['json_object("id",StickerMessageSub.id,"gifts",NULL,"sticker",NULL) as chat_messageable']
+                    ,'type'=>'inner'
                 ],
             ]
         ];
