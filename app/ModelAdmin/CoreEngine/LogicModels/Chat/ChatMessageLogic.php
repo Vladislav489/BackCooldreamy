@@ -276,7 +276,7 @@ class ChatMessageLogic extends CoreEngine {
                 ],
                 "StickerMessageSub" => [
                     "entity" => new ChatStickerMessage(),
-                    "relationship" => ['id',DB::raw('ChatMessageSub.chat_messageable_id')],
+                    "relationship" => ['id','ChatMessageSub.chat_messageable_id'],
                     'field'=>['sticker_id as  message_body']
                 ],
             ]
