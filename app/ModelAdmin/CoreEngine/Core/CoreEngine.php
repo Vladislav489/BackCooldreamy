@@ -612,8 +612,12 @@ class CoreEngine{
 
 
         if(isset($related['field']))
-            foreach ($related['field'] as $item )
-                $this->query->addSelect(DB::raw($table.".".$item )  );
+            foreach ($related['field'] as $item ) {
+                if($table != "")
+                    $this->query->addSelect(DB::raw($table . "." . $item));
+                else
+                    $this->query->addSelect(DB::raw($item));
+            }
 
         return $this;
     }
