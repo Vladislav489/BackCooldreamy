@@ -93,7 +93,8 @@ class ChatMessageLogic extends CoreEngine {
         $chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;
         $chatMessage = new ChatMessageLogic([
             'chat_id' => $chat_ids,
-        ],[DB::raw("MAX(id) as id")]);
+            'not_sender' => (string)$user_id
+        ],[DB::raw("MAX(id) as id"),'chat_messageable_id','chat_messageable_type']);
         $lastMessage = $chatMessage->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
         return $lastMessage;
     }
@@ -106,6 +107,10 @@ class ChatMessageLogic extends CoreEngine {
             [   "field" =>$tab.'.sender_user_id', "params" => 'sender',
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'IN', "concat" => 'AND',
+            ],
+            [   "field" =>$tab.'.sender_user_id', "params" => 'not_sender',
+                "validate" => ["string" => true, "empty" => true],
+                "type" => 'string|array', "action" => '!=', "concat" => 'AND',
             ],
             [   "field" =>$tab.'.recepient_user_id', "params" => 'recepient',
                 "validate" => ["string" => true, "empty" => true],
