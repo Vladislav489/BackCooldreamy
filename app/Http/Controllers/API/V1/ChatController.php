@@ -143,9 +143,9 @@ class ChatController extends Controller
             'deleted_first_user' => '0',
             'deleted_second_user' => '0',
             'exist_message' => '1'
-        ],['id']);
+        ],['id',DB::raw('json_object(FirstUser.*) as FirstUser'),DB::raw('json_object(SecondUser.*) as SecondUser') ]);
 
-        $chat_list  = $chat->offPagination()->getList();
+        $chat_list  = $chat->setJoin(["FirstUser","SecondUser"])->offPagination()->getList();
         //unread_messages_count
         //last_message chat_messageable text
         //last_message is_read_by_recepient
