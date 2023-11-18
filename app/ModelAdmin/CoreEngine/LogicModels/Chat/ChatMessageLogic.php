@@ -82,7 +82,7 @@ class ChatMessageLogic extends CoreEngine {
         $chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;
         $chatMessage = new ChatMessageLogic([
             'chat_id' => $chat_ids,
-            'recepient_user_id' => $user_id,
+            'recepient_user_id' => (string)$user_id,
             'read_by_recepient' =>'0'
         ],
             [DB::raw("COUNT(*) as unread_messages_count")]);
@@ -93,8 +93,6 @@ class ChatMessageLogic extends CoreEngine {
         $chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;
         $chatMessage = new ChatMessageLogic([
             'chat_id' => $chat_ids,
-            'recepient_user_id' => $user_id,
-            'read_by_recepient' =>'0'
         ],
             [DB::raw("COUNT(*) as unread_messages_count")]);
         $lastMessage = $chatMessage->order("desc",'created_at')->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
