@@ -255,7 +255,7 @@ class ChatMessageLogic extends CoreEngine {
                     "entity" =>DB::raw((new ChatMessage())->getTable()." as TextMessageSub  ON
                          ChatMessageSub.chat_messageable_id = TextMessageSub.id  AND
                          ChatMessageSub.chat_messageable_type LIKE '%ChatTextMessage%'"),
-                    'field'=>['ChatMessageSub.text as message_body']
+                    'field'=>['TextMessageSub.text as message_body']
                 ],
                 "WinkMessageSub" => [
                     "entity" => new ChatWinkMessage(),
