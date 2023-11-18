@@ -252,7 +252,7 @@ class ChatMessageLogic extends CoreEngine {
                     'field'=>['id as  message_body']
                 ],
                 "TextMessageSub" => [
-                    "entity" =>DB::raw((new ChatMessage())->getTable()." as TextMessageSub  ON
+                    "entity" =>DB::raw((new ChatTextMessage())->getTable()." as TextMessageSub  ON
                          ChatMessageSub.chat_messageable_id = TextMessageSub.id  AND
                          ChatMessageSub.chat_messageable_type LIKE '%ChatTextMessage%'"),
                     'field'=>['json_object("id",TextMessageSub.id,"text",TextMessageSub.text,"gifts",NULL,"sticker",NULL) as chat_messageable']
