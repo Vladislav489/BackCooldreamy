@@ -645,7 +645,7 @@ class CoreEngine{
             }
         }
         //собирает условие в одну кучу джойна
-        if (strpos($config['relationship'][1],'.') !== false){
+        if (strpos($config['relationship'][1],'.') === false){
             $return = sprintf("%s.%s  =  %s %s",
                 $this->engine->getTable(), $config['relationship'][1],
                 $joinOn, $joinOnMore
