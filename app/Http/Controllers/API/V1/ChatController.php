@@ -143,15 +143,18 @@ class ChatController extends Controller
             array_push($chat_id,(string)$item['id']);
         $chatNotRead = (new ChatMessageLogic())->getChatNotReadUser($user_id,$chat_id);
         $lastMessage = (new ChatMessageLogic())->getChatLastMessage($user_id,$chat_id);
-        
-
-        dd($lastMessage);
         $temp = [];
         foreach ($chatNotRead as $item) $temp[$item['chat_id']] = $item;
         $chatNotRead = $temp;
         $temp = [];
         foreach ($lastMessage as $item) $temp[$item['chat_id']] = $item;
         $lastMessage = $temp;
+
+        foreach ($chat_list as &$item){
+            $item['unread_messages_count'] = json_decode($chatNotRead[$item['id']],true);
+            $item['last_message'] = json_decode($chatNotRead[$item['id']],true);
+        }
+
 
         return response($chat_list);
     }
