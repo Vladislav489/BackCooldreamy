@@ -94,8 +94,8 @@ class ChatMessageLogic extends CoreEngine {
         $chatMessage = new ChatMessageLogic([
             'chat_id' => $chat_ids,
             'not_sender' => (string)$user_id
-        ],[DB::raw("MAX(id) as id"),'chat_messageable_id','chat_messageable_type']);
-        $lastMessage = $chatMessage->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
+        ],[DB::raw("MAX(id) as id")]);
+        $lastMessage = $chatMessage->setJoin(['JoinGroup'])->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
         return $lastMessage;
     }
 
@@ -202,6 +202,10 @@ class ChatMessageLogic extends CoreEngine {
                     "entity" => new User(),
                     "relationship" => ['id','recepient_id'],
                 ],
+                "JoinGroup" =>[
+                "entity" => DB::raw((new ChatMessage())->getTable()." as ChatMessageSub  ON
+                         chat_messages.id = ChatMessageSub.id  "),
+            ]   ,
                 "OperatorChat" =>[
                     "entity" => DB::raw("(SELECT  Message.chat_id,Message.sender_user_id, model_has_roles.model_id ,model_has_roles.role_id  from `model_has_roles`
                                               left join chat_messages as Message ON
