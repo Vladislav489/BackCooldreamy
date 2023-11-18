@@ -37,6 +37,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -143,7 +144,11 @@ class ChatController extends Controller
             'deleted_first_user' => '0',
             'deleted_second_user' => '0',
             'exist_message' => '1'
-        ],['id',DB::raw('json_object(FirstUser.*) as FirstUser'),DB::raw('json_object(SecondUser.*) as SecondUser') ]);
+        ],
+        ['id',
+            DB::raw('json_object(FirstUser.*) as FirstUser'),
+            DB::raw('json_object(SecondUser.*) as SecondUser')
+        ]);
 
         $chat_list  = $chat->setJoin(["FirstUser","SecondUser"])->offPagination()->getList();
         //unread_messages_count
