@@ -651,6 +651,7 @@ class CoreEngine{
                 $joinOn, $joinOnMore
             );
         } else {
+            dd( $config['relationship'][1]->getValue());
             $return = sprintf("%s  =  %s %s",
                 $config['relationship'][1]->getValue(),
                 $joinOn, $joinOnMore
