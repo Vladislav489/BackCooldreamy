@@ -128,19 +128,47 @@ class ChatController extends Controller
         return $item;
     }
 
-    public function get_my_chat_list(Request $request)
-    {
+
+    public function get_my_chat_list1(Request $request){
         $perPage = 10;
-        if (isset($request->per_page)) {
+        if (isset($request->per_page))
             $perPage = $request->per_page;
-        }
+
 
         $user = Auth::user();
 
         $user_id = $user->id;
-        $favorite_users = FavoriteProfile::where('user_id', $user_id)
-            ->where('disabled', false)
-            ->pluck('favorite_user_id');
+        $favorite_users = FavoriteProfile::where('user_id', $user_id)->where('disabled', false)->pluck('favorite_user_id');
+
+        $chat =  new ChatLogic(['']);
+
+        $chat_list  = $chat->getList();
+        //unread_messages_count
+        //last_message chat_messageable text
+        //last_message is_read_by_recepient
+
+        //sender avatar_url_thumbnail
+        //sender online
+        //sender age
+        //name
+
+
+        return response($chat_list);
+    }
+
+
+
+    public function get_my_chat_list(Request $request){
+        $perPage = 10;
+        if (isset($request->per_page))
+            $perPage = $request->per_page;
+
+
+        $user = Auth::user();
+
+        $user_id = $user->id;
+        $favorite_users = FavoriteProfile::where('user_id', $user_id)->where('disabled', false)->pluck('favorite_user_id');
+
         $chat_list = Chat::query()->withCount(['unreadMessages' => function($query) use ($user) {
             $query->where('recepient_user_id', $user->id);
         }])->where(function ($query) use ($user_id) {
@@ -181,7 +209,8 @@ class ChatController extends Controller
             ->whereHas('chat_messages')
             ->orderBy('updated_at', 'desc');
 
-        if ($search = $request->search) {
+        if (isset($request->search) && !empty($request->search)) {
+            $search = $request->search;
             $chat_list->where(function ($query) use ($user_id, $search) {
                 $query->where(function (Builder $builder) use ($user_id, $search) {
                     $builder->where('first_user_id', $user_id)

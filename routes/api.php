@@ -99,6 +99,9 @@ Route::get('get_countries', [\App\Http\Controllers\API\V1\LocationController::cl
 Route::get('get_states_validate_user', [\App\Http\Controllers\API\V1\LocationController::class, 'get_states_validate_user']);
 Route::get('get_states', [\App\Http\Controllers\API\V1\LocationController::class, 'get_states']);
 
+
+Route::get('chats/get_my_chat_list1', [\App\Http\Controllers\API\V1\ChatController::class, 'get_my_chat_list1'])->middleware('auth:sanctum');
+
 Route::get('chats/get_my_chat_list', [\App\Http\Controllers\API\V1\ChatController::class, 'get_my_chat_list'])->middleware('auth:sanctum');
 Route::get('chats/get_my_favorite_chat_list', [\App\Http\Controllers\API\V1\ChatController::class, 'get_my_favorite_chat_list'])->middleware('auth:sanctum');
 Route::get('chats/get_chat_with_user', [\App\Http\Controllers\API\V1\ChatController::class, 'get_chat_with_user'])->middleware('auth:sanctum');
