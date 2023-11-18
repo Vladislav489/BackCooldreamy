@@ -157,7 +157,7 @@ class ChatController extends Controller
             "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = second_user_id) as second_user')
         ]);
 
-        $chat_list  = $chat->offPagination()->getList();
+        $chat_list  = $chat->offPagination()->getList()['result'];
         //unread_messages_count
         //last_message chat_messageable text
         //last_message is_read_by_recepient
@@ -167,6 +167,7 @@ class ChatController extends Controller
         //sender age
         //name
         foreach ($chat_list as &$item){
+
              $item['first_user'] = json_decode($item['first_user'],true);
              $item['second_user'] = json_decode($item['second_user'],true);
         }
