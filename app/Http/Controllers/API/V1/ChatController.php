@@ -153,7 +153,7 @@ class ChatController extends Controller
             "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = second_user_id) as second_user')
         ]);
 
-        $chat_list = $chat->offPagination()->getList()['result'];
+        $chat_list = $chat->offPagination()->order("desc",'updated_at')->getList()['result'];
         $chat_id = [];
         foreach ($chat_list as $id)
             array_push($chat_id,(string)$id['id']);
