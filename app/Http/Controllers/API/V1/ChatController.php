@@ -145,7 +145,7 @@ class ChatController extends Controller
             'exist_message' => '1'
         ],['id']);
 
-        $chat_list  = $chat->getList();
+        $chat_list  = $chat->offPagination()->getList();
         //unread_messages_count
         //last_message chat_messageable text
         //last_message is_read_by_recepient
