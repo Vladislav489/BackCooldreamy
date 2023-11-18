@@ -162,11 +162,10 @@ class ChatController extends Controller
          'read_by_recepient' =>'0'
         ],
         [DB::raw("COUNT(*) as unread_messages_count")]);
-        $countNotReadMessage =  $chatMessage->setGroupBy(['chat_id'])->offPagination()->getGroup();
+        $countNotReadMessage =  $chatMessage->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
         $temp = [];
-        dd($countNotReadMessage);
         foreach ($countNotReadMessage as $itemMessage)
-            $temp[$itemMessage['chat_id']]  = $itemMessage;
+            $temp[$itemMessage['chat_id']] = $itemMessage;
         $countNotReadMessage = $temp;
         unset($temp);
         //unread_messages_count
