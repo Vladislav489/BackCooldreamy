@@ -35,7 +35,7 @@ class ChatLogic extends CoreEngine {
                 "type" => 'string|array', "action" => 'IN', "concat" => 'AND'],
 
             [   "field" =>'(select IF(`chat_messages`.`id` IS NULL ,0,1) from `chat_messages`
-                   where `chats`.`id` = `chat_messages`.`chat_id` ORDER BY  `chat_messages`.`id`  LIMIT 1)', "params" => 'exist_message',"validate" =>$validate ,
+                   where `chats`.`id` = `chat_messages`.`chat_id` LIMIT 1)', "params" => 'exist_message',"validate" =>$validate ,
                 "type" => 'string', "action" => '=', "concat" => 'AND',
             ],
 
