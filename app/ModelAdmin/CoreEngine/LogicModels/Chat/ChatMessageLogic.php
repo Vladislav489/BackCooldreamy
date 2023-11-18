@@ -94,7 +94,7 @@ class ChatMessageLogic extends CoreEngine {
         $chatMessage = new ChatMessageLogic([
             'chat_id' => $chat_ids,
             'not_sender' => (string)$user_id
-        ],[DB::raw("MAX(".$this->engine->getTable()."id) as id")]);
+        ],[DB::raw("MAX(".$this->engine->getTable().".id) as id")]);
         $lastMessage = $chatMessage->setJoin(
             ['ChatMessageSub','StickerMessageSub',
              'GiftMessageSub','ImageMessageSub',
