@@ -152,7 +152,7 @@ class ChatController extends Controller
             "id",id,
             "avatar_url_thumbnail",avatar_url_thumbnail,
             "online",online,
-            "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = second_user_id) '),
+            "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = first_user_id) '),
             DB::raw('(SELECT  json_object(
             "id",id,
             "avatar_url_thumbnail",avatar_url_thumbnail,
