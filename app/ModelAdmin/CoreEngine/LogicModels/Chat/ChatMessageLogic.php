@@ -82,7 +82,7 @@ class ChatMessageLogic extends CoreEngine {
         $chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;
         $chatMessage = new ChatMessageLogic([
             'chat_id' => $chat_ids,
-            'recepient_user_id' => (string)$user_id,
+            'recepient' => (string)$user_id,
             'read_by_recepient' =>'0'
         ],
             [DB::raw("COUNT(*) as unread_messages_count")]);
@@ -108,7 +108,7 @@ class ChatMessageLogic extends CoreEngine {
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'IN', "concat" => 'AND',
             ],
-            [   "field" =>$tab.'.recepient_user_id', "params" => 'recepient_user_id',
+            [   "field" =>$tab.'.recepient_user_id', "params" => 'recepient',
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'IN', "concat" => 'AND',
             ],
