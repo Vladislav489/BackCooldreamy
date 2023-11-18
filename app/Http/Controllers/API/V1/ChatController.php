@@ -146,7 +146,9 @@ class ChatController extends Controller
             'exist_message' => '1'
         ],
         ['id',
-            DB::raw('json_object("id",FirstUser.id,
+         'first_user_id',
+         'second_user_id',
+           /* DB::raw('json_object("id",FirstUser.id,
             "avatar_url_thumbnail",FirstUser.avatar_url_thumbnail,
             "online",FirstUser.online,
             "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(FirstUser.birthday)), "%Y")+0) as another_user'),
@@ -154,9 +156,10 @@ class ChatController extends Controller
             "id",SecondUser.id,
             "avatar_url_thumbnail",SecondUser.avatar_url_thumbnail,
             "online",SecondUser.online,
-            "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(SecondUser.birthday)), "%Y")+0) as my_self_user')
+            "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(SecondUser.birthday)), "%Y")+0) as my_self_user')*/
+
         ]);
-        
+
         $chat_list  = $chat->setJoin(["FirstUser","SecondUser"])->offPagination()->getList();
         //unread_messages_count
         //last_message chat_messageable text
