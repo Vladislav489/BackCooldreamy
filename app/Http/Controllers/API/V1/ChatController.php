@@ -165,7 +165,7 @@ class ChatController extends Controller
         $countNotReadMessage =  $chatMessage->setGroupBy(['chat_id'])->offPagination()->getGroup();
         $temp = [];
         foreach ($countNotReadMessage as $itemMessage)
-            $temp[$itemMessage['id']]  = $itemMessage;
+            $temp[$itemMessage['chat_id']]  = $itemMessage;
         $countNotReadMessage = $temp;
         unset($temp);
         //unread_messages_count
