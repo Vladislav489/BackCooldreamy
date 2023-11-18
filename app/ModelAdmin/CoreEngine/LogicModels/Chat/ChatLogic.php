@@ -266,7 +266,7 @@ class ChatLogic extends CoreEngine {
 
                 "ChatMessageExist"=>[
                     "entity" => DB::raw("(select * from `chat_messages`
-                   where `chats`.`id` = `chat_messages`.`chat_id` ORDER BY id  LIMIT 1) as ChatMessage
+                   where `chats`.`id` = `chat_messages`.`chat_id` ORDER BY  `chat_messages`.`id`  LIMIT 1) as ChatMessage
                     ON chats.id = ChatMessage.chat_id"),
                     'type'=>'inner'
                 ],
