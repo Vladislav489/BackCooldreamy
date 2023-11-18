@@ -150,7 +150,7 @@ class ChatController extends Controller
         foreach ($lastMessage as $item) $temp[$item['chat_id']] = $item;
         $lastMessage = $temp;
 
-       // dd($chat_list,$chatNotRead,$lastMessage,count($chat_list),count($chatNotRead),count($lastMessage));
+        dd($chat_list,$chatNotRead,$lastMessage,count($chat_list),count($chatNotRead),count($lastMessage));
 
         foreach ($chat_list as &$item){
             $item['unread_messages_count'] =  (isset($chatNotRead[$item['id']]))?$chatNotRead[$item['id']]['unread_messages_count']:0;
