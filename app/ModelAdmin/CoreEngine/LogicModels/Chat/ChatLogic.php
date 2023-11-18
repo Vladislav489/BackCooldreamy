@@ -20,6 +20,55 @@ class ChatLogic extends CoreEngine {
         parent::__construct($params,$select);
     }
 
+
+
+    public function getChatNotReadUser($user_id,$chat_ids){
+        $chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;
+        $chatMessage = new ChatMessageLogic([
+            'chat_id' => $chat_ids,
+            'recepient_user_id' => $user_id,
+            'read_by_recepient' =>'0'
+        ],
+        [DB::raw("COUNT(*) as unread_messages_count")]);
+        $countNotReadMessage =  $chatMessage->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
+        return $countNotReadMessage;
+    }
+
+    public function getListChatUser($user_id){
+        $chat = new ChatLogic(['ancet' => (string)$user_id, 'deleted_first_user' => '0', 'deleted_second_user' => '0', 'exist_message' => '1'],
+            ['id', 'is_answered_by_operator',
+                DB::raw('(SELECT  json_object("id",id,"name",name,"avatar_url_thumbnail",avatar_url_thumbnail,"online",online,
+                "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = first_user_id) as first_user'),
+                DB::raw('(SELECT  json_object("id",id,"name",name,"avatar_url_thumbnail",avatar_url_thumbnail,"online",online,
+                "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = second_user_id) as second_user')
+            ]);
+        return $chat->offPagination()->order("desc", 'updated_at')->getList()['result'];
+    }
+
+    public function getListChatUserFront($user_id){
+        $chat_list = $this->getListChatUser($user_id);
+        foreach ($chat_list as $id)
+            array_push($chat_id,(string)$id['id']);
+            $this->getChatNotReadUser($user_id,$chat_id);
+        foreach ($chat_list as &$item) {
+            $item['unread_messages_count'] = (isset($countNotReadMessage[$item['id']]))?$countNotReadMessage[$item['id']]['unread_messages_count']:0;
+            $item['first_user'] = json_decode($item['first_user'],true);
+            $item['second_user'] = json_decode($item['second_user'],true);
+            if($item['first_user']['id'] ==  $user_id){
+                $item['my_self_user'] = $item['first_user'];
+                unset($item['first_user']);
+                $item['another_user'] = $item['second_user'];
+                unset($item['first_user']);
+            }else if($item['second_user']['id'] ==  $user_id){
+                $item['my_self_user'] = $item['second_user'];
+                unset($item['second_user']);
+                $item['another_user'] = $item['first_user'];
+                unset($item['first_user']);
+            }
+        }
+        return $chat_list;
+    }
+
     protected function defaultSelect(){
         $tab = $this->engine->tableName();
         $this->default = [];
@@ -73,7 +122,6 @@ class ChatLogic extends CoreEngine {
 
         ];
     }
-
     private function filteUser(){
         $tab = $this->engine->getTable();
         $validate = ["string" => true, "empty" => true];
@@ -99,7 +147,6 @@ class ChatLogic extends CoreEngine {
             ],
 
 
-
             [   "field" =>"(".$tab.'.first_user_id  IN (?)',
                 "params" => 'ancet',
                 "validate" => ["string" => true, "empty" => true],
@@ -110,7 +157,6 @@ class ChatLogic extends CoreEngine {
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'RAW', "concat" => 'OR',
             ],
-
 
 
             [   "field" =>"((".$tab.".first_user_id IN (~?1~)  AND ".$tab.".second_user_id IN (~?2~))",
@@ -124,11 +170,6 @@ class ChatLogic extends CoreEngine {
                 "type" => 'array', "action" => 'RAW', "concat" => 'OR',
             ],
 
-
-
-
-
-
             [   "field" =>"((SELECT COUNT(*) FROM ".(new User\Payment())->getTable()."
                     WHERE user_id = ".$tab.".first_user_id AND status = 'success' )  >= ?",
                 "params" => 'payed_more',
@@ -141,12 +182,6 @@ class ChatLogic extends CoreEngine {
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'RAW', "concat" => 'OR',
             ],
-
-
-
-
-
-
 
             [   "field" =>"((SELECT COUNT(*) FROM ".(new Subscriptions())->getTable()."
                     WHERE user_id = ".$tab.".first_user_id AND  period_start <= '".now()."' AND period_end >= '".now()."')  >= ?",
@@ -191,7 +226,6 @@ class ChatLogic extends CoreEngine {
 
         ];
     }
-
     protected function getFilter(){
         $tab = $this->engine->getTable();
         $tabUser = ( new User())->getTable();

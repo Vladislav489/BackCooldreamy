@@ -137,58 +137,7 @@ class ChatController extends Controller
             $perPage = $request->per_page;
         $user_id = Auth::id();
         $favorite_users = FavoriteProfile::where('user_id', $user_id)->where('disabled', false)->pluck('favorite_user_id');
-
-        $chat =  new ChatLogic(['ancet' => (string)$user_id, 'deleted_first_user' => '0', 'deleted_second_user' => '0', 'exist_message' => '1'],
-        ['id',
-         'is_answered_by_operator',
-            DB::raw('(SELECT  json_object(
-            "id",id,
-            "name",name,
-            "avatar_url_thumbnail",avatar_url_thumbnail,
-            "online",online,
-            "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = first_user_id) as first_user') ,
-            DB::raw('(SELECT  json_object(
-            "id",id,
-            "name",name,
-            "avatar_url_thumbnail",avatar_url_thumbnail,
-            "online",online,
-            "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = second_user_id) as second_user')
-        ]);
-
-        $chat_list = $chat->offPagination()->order("desc",'updated_at')->getList()['result'];
-        $chat_id = [];
-        foreach ($chat_list as $id)
-            array_push($chat_id,(string)$id['id']);
-        $chatMessage = new ChatMessageLogic([
-         'chat_id' => $chat_id,
-         'recepient_user_id' => $user_id,
-         'read_by_recepient' =>'0'
-        ],
-        [DB::raw("COUNT(*) as unread_messages_count")]);
-        $countNotReadMessage =  $chatMessage->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
-        $temp = [];
-        foreach ($countNotReadMessage as $itemMessage)
-            $temp[$itemMessage['chat_id']] = $itemMessage;
-        $countNotReadMessage = $temp;
-        unset($temp);
-        //last_message chat_messageable text
-        //last_message is_read_by_recepient
-        foreach ($chat_list as &$item) {
-             $item['unread_messages_count'] = (isset($countNotReadMessage[$item['id']]))?$countNotReadMessage[$item['id']]['unread_messages_count']:0;
-             $item['first_user'] = json_decode($item['first_user'],true);
-             $item['second_user'] = json_decode($item['second_user'],true);
-             if($item['first_user']['id'] ==  $user_id){
-                 $item['my_self_user'] = $item['first_user'];
-                 unset($item['first_user']);
-                 $item['another_user'] = $item['second_user'];
-                 unset($item['first_user']);
-             }else if($item['second_user']['id'] ==  $user_id){
-                 $item['my_self_user'] = $item['second_user'];
-                 unset($item['second_user']);
-                 $item['another_user'] = $item['first_user'];
-                 unset($item['first_user']);
-             }
-        }
+        $chat_list = (new ChatLogic())->getListChatUserFront($user_id);
 
         return response($chat_list);
     }
