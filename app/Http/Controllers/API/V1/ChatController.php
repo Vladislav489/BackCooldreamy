@@ -134,20 +134,14 @@ class ChatController extends Controller
         $perPage = 10;
         if (isset($request->per_page))
             $perPage = $request->per_page;
-
-
         $user_id = Auth::id();
         $favorite_users = FavoriteProfile::where('user_id', $user_id)->where('disabled', false)->pluck('favorite_user_id');
 
-        $chat =  new ChatLogic([
-            'ancet' => (string)$user_id,
-            'deleted_first_user' => '0',
-            'deleted_second_user' => '0',
-            'exist_message' => '1'
-        ],
+        $chat =  new ChatLogic(['ancet' => (string)$user_id, 'deleted_first_user' => '0', 'deleted_second_user' => '0', 'exist_message' => '1'],
         ['id',
-            DB::raw('(SELECT  json_object("id",id,"avatar_url_thumbnail",avatar_url_thumbnail,
-            "online",online,
+            DB::raw('(SELECT  json_object(
+            "id",id,
+            "avatar_url_thumbnail",avatar_url_thumbnail,
             "online",online,
             "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = first_user_id) as first_user') ,
             DB::raw('(SELECT  json_object(
@@ -167,9 +161,19 @@ class ChatController extends Controller
         //sender age
         //name
         foreach ($chat_list as &$item){
-
              $item['first_user'] = json_decode($item['first_user'],true);
              $item['second_user'] = json_decode($item['second_user'],true);
+             if($item['first_user']['id'] ==  $user_id){
+                 $item['my_self_user'] = $item['first_user'];
+                 unset($item['first_user']);
+                 $item['another_user'] = $item['second_user'];
+                 unset($item['first_user']);
+             }else if($item['second_user']['id'] ==  $user_id){
+                 $item['my_self_user'] = $item['second_user'];
+                 unset($item['second_user']);
+                 $item['another_user'] = $item['first_user'];
+                 unset($item['first_user']);   
+             }
         }
 
         return response($chat_list);
