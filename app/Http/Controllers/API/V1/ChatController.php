@@ -177,7 +177,7 @@ class ChatController extends Controller
         //sender age
         //name
         foreach ($chat_list as &$item) {
-             $item['unread_messages_count']= $countNotReadMessage[$item['id']]['unread_messages_count'];
+             $item['unread_messages_count'] = (isset($countNotReadMessage[$item['id']]))?$countNotReadMessage[$item['id']]['unread_messages_count']:0;
              $item['first_user'] = json_decode($item['first_user'],true);
              $item['second_user'] = json_decode($item['second_user'],true);
              if($item['first_user']['id'] ==  $user_id){
