@@ -138,9 +138,13 @@ class ChatController extends Controller
         $user_id = Auth::id();
         $favorite_users = FavoriteProfile::where('user_id', $user_id)->where('disabled', false)->pluck('favorite_user_id');
 
-        $chat =  new ChatLogic(['ancet'=>(string)$user_id],['id']);
+        $chat =  new ChatLogic([
+            'ancet' => (string)$user_id,
+            'deleted_first_user' => '0', 
+            'deleted_second_user' => '0'
+        ],['id']);
 
-        $chat_list  = count($chat->offPagination()->getList()['result']);
+        $chat_list  = $chat->offPagination()->getList()['result'];
         //unread_messages_count
         //last_message chat_messageable text
         //last_message is_read_by_recepient
