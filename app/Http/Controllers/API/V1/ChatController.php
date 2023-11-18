@@ -146,7 +146,6 @@ class ChatController extends Controller
             'exist_message' => '1'
         ],
         ['id',
-         'favorite',
             DB::raw('json_object("id",FirstUser.id,
             "avatar_url_thumbnail",FirstUser.avatar_url_thumbnail,
             "online",FirstUser.online,
