@@ -198,11 +198,9 @@ class AuthController extends Controller
             if(isset($dataUser['about']))
                 $dataUser['about_self'] = $dataUser['about'];
 
-            if(strpos($dataUser['email'],'@gmail.com')!==false) {
-                $dataUser['is_email_verified'] = 0;
-            }else{
-                $dataUser['is_email_verified'] = 1;
-            }
+
+            $dataUser['is_email_verified'] = 1;
+
 
             $user = User::registrationClient($dataUser);
             if(isset($dataUser['file'])) {

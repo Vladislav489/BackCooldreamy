@@ -148,16 +148,15 @@ class ChatController extends Controller
         ['id',
          'first_user_id',
          'second_user_id',
-           /* DB::raw('json_object("id",FirstUser.id,
+            DB::raw('json_object("id",FirstUser.id,
             "avatar_url_thumbnail",FirstUser.avatar_url_thumbnail,
             "online",FirstUser.online,
             "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(FirstUser.birthday)), "%Y")+0) as another_user'),
-            DB::raw('json_object(
+            DB::raw('(SELECT  json_object(
             "id",SecondUser.id,
             "avatar_url_thumbnail",SecondUser.avatar_url_thumbnail,
             "online",SecondUser.online,
-            "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(SecondUser.birthday)), "%Y")+0) as my_self_user')*/
-
+            "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(SecondUser.birthday)), "%Y")+0) FROM users WHERE  users.id) ')
         ]);
 
         $chat_list  = $chat->offPagination()->getList();
