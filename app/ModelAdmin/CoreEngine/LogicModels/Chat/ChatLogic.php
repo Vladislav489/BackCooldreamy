@@ -46,6 +46,7 @@ class ChatLogic extends CoreEngine {
     }
 
     public function getListChatUserFront($user_id){
+        $chat_id = [];
         $chat_list = $this->getListChatUser($user_id);
         foreach ($chat_list as $id)
             array_push($chat_id,(string)$id['id']);
