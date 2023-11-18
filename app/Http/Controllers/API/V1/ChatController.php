@@ -137,7 +137,19 @@ class ChatController extends Controller
             $perPage = $request->per_page;
         $user_id = Auth::id();
         $favorite_users = FavoriteProfile::where('user_id', $user_id)->where('disabled', false)->pluck('favorite_user_id');
-        $chat_list = (new ChatLogic())->getListChatUserFront($user_id);
+        $chat_list = (new ChatLogic())->getListChatUser($user_id);
+        $chat_id = [];
+        foreach ($chat_list as $item)
+            array_push($chat_id,$item);
+        $chatNotRead = (new ChatMessageLogic())->getChatNotReadUser($user_id,$chat_id);
+        $lastMessage = (new ChatMessageLogic())->getChatLastMessage($user_id,$chat_id);
+        dd($lastMessage);
+        $temp = [];
+        foreach ($chatNotRead as $item) $temp[$item['chat_id']] = $item;
+        $chatNotRead = $temp;
+        $temp = [];
+        foreach ($lastMessage as $item) $temp[$item['chat_id']] = $item;
+        $lastMessage = $temp;
 
         return response($chat_list);
     }

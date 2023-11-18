@@ -21,19 +21,6 @@ class ChatLogic extends CoreEngine {
     }
 
 
-
-    public function getChatNotReadUser($user_id,$chat_ids){
-        $chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;
-        $chatMessage = new ChatMessageLogic([
-            'chat_id' => $chat_ids,
-            'recepient_user_id' => $user_id,
-            'read_by_recepient' =>'0'
-        ],
-        [DB::raw("COUNT(*) as unread_messages_count")]);
-        $countNotReadMessage =  $chatMessage->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
-        return $countNotReadMessage;
-    }
-
     public function getListChatUser($user_id){
         $chat = new ChatLogic(['ancet' => (string)$user_id, 'deleted_first_user' => '0', 'deleted_second_user' => '0', 'exist_message' => '1'],
             ['id', 'is_answered_by_operator',
@@ -42,15 +29,8 @@ class ChatLogic extends CoreEngine {
                 DB::raw('(SELECT  json_object("id",id,"name",name,"avatar_url_thumbnail",avatar_url_thumbnail,"online",online,
                 "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = second_user_id) as second_user')
             ]);
-        return $chat->offPagination()->order("desc", 'updated_at')->getList()['result'];
-    }
 
-    public function getListChatUserFront($user_id){
-        $chat_id = [];
-        $chat_list = $this->getListChatUser($user_id);
-        foreach ($chat_list as $id)
-            array_push($chat_id,(string)$id['id']);
-            $this->getChatNotReadUser($user_id,$chat_id);
+        $chat_list = $chat->offPagination()->order("desc", 'updated_at')->getList()['result'];
         foreach ($chat_list as &$item) {
             $item['unread_messages_count'] = (isset($countNotReadMessage[$item['id']]))?$countNotReadMessage[$item['id']]['unread_messages_count']:0;
             $item['first_user'] = json_decode($item['first_user'],true);
@@ -69,6 +49,9 @@ class ChatLogic extends CoreEngine {
         }
         return $chat_list;
     }
+
+
+
 
     protected function defaultSelect(){
         $tab = $this->engine->tableName();

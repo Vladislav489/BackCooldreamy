@@ -26,47 +26,38 @@ class ChatMessageLogic extends CoreEngine {
         return $this->default;
     }
 
-
     public function getAverageTimeFirstMessage(){
         $this->setJoin(['OperatorChat','OperatorUser']);
         $this->setSelect([
-            DB::raw("sec_to_time(CEILING(SUM(
-CEILING(
-(SELECT UNIX_TIMESTAMP(created_at) FROM chat_messages AS tt WHERE tt.chat_id = chat_messages.chat_id LIMIT 1,1 ) -(SELECT UNIX_TIMESTAMP(created_at) FROM chat_messages AS tt WHERE tt.chat_id = chat_messages.chat_id LIMIT 0,1)))/SUM(1))) AS time_first_message"),
-
+            DB::raw("sec_to_time(CEILING(SUM(CEILING((SELECT UNIX_TIMESTAMP(created_at) FROM chat_messages AS tt WHERE tt.chat_id = chat_messages.chat_id LIMIT 1,1 ) -(SELECT UNIX_TIMESTAMP(created_at) FROM chat_messages AS tt WHERE tt.chat_id = chat_messages.chat_id LIMIT 0,1)))/SUM(1))) AS time_first_message"),
         ]);
         return $this->offPagination()->getGroup();
     }
 
-
-   public function getAverageTimeFirstMessageOperator(){
+    public function getAverageTimeFirstMessageOperator(){
        $this->setJoin(['OperatorChat','OperatorUser']);
        $this->setGroupBy(['model_id']);
        $this->setSelect([
-           DB::raw("DISTINCT
-sec_to_time(CEILING(( (SELECT UNIX_TIMESTAMP(created_at) FROM chat_messages AS tt WHERE tt.chat_id = chat_messages.chat_id LIMIT 1,1 ) -
-(SELECT UNIX_TIMESTAMP(created_at) FROM chat_messages AS tt WHERE tt.chat_id = chat_messages.chat_id LIMIT 0,1 )) ) ) AS time_first_message"),
+           DB::raw("DISTINCT sec_to_time(CEILING(( (SELECT UNIX_TIMESTAMP(created_at) FROM chat_messages AS tt WHERE tt.chat_id = chat_messages.chat_id LIMIT 1,1 ) -
+                    (SELECT UNIX_TIMESTAMP(created_at) FROM chat_messages AS tt WHERE tt.chat_id = chat_messages.chat_id LIMIT 0,1 )) ) ) AS time_first_message"),
            DB::raw("OperatorChat.moAVGdel_id as operator_id"),
            DB::raw("users.name as operator_name"),
        ]);
        return $this->offPagination()->OnDebug()->getGroup();
    }
 
-
-   public function getAverageCountSendManMessage(){
+    public function getAverageCountSendManMessage(){
        $this->setJoin(['OUserSender']);
        $this->getTotal();
    }
 
-   public function getAverageTimeMessage(){
+    public function getAverageTimeMessage(){
         $this->setJoin(['OperatorChat','OperatorUser']);
         $this->setSelect([
             DB::raw("DISTINCT IFNULL(sec_to_time(
                 (SELECT sec_to_time(AVG(UNIX_TIMESTAMP(created_at))) FROM chat_messages AS tt WHERE   tt.chat_id = chat_messages.chat_id) -
                 (SELECT  UNIX_TIMESTAMP(created_at) FROM chat_messages AS tt WHERE   tt.chat_id = chat_messages.chat_id
-               )
-                                         ),
-               'нет Ответа') AS time_first_message"),
+               )'нет Ответа') AS time_first_message"),
         ]);
         return $this->offPagination()->getGroup();
     }
@@ -87,6 +78,29 @@ sec_to_time(CEILING(( (SELECT UNIX_TIMESTAMP(created_at) FROM chat_messages AS t
         return $this->offPagination()->getList();
     }
 
+    public function getChatNotReadUser($user_id,$chat_ids){
+        $chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;
+        $chatMessage = new ChatMessageLogic([
+            'chat_id' => $chat_ids,
+            'recepient_user_id' => $user_id,
+            'read_by_recepient' =>'0'
+        ],
+            [DB::raw("COUNT(*) as unread_messages_count")]);
+        $countNotReadMessage =  $chatMessage->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
+        return $countNotReadMessage;
+    }
+    public function  getChatLastMessage($user_id,$chat_ids){
+        $chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;
+        $chatMessage = new ChatMessageLogic([
+            'chat_id' => $chat_ids,
+            'recepient_user_id' => $user_id,
+            'read_by_recepient' =>'0'
+        ],
+            [DB::raw("COUNT(*) as unread_messages_count")]);
+        $lastMessage = $chatMessage->order("desc",'created_at')->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
+        return $lastMessage;
+    }
+
 
     protected function getFilter(){
         $tab = $this->engine->getTable();
@@ -96,7 +110,7 @@ sec_to_time(CEILING(( (SELECT UNIX_TIMESTAMP(created_at) FROM chat_messages AS t
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'IN', "concat" => 'AND',
             ],
-            [   "field" =>$tab.'.sender_user_id', "params" => 'sender',
+            [   "field" =>$tab.'.recepient_user_id', "params" => 'recepient_user_id',
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'IN', "concat" => 'AND',
             ],
