@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class ChatLogic extends CoreEngine {
     public function __construct($params = [],$select = ["*"],$callback = null){
-        $this->engine = new Chat();
+        $this->engine = new Chat\Chat();
         $this->query = $this->engine->newQuery();
         $this->getFilter();
         $this->compileGroupParams();
