@@ -161,7 +161,7 @@ class ChatController extends Controller
          'chat_id' => $chat_id,
          'read_by_recepient' =>'0'
         ],
-        [DB::raw("COUNT(*) as unread_messages_count"),'chat_id']);
+        [DB::raw("COUNT(*) as unread_messages_count")]);
         $countNotReadMessage =  $chatMessage->setGroupBy(['chat_id'])->offPagination()->getGroup();
         dd($countNotReadMessage);
         //unread_messages_count
