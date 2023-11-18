@@ -161,6 +161,7 @@ class ChatController extends Controller
             array_push($chat_id,(string)$id['id']);
         $chatMessage = new ChatMessageLogic([
          'chat_id' => $chat_id,
+         'recepient_user_id' => $user_id,
          'read_by_recepient' =>'0'
         ],
         [DB::raw("COUNT(*) as unread_messages_count")]);
@@ -170,14 +171,8 @@ class ChatController extends Controller
             $temp[$itemMessage['chat_id']] = $itemMessage;
         $countNotReadMessage = $temp;
         unset($temp);
-        //unread_messages_count
         //last_message chat_messageable text
         //last_message is_read_by_recepient
-
-        //sender avatar_url_thumbnail
-        //sender online
-        //sender age
-        //name
         foreach ($chat_list as &$item) {
              $item['unread_messages_count'] = (isset($countNotReadMessage[$item['id']]))?$countNotReadMessage[$item['id']]['unread_messages_count']:0;
              $item['first_user'] = json_decode($item['first_user'],true);
