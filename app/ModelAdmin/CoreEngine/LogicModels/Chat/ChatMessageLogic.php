@@ -270,7 +270,7 @@ class ChatMessageLogic extends CoreEngine {
                 ],
                 "GiftMessageSub" => [
                     "entity" => new ChatGiftMessage(),
-                    "relationship" => ['id','.ChatMessageSub.chat_messageable_id'],
+                    "relationship" => ['id','ChatMessageSub.chat_messageable_id'],
                     'field'=>['id as message_body']
                 ],
                 "StickerMessageSub" => [
