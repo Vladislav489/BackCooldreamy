@@ -136,12 +136,9 @@ class ChatController extends Controller
 
 
         $user = Auth::user();
+        $favorite_users = FavoriteProfile::where('user_id', $user->id)->where('disabled', false)->pluck('favorite_user_id');
 
-        $user_id = $user->id;
-        $favorite_users = FavoriteProfile::where('user_id', $user_id)->where('disabled', false)->pluck('favorite_user_id');
-
-        $chat =  new ChatLogic(['']);
-
+        $chat =  new ChatLogic(['chat_by_first_sec_user'=>(string)$user->id],['id']);
         $chat_list  = $chat->getList();
         //unread_messages_count
         //last_message chat_messageable text
