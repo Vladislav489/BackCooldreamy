@@ -551,7 +551,7 @@ class CoreEngine{
                     $this->query->groupBy(DB::raw("DATE(" . $this->engine->getTable() . '.' . $field . ")"));
                     $this->query->addSelect(DB::raw("DATE(" . $this->engine->getTable() . '.' . $field . ")"));
                 } else {
-                    if ($field::class == 'Illuminate\Database\Query\Expression') {
+                    if (is_object($field) && $field::class == 'Illuminate\Database\Query\Expression') {
                         $this->query->groupBy($field);
                         if (!empty($field)) {
                             $this->query->addSelect(DB::raw($field));
