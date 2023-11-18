@@ -95,7 +95,7 @@ class ChatMessageLogic extends CoreEngine {
             'chat_id' => $chat_ids,
             'not_sender' => (string)$user_id
         ],[DB::raw("MAX(id) as id")]);
-        $lastMessage = $chatMessage->setJoin(['JoinGroup'])->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
+        $lastMessage = $chatMessage->setJoin(['ChatMessageSub',])->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
         return $lastMessage;
     }
 
@@ -202,7 +202,7 @@ class ChatMessageLogic extends CoreEngine {
                     "entity" => new User(),
                     "relationship" => ['id','recepient_id'],
                 ],
-                "JoinGroup" =>[
+                "ChatMessageSub" =>[
                 "entity" => DB::raw((new ChatMessage())->getTable()." as ChatMessageSub  ON
                          chat_messages.id = ChatMessageSub.id  "),
             ]   ,
@@ -248,6 +248,31 @@ class ChatMessageLogic extends CoreEngine {
                     "entity" => new ChatStickerMessage(),
                     "relationship" => ['id','recepient_id'],
                     'field'=>['id as  message_body']
+                ],
+                "TextMessageSub" => [
+                    "entity" => new ChatTextMessage(),
+                    "relationship" => ['id','ChatMessageSub.chat_messageable_id'],
+                    'field'=>['text as message_body']
+                ],
+                "WinkMessageSub" => [
+                    "entity" => new ChatWinkMessage(),
+                    "relationship" => ['id','ChatMessageSub.chat_messageable_id'],
+                    'field'=>['from_user_id','to_user_id']
+                ],
+                "ImageMessageSub" => [
+                    "entity" => new ChatImageMessage(),
+                    "relationship" => ['id','ChatMessageSub.chat_messageable_id'],
+                    'field'=>['thumbnail_url as message_body','image_url as message_body']
+                ],
+                "GiftMessageSub" => [
+                    "entity" => new ChatGiftMessage(),
+                    "relationship" => ['id','.ChatMessageSub.chat_messageable_id'],
+                    'field'=>['id as message_body']
+                ],
+                "StickerMessageSub" => [
+                    "entity" => new ChatStickerMessage(),
+                    "relationship" => ['id','ChatMessageSub.chat_messageable_id'],
+                    'field'=>['sticker_id as  message_body']
                 ],
             ]
         ];
