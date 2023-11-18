@@ -142,8 +142,7 @@ class ChatController extends Controller
             'ancet' => (string)$user_id,
             'deleted_first_user' => '0',
             'deleted_second_user' => '0',
-            'ignored_first_user' => '0',
-            'ignored_second_user'=> '0'
+            'exist_message' => '1'
         ],['id']);
 
         $chat_list  = $chat->getList();
@@ -183,8 +182,7 @@ class ChatController extends Controller
                 $builder->where('second_user_id', $user_id)
                     ->where('deleted_by_second_user', false);
             });
-        })
-            ->when($request->input('filter'), function ($query) use ($user, $request, $favorite_users) {
+        })->when($request->input('filter'), function ($query) use ($user, $request, $favorite_users) {
                 if ($request->filter == 'unread') {
                     $query->whereHas('chat_messages', function ($q) use ($user) {
                         $q->where('recepient_user_id', $user->id)
@@ -212,6 +210,10 @@ class ChatController extends Controller
             })
             ->whereHas('chat_messages')
             ->orderBy('updated_at', 'desc');
+
+
+
+
 
         if (isset($request->search) && !empty($request->search)) {
             $search = $request->search;
