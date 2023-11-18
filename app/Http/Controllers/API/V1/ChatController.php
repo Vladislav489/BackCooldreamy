@@ -166,7 +166,10 @@ class ChatController extends Controller
         //sender online
         //sender age
         //name
-
+        foreach ($chat_list as &$item){
+             $item['first_user'] = json_decode($item['first_user'],true);
+             $item['second_user'] = json_decode($item['second_user'],true);
+        }
 
         return response($chat_list);
     }
