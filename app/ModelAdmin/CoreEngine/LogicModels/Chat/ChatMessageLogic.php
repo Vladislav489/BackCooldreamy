@@ -108,7 +108,7 @@ class ChatMessageLogic extends CoreEngine {
             ->setJoin(['TextMessageSub','WinkMessageSub','ImageMessageSub','GiftMessageSub','StickerMessageSub'])
             ->getList();
         if(isset($lastMessage['result'])){
-            foreach ($lastMessage as &$item){
+            foreach ($lastMessage as $key => $item){
                 foreach ($chechData as $field){
                     if(isset($item['chat_messageable_'.$field]) && !is_null($item['chat_messageable_'.$field])) {
                         $item['chat_messageable'] = json_decode($item['chat_messageable_' . $field], true);
@@ -117,6 +117,7 @@ class ChatMessageLogic extends CoreEngine {
                         unset($item['chat_messageable_' . $field]);
                     }
                 }
+                $lastMessage[$key] = $item;
             }
             return $lastMessage;
         }
