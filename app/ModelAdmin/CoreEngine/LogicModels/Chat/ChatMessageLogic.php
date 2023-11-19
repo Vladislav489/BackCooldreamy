@@ -91,14 +91,14 @@ class ChatMessageLogic extends CoreEngine {
     }
     public function  getChatLastMessage($user_id,$chat_ids){
         $chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;
-        $chatMessage = new ChatMessageLogic([
+        $chatMessageJoin = new ChatMessageLogic([
             'chat_id' => $chat_ids,
-        ],[ DB::raw("MAX(chat_messages.id)"),
-            DB::raw("MAX(chat_messages.chat_messageable_id)"),
-          ]);
-        $lastMessage = $chatMessage->setGroupBy(['chat_id'])->getSqlToStr();
+        ],[ DB::raw("MAX(chat_messages.id) as id")]);
+        $ids = $chatMessageJoin->setGroupBy(['chat_id'])->getQuery()->pluck('id')->toArray();
 
-            dd($lastMessage);
+        dd($ids);
+     //   ChatMessage::query()->from(DB::raw('('.$joinTable.') as lastMessage'))->
+
         //foreach ($lastMessage as &$item){
          //   $item['chat_messageable'] = json_decode($item['chat_messageable'],true);
        // }
