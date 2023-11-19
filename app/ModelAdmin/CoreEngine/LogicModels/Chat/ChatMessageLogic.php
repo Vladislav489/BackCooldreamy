@@ -1,6 +1,7 @@
 <?php
 namespace App\ModelAdmin\CoreEngine\LogicModels\Chat;
 use App\ModelAdmin\CoreEngine\Core\CoreEngine;
+use App\Models\Chat\Chat;
 use App\Models\ChatGiftMessage;
 use App\Models\ChatImageMessage;
 use App\Models\ChatMessage;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class ChatMessageLogic extends CoreEngine {
     public function __construct($params = [],$select = ["*"],$callback = null){
-        $this->engine = new ChatMessage();
+        $this->engine = new \App\Models\Chat\ChatMessage();
         $this->query = $this->engine->newQuery();
         $this->getFilter();
         $this->compileGroupParams();
