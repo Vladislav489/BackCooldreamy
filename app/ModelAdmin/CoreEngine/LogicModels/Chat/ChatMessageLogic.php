@@ -275,7 +275,7 @@ class ChatMessageLogic extends CoreEngine {
                     "entity" =>DB::raw((new ChatWinkMessage())->getTable()." as WinkMessageSub  ON
                          (chat_messageable_id = WinkMessageSub.id  AND
                          chat_messageable_type LIKE '%ChatWinkMessage%')"),
-                    'field'=>['IF(WinkMessageSub.id,NULL,json_object("id",WinkMessageSub.id,"from_user_id",WinkMessageSub.from_user_id,
+                    'field'=>['IF(WinkMessageSub.id IS NULL,NULL,json_object("id",WinkMessageSub.id,"from_user_id",WinkMessageSub.from_user_id,
                     "to_user_id ",WinkMessageSub.to_user_id,"gifts",NULL,"sticker",NULL))s as chat_messageable_wink']
                 ],
                 "ImageMessageSub" => [
