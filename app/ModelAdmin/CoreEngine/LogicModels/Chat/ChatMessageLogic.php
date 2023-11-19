@@ -269,34 +269,34 @@ class ChatMessageLogic extends CoreEngine {
                     "entity" =>DB::raw((new ChatTextMessage())->getTable()." as TextMessageSub  ON
                          (chat_messageable_id = TextMessageSub.id  AND
                          chat_messageable_type LIKE '%ChatTextMessage%')"),
-                    'field'=>['json_object("id",TextMessageSub.id,"text",TextMessageSub.text,"gifts",NULL,"sticker",NULL) as chat_messageable']
+                    'field'=>['json_object("id",TextMessageSub.id,"text",TextMessageSub.text,"gifts",NULL,"sticker",NULL) as chat_messageable_text']
                 ],
                 "WinkMessageSub" => [
                     "entity" =>DB::raw((new ChatWinkMessage())->getTable()." as WinkMessageSub  ON
                          (chat_messageable_id = WinkMessageSub.id  AND
                          chat_messageable_type LIKE '%ChatWinkMessage%')"),
                     'field'=>['json_object("id",WinkMessageSub.id,"from_user_id",WinkMessageSub.from_user_id,
-                    "to_user_id ",WinkMessageSub.to_user_id,"gifts",NULL,"sticker",NULL) as chat_messageable']
+                    "to_user_id ",WinkMessageSub.to_user_id,"gifts",NULL,"sticker",NULL) as chat_messageable_wink']
                 ],
                 "ImageMessageSub" => [
                     "entity" =>DB::raw((new ChatImageMessage())->getTable()." as ImageMessageSub  ON
                          (chat_messageable_id = ImageMessageSub.id  AND
                          chat_messageable_type LIKE '%ChatImageMessage%')"),
                     'field'=>['json_object("id",ImageMessageSub.id,"thumbnail_url",
-                    ImageMessageSub.thumbnail_url,"image_url",ImageMessageSub.image_url,"gifts",NULL,"sticker",NULL) as chat_messageable']
+                    ImageMessageSub.thumbnail_url,"image_url",ImageMessageSub.image_url,"gifts",NULL,"sticker",NULL) as chat_messageable_image']
                 ],
                 "GiftMessageSub" => [
                     "entity" =>DB::raw((new ChatGiftMessage())->getTable()." as GiftMessageSub ON
                          (chat_messageable_id = GiftMessageSub.id  AND
                          chat_messageable_type LIKE '%ChatGiftMessage%')"),
-                    'field'=>['json_object("id",GiftMessageSub.id,"gifts",NULL,"sticker",NULL) as chat_messageable']
+                    'field'=>['json_object("id",GiftMessageSub.id,"gifts",NULL,"sticker",NULL) as chat_messageable_gift']
                 ],
                 "StickerMessageSub" => [
                     "entity" => new ChatStickerMessage(),
                     "entity" =>DB::raw((new ChatStickerMessage())->getTable()." as StickerMessageSub ON
                          (chat_messageable_id = StickerMessageSub.id  AND
                          chat_messageable_type LIKE '%ChatStickerMessage%')"),
-                    'field'=>['json_object("id",StickerMessageSub.id,"gifts",NULL,"sticker",NULL) as chat_messageable']
+                    'field'=>['json_object("id",StickerMessageSub.id,"gifts",NULL,"sticker",NULL) as chat_messageable_sticker']
                 ],
             ]
         ];
