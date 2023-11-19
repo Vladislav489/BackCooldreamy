@@ -113,6 +113,10 @@ class ChatMessageLogic extends CoreEngine {
         $tab = $this->engine->getTable();
         $tabUser = (new User())->getTable();
         $this->filter = [
+            [   "field" =>$tab.'.id', "params" => 'id',
+                "validate" => ["string" => true, "empty" => true],
+                "type" => 'string|array', "action" => 'IN', "concat" => 'AND',
+            ],
             [   "field" =>$tab.'.sender_user_id', "params" => 'sender',
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'IN', "concat" => 'AND',
