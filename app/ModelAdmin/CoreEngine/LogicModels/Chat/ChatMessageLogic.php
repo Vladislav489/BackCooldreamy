@@ -93,7 +93,7 @@ class ChatMessageLogic extends CoreEngine {
         $chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;
         $chatMessage = new ChatMessageLogic([
             'chat_id' => $chat_ids,
-        ],[ DB::raw("id"),
+        ],[ "id",
             DB::raw("MAX(ChatMessageSub.chat_messageable_id) as chat_messageable_id"),
             DB::raw("ChatMessageSub.chat_messageable_type"),
             DB::raw("ChatMessageSub.disabled"),
