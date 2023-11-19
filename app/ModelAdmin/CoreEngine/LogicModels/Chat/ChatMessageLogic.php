@@ -95,10 +95,13 @@ class ChatMessageLogic extends CoreEngine {
             'chat_id' => $chat_ids,
         ],[ DB::raw("MAX(chat_messages.id) as id")]);
         $ids = $chatMessageJoin->setGroupBy(['chat_id'])->executeGroup()->getQuery()->pluck('id')->toArray();
+        foreach ($ids as &$item)
+            $item = (string)$item;
 
-        dd($ids);
-     //   ChatMessage::query()->from(DB::raw('('.$joinTable.') as lastMessage'))->
+        $chatMessage = new ChatMessageLogic(['id'=>$ids],['*']);
+        $lastMessage = $chatMessage->offPagination()->getList()['result'];
 
+        dd($lastMessage);
         //foreach ($lastMessage as &$item){
          //   $item['chat_messageable'] = json_decode($item['chat_messageable'],true);
        // }
