@@ -96,7 +96,7 @@ class ChatMessageLogic extends CoreEngine {
         ],[ DB::raw("MAX(chat_messages.id)"),
             DB::raw("MAX(chat_messages.chat_messageable_id)"),
           ]);
-        $lastMessage = $chatMessage->setGroupBy(['chat_id'])->getSqlToStrFromQuery();
+        $lastMessage = $chatMessage->setGroupBy(['chat_id'])->getSqlToStr();
 
             dd($lastMessage);
         //foreach ($lastMessage as &$item){
