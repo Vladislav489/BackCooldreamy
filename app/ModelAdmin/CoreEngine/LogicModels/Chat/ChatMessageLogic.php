@@ -296,7 +296,7 @@ class ChatMessageLogic extends CoreEngine {
                     "entity" =>DB::raw((new ChatStickerMessage())->getTable()." as StickerMessageSub ON
                          (chat_messageable_id = StickerMessageSub.id  AND
                          chat_messageable_type LIKE '%ChatStickerMessage%')"),
-                    'field'=>['json_object("id",StickerMessageSub.id,"gifts",NULL,"sticker",NULL) as chat_messageable_sticker']
+                    'field'=>['IF(StickerMessageSub.id IS NULL,NULL,json_object("id",StickerMessageSub.id,"gifts",NULL,"sticker",NULL)) as chat_messageable_sticker']
                 ],
             ]
         ];
