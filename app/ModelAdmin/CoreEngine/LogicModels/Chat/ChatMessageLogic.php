@@ -98,7 +98,7 @@ class ChatMessageLogic extends CoreEngine {
         foreach ($ids as &$item)
             $item = (string)$item;
 
-        $chatMessage = new ChatMessageLogic(['id'=>$ids],['*']);
+        $chatMessage = new ChatMessageLogic(['message_id'=>$ids],['*']);
         $lastMessage = $chatMessage->offPagination()->getList();
 
         dd($lastMessage);
@@ -113,7 +113,7 @@ class ChatMessageLogic extends CoreEngine {
         $tab = $this->engine->getTable();
         $tabUser = (new User())->getTable();
         $this->filter = [
-            [   "field" =>$tab.'.id', "params" => 'id',
+            [   "field" =>$tab.'.id', "params" => 'message_id',
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'IN', "concat" => 'AND',
             ],
