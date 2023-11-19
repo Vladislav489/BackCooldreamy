@@ -102,7 +102,7 @@ class ChatMessageLogic extends CoreEngine {
             ['id','chat_id','chat_messageable_id','chat_messageable_type',
                 'is_read_by_recepient', 'disabled', 'created_at', 'updated_at', 'is_payed' , 'is_ace']);
         $lastMessage = $chatMessage->offPagination()
-            ->setJoin(['TextMessageSub','WinkMessageSub','ImageMessageSub','GiftMessageSub','StickerMessageSub'])
+            ->setJoin(['TextMessageSub','WinkMessageSub','GiftMessageSub','StickerMessageSub'])
             ->getList();
         dd($lastMessage);
         //foreach ($lastMessage as &$item){
@@ -282,7 +282,7 @@ class ChatMessageLogic extends CoreEngine {
                     "entity" =>DB::raw((new ChatImageMessage())->getTable()." as ImageMessageSub  ON
                          (chat_messageable_id = ImageMessageSub.id  AND
                          chat_messageable_type LIKE '%ChatImageMessage%')"),
-                    'field'=>['IF(ImageMessageSub.id IS NULL,NULL,json_object("id",ImageMessageSub.id,"thumbnail_url",
+                    'field'=>['IF(ImageMessageSub.id IS NULL,NULL, json_object("id",ImageMessageSub.id,"thumbnail_url",
                     ImageMessageSub.thumbnail_url,"image_url",ImageMessageSub.image_url,"gifts",NULL,"sticker",NULL)) as chat_messageable_image']
                 ],
                 "GiftMessageSub" => [
