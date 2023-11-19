@@ -214,7 +214,7 @@ class ChatMessageLogic extends CoreEngine {
                 ],
                 "ChatMessageSub" =>[
                 "entity" => DB::raw((new ChatMessage())->getTable()." as ChatMessageSub  ON
-                         chat_messages.id = ChatMessageSub.id  "),
+                         chat_messages.id = ChatMessageSub.id "),
             ]   ,
                 "OperatorChat" =>[
                     "entity" => DB::raw("(SELECT  Message.chat_id,Message.sender_user_id, model_has_roles.model_id ,model_has_roles.role_id  from `model_has_roles`
@@ -268,32 +268,32 @@ class ChatMessageLogic extends CoreEngine {
                 ],
                 "WinkMessageSub" => [
                     "entity" =>DB::raw((new ChatWinkMessage())->getTable()." as WinkMessageSub  ON
-                         ChatMessageSub.chat_messageable_id = WinkMessageSub.id  AND
-                         ChatMessageSub.chat_messageable_type LIKE '%ChatWinkMessage%'"),
+                         (ChatMessageSub.chat_messageable_id = WinkMessageSub.id  AND
+                         ChatMessageSub.chat_messageable_type LIKE '%ChatWinkMessage%')"),
                     'field'=>['json_object("id",WinkMessageSub.id,"from_user_id",WinkMessageSub.from_user_id,
                     "to_user_id ",WinkMessageSub.to_user_id,"gifts",NULL,"sticker",NULL) as chat_messageable']
                     ,'type'=>'right'
                 ],
                 "ImageMessageSub" => [
                     "entity" =>DB::raw((new ChatImageMessage())->getTable()." as ImageMessageSub  ON
-                         ChatMessageSub.chat_messageable_id = ImageMessageSub.id  AND
-                         ChatMessageSub.chat_messageable_type LIKE '%ChatImageMessage%'"),
+                         (ChatMessageSub.chat_messageable_id = ImageMessageSub.id  AND
+                         ChatMessageSub.chat_messageable_type LIKE '%ChatImageMessage%')"),
                     'field'=>['json_object("id",ImageMessageSub.id,"thumbnail_url",
                     ImageMessageSub.thumbnail_url,"image_url",ImageMessageSub.image_url,"gifts",NULL,"sticker",NULL) as chat_messageable']
                     ,'type'=>'right'
                 ],
                 "GiftMessageSub" => [
                     "entity" =>DB::raw((new ChatGiftMessage())->getTable()." as GiftMessageSub ON
-                         ChatMessageSub.chat_messageable_id = GiftMessageSub.id  AND
-                         ChatMessageSub.chat_messageable_type LIKE '%ChatGiftMessage%'"),
+                         (ChatMessageSub.chat_messageable_id = GiftMessageSub.id  AND
+                         ChatMessageSub.chat_messageable_type LIKE '%ChatGiftMessage%')"),
                     'field'=>['json_object("id",GiftMessageSub.id,"gifts",NULL,"sticker",NULL) as chat_messageable']
                     ,'type'=>'right'
                 ],
                 "StickerMessageSub" => [
                     "entity" => new ChatStickerMessage(),
                     "entity" =>DB::raw((new ChatStickerMessage())->getTable()." as StickerMessageSub ON
-                         ChatMessageSub.chat_messageable_id = StickerMessageSub.id  AND
-                         ChatMessageSub.chat_messageable_type LIKE '%ChatStickerMessage%'"),
+                         (ChatMessageSub.chat_messageable_id = StickerMessageSub.id  AND
+                         ChatMessageSub.chat_messageable_type LIKE '%ChatStickerMessage%')"),
                     'field'=>['json_object("id",StickerMessageSub.id,"gifts",NULL,"sticker",NULL) as chat_messageable']
                     ,'type'=>'right'
                 ],
