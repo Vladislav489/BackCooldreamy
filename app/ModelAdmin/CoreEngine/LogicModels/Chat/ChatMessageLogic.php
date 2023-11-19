@@ -90,11 +90,14 @@ class ChatMessageLogic extends CoreEngine {
         return $countNotReadMessage;
     }
     public function  getChatLastMessage($user_id,$chat_ids){
+        $chechData = ['text','wink','image','gift','sticker'];
         $chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;
         $chatMessageJoin = new ChatMessageLogic([
             'chat_id' => $chat_ids,
         ],[ DB::raw("MAX(chat_messages.id) as id")]);
         $ids = $chatMessageJoin->setGroupBy(['chat_id'])->executeGroup()->getQuery()->pluck('id')->toArray();
+        if(count($ids) == 0)
+            return  [];
         foreach ($ids as &$item)
             $item = (string)$item;
 
@@ -104,11 +107,16 @@ class ChatMessageLogic extends CoreEngine {
         $lastMessage = $chatMessage->offPagination()
             ->setJoin(['TextMessageSub','WinkMessageSub','ImageMessageSub','GiftMessageSub','StickerMessageSub'])
             ->getList();
-        dd($lastMessage);
-        //foreach ($lastMessage as &$item){
-         //   $item['chat_messageable'] = json_decode($item['chat_messageable'],true);
-       // }
-        return $lastMessage;
+        if(isset($lastMessage['result'])){
+            foreach ($lastMessage as &$item){
+                foreach ($chechData as $field){
+                    if(!is_null($item['chat_messageable_'.$field]))
+                    $item['chat_messageable'] =  json_decode($item['chat_messageable_'.$field],true);
+                }
+            }
+            return $lastMessage;
+        }
+        return [];
     }
 
 
