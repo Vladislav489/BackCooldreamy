@@ -110,8 +110,12 @@ class ChatMessageLogic extends CoreEngine {
         if(isset($lastMessage['result'])){
             foreach ($lastMessage as &$item){
                 foreach ($chechData as $field){
-                    if(!is_null($item['chat_messageable_'.$field]))
-                    $item['chat_messageable'] =  json_decode($item['chat_messageable_'.$field],true);
+                    if(isset($item['chat_messageable_'.$field]) && !is_null($item['chat_messageable_'.$field])) {
+                        $item['chat_messageable'] = json_decode($item['chat_messageable_' . $field], true);
+                        unset($item['chat_messageable_' . $field]);
+                    } else {
+                        unset($item['chat_messageable_' . $field]);
+                    }
                 }
             }
             return $lastMessage;
