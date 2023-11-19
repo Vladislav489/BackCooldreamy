@@ -103,9 +103,9 @@ class ChatMessageLogic extends CoreEngine {
         $lastMessage = $chatMessage->setJoin(
             ['ChatMessageSub','TextMessageSub','GiftMessageSub','StickerMessageSub','WinkMessageSub'])
             ->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
-        foreach ($lastMessage as &$item){
-            $item['chat_messageable'] = json_decode($item['chat_messageable'],true);
-        }
+        //foreach ($lastMessage as &$item){
+         //   $item['chat_messageable'] = json_decode($item['chat_messageable'],true);
+       // }
         return $lastMessage;
     }
 
