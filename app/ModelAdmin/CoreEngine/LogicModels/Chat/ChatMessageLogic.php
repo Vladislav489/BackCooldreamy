@@ -99,7 +99,7 @@ class ChatMessageLogic extends CoreEngine {
             $item = (string)$item;
 
         $chatMessage = new ChatMessageLogic(['id'=>$ids],['*']);
-        $lastMessage = $chatMessage->offPagination()->getList()['result'];
+        $lastMessage = $chatMessage->offPagination()->getList();
 
         dd($lastMessage);
         //foreach ($lastMessage as &$item){
