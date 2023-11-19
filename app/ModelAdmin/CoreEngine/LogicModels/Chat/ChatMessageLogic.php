@@ -98,9 +98,10 @@ class ChatMessageLogic extends CoreEngine {
         foreach ($ids as &$item)
             $item = (string)$item;
 
-        $chatMessage = new ChatMessageLogic(['message_id'=>$ids],['*']);
+        $chatMessage = new ChatMessageLogic(['message_id'=>$ids],
+            ['id','chat_id','chat_messageable_id','chat_messageable_type',
+                'is_read_by_recepient', 'disabled', 'created_at', 'updated_at', 'is_payed' , 'is_ace']);
         $lastMessage = $chatMessage->offPagination()->getList();
-
         dd($lastMessage);
         //foreach ($lastMessage as &$item){
          //   $item['chat_messageable'] = json_decode($item['chat_messageable'],true);
