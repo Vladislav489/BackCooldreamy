@@ -96,8 +96,9 @@ class ChatMessageLogic extends CoreEngine {
         ],[ DB::raw("MAX(chat_messages.id)"),
             DB::raw("MAX(chat_messages.chat_messageable_id)"),
           ]);
-        //['ChatMessageSub','TextMessageSub','ImageMessageSub','GiftMessageSub','StickerMessageSub','WinkMessageSub']
-        $lastMessage = $chatMessage->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
+        $lastMessage = $chatMessage->setGroupBy(['chat_id'])->getFullQuery();
+
+            dd($lastMessage);
         //foreach ($lastMessage as &$item){
          //   $item['chat_messageable'] = json_decode($item['chat_messageable'],true);
        // }
