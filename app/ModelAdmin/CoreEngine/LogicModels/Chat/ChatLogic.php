@@ -21,8 +21,21 @@ class ChatLogic extends CoreEngine {
     }
 
 
-    public function getListChatUser($user_id){
-        $chat = new ChatLogic(['ancet' => (string)$user_id, 'deleted_first_user' => '0', 'deleted_second_user' => '0', 'exist_message' => '1'],
+    public function getListChatUser($user_id,$request){
+        $params = ['ancet' => (string)$user_id, 'deleted_first_user' => '0', 'deleted_second_user' => '0', 'exist_message' => '1'];
+        if ($request->filter == 'favorite') {
+            $favorite_users = FavoriteProfile::where('user_id', $user_id)->where('disabled', false)->pluck('favorite_user_id');
+            $params['chat_by_first_sec_user'] = [[$user_id],$favorite_users];
+        }
+        if ($request->filter == 'unread') {
+            $params['read_by_recepient'] = '0';
+            $params['recepient_user'] = $user_id;
+        }
+        if ($request->filter == 'ignored') {
+            $params['is_ignored_by'] = '1';
+        }
+
+        $chat = new ChatLogic($params,
             ['id', 'is_answered_by_operator',
                 DB::raw('(SELECT  json_object("id",id,"name",name,"avatar_url_thumbnail",avatar_url_thumbnail,"online",online,
                 "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = first_user_id) as first_user'),
@@ -131,6 +144,17 @@ class ChatLogic extends CoreEngine {
             ],
 
 
+            [   "field" =>"(".$tab.'.is_ignored_by_first_user  = "?"',
+                "params" => 'is_ignored_by',
+                "validate" => ["string" => true, "empty" => true],
+                "type" => 'string|array', "action" => 'RAW', "concat" => 'AND',
+            ],
+            [   "field" =>$tab.'is_ignored_by_second_user  = "?" )',
+                "params" => 'is_ignored_by',
+                "validate" => ["string" => true, "empty" => true],
+                "type" => 'string|array', "action" => 'RAW', "concat" => 'OR',
+            ],
+
             [   "field" =>"(".$tab.'.first_user_id  IN (?)',
                 "params" => 'ancet',
                 "validate" => ["string" => true, "empty" => true],
@@ -153,6 +177,9 @@ class ChatLogic extends CoreEngine {
                 "validate" => ["array" => true, "empty" => true],
                 "type" => 'array', "action" => 'RAW', "concat" => 'OR',
             ],
+
+
+
 
             [   "field" =>"((SELECT COUNT(*) FROM ".(new User\Payment())->getTable()."
                     WHERE user_id = ".$tab.".first_user_id AND status = 'success' )  >= ?",

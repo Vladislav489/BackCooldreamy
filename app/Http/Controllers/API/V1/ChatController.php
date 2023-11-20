@@ -4,9 +4,6 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Enum\Action\ActionEnum;
 use App\Enum\Rating\RatingAssignmentEnum;
-use App\Events\LetChatMessageNewReadEvent;
-use App\Events\ObjectOperatorChatEvent;
-use App\Events\TestOperatorChatReadEvent;
 use App\Http\Controllers\Controller;
 use App\Mail\MessageUserMail;
 use App\Mail\MyVerificationMail;
@@ -22,7 +19,6 @@ use App\Models\ChatImageMessage;
 use App\Models\ChatVideoMessage;
 use App\Models\FavoriteProfile;
 use App\Models\Gift;
-use App\Models\GiftsINСhatGiftMessage;
 use App\Models\LetterMessage;
 use App\Models\Operator\OperatorReport;
 use App\Models\ServicePrices;
@@ -33,17 +29,14 @@ use App\Services\FireBase\FireBaseService;
 use App\Services\Rating\RatingService;
 use App\Traits\UserSubscriptionTrait;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use App\Events\ObjectNewChatEvent;
 
 class ChatController extends Controller
 {
@@ -136,13 +129,18 @@ class ChatController extends Controller
         if (isset($request->per_page))
             $perPage = $request->per_page;
         $user_id = Auth::id();
-        $favorite_users = FavoriteProfile::where('user_id', $user_id)->where('disabled', false)->pluck('favorite_user_id');
-        $chat_list = (new ChatLogic())->getListChatUser($user_id);
+        $params['search_id'] = '1';
+        $t = new ChatLogic($params,['*','id',DB::raw()]);
+
+        $chat_list = (new ChatLogic())->getListChatUser($user_id,$request);
         $chat_id = [];
+
         foreach ($chat_list as $item)
             array_push($chat_id,(string)$item['id']);
+
         $chatNotRead = (new ChatMessageLogic())->getChatNotReadUser($user_id,$chat_id);
         $lastMessage = (new ChatMessageLogic())->getChatLastMessage($user_id,$chat_id);
+
         $temp = [];
         foreach ($chatNotRead as $item) $temp[$item['chat_id']] = $item;
         $chatNotRead = $temp;
@@ -150,9 +148,10 @@ class ChatController extends Controller
         foreach ($lastMessage as $item) $temp[$item['chat_id']] = $item;
         $lastMessage = $temp;
         foreach ($chat_list as &$item){
-            $item['unread_messages_count'] =  (isset($chatNotRead[$item['id']]))?$chatNotRead[$item['id']]['unread_messages_count']:0;
+            $item['unread_messages_count'] = (isset($chatNotRead[$item['id']]))?$chatNotRead[$item['id']]['unread_messages_count']:0;
             $item['last_message'] = $lastMessage[$item['id']];
         }
+
         return response($chat_list);
     }
 
@@ -163,9 +162,7 @@ class ChatController extends Controller
         if (isset($request->per_page))
             $perPage = $request->per_page;
 
-
         $user = Auth::user();
-
         $user_id = $user->id;
         $favorite_users = FavoriteProfile::where('user_id', $user_id)->where('disabled', false)->pluck('favorite_user_id');
 
@@ -180,12 +177,15 @@ class ChatController extends Controller
                     ->where('deleted_by_second_user', false);
             });
         })->when($request->input('filter'), function ($query) use ($user, $request, $favorite_users) {
+
+
                 if ($request->filter == 'unread') {
                     $query->whereHas('chat_messages', function ($q) use ($user) {
-                        $q->where('recepient_user_id', $user->id)
-                            ->where('is_read_by_recepient', false);
+                        $q->where('recepient_user_id', $user->id)->where('is_read_by_recepient', false);
                     });
                 }
+
+
                 if ($request->filter == 'favorite') {
                     $query->where(function ($query) use ($favorite_users, $user) {
                         $query->where(function ($query) use ($favorite_users, $user) {
@@ -198,6 +198,7 @@ class ChatController extends Controller
                         });
                     });
                 }
+
                 if ($request->filter == 'ignored') {
                     $query->where(function ($query) {
                         $query->where('is_ignored_by_first_user', true)

@@ -11,8 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class Chat extends Model implements Forwarded
-{
+
+
+class Chat extends Model implements Forwarded{
     use HasFactory;
 
     const COUNT_FREE_IMAGES = 3;
@@ -28,7 +29,6 @@ class Chat extends Model implements Forwarded
         'uuid'
     ];
     protected $table = 'chats';
-
     protected $appends = [
         'self_user',
         'other_user',
