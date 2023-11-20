@@ -90,6 +90,7 @@ class ChatMessageLogic extends CoreEngine {
         $countNotReadMessage =  $chatMessage->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
         return $countNotReadMessage;
     }
+
     public function  getChatLastMessage($user_id,$chat_ids){
         $chechData = ['text','wink','image','gift','sticker'];
         $chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;

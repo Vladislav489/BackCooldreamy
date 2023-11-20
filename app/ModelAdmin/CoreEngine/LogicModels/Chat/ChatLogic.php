@@ -35,6 +35,11 @@ class ChatLogic extends CoreEngine {
             $params['is_ignored_by'] = '1';
         }
 
+        if (isset($request->search) && !empty($request->search)) {
+            $params['search_name'] = $request->search;
+        }
+
+
         $chat = new ChatLogic($params,
             ['id', 'is_answered_by_operator',
                 DB::raw('(SELECT  json_object("id",id,"name",name,"avatar_url_thumbnail",avatar_url_thumbnail,"online",online,
@@ -85,6 +90,19 @@ class ChatLogic extends CoreEngine {
                 "type" => 'string', "action" => '=', "concat" => 'AND',
             ],
 
+            [   "field" =>'ChatMessage.is_read_by_recepient', "params" => 'read_by_recepient',"validate" =>$validate ,
+                "type" => 'string', "action" => '=', "concat" => 'AND',
+                'relatedModel'=>'ChatMessage'
+            ],
+
+            [   "field" =>'ChatMessage.recepient_user_id', "params" => 'recepient_user_id',"validate" =>$validate ,
+                "type" => 'string', "action" => '=', "concat" => 'AND',
+                'relatedModel'=>'ChatMessage'
+            ],
+
+            [   "field" =>'ChatMessage.recepient_user_id', "params" => 'recepient_user_id',"validate" =>$validate ,
+                "type" => 'string', "action" => '=', "concat" => 'AND',
+            ],
 
 
             [   "field" =>$tab.'.first_user_id', "params" => 'first_user',"validate" =>$validate ,
@@ -166,6 +184,21 @@ class ChatLogic extends CoreEngine {
                 "type" => 'string|array', "action" => 'RAW', "concat" => 'OR',
             ],
 
+            [
+                "field" =>"(".'FirstUser.first_user_id  LIKE "%?%"',
+                "params" => 'search_name',
+                "validate" => ["string" => true, "empty" => true],
+                "type" => 'string|array', "action" => 'RAW', "concat" => 'AND',
+                'relatedModel'=>'FirstUser'
+            ],
+
+            [
+                "field" =>'SecondUser.second_user_id  LIKE "%?%")',
+                "params" => 'search_name',
+                "validate" => ["string" => true, "empty" => true],
+                "type" => 'string|array', "action" => 'RAW', "concat" => 'OR',
+                'relatedModel'=>'SecondUser'
+            ],
 
             [   "field" =>"((".$tab.".first_user_id IN (~?1~)  AND ".$tab.".second_user_id IN (~?2~))",
                 "params" => 'chat_by_first_sec_user',

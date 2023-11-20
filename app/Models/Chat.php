@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 
 
+
 class Chat extends Model implements Forwarded{
     use HasFactory;
 

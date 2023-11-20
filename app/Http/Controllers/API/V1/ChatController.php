@@ -101,7 +101,6 @@ class ChatController extends Controller
         if (!$its_ace) {
             if ($its_event) {
                 $chat->another_user = $user;
-
                 $recepient_id = ($chat->first_user_id == $user->id)?$chat->second_user_id: $chat->first_user_id;
                 $favorite_users = FavoriteProfile::where('user_id', $recepient_id)->where('disabled', false)->pluck('favorite_user_id');
             } else {
@@ -129,22 +128,19 @@ class ChatController extends Controller
         if (isset($request->per_page))
             $perPage = $request->per_page;
         $user_id = Auth::id();
-        $params['search_id'] = '1';
         $chat_list = (new ChatLogic())->getListChatUser($user_id,$request);
         $chat_id = [];
-
         foreach ($chat_list as $item)
             array_push($chat_id,(string)$item['id']);
-
-        $chatNotRead = (new ChatMessageLogic())->getChatNotReadUser($user_id,$chat_id);
-        $lastMessage = (new ChatMessageLogic())->getChatLastMessage($user_id,$chat_id);
-
         $temp = [];
+        $chatNotRead = (new ChatMessageLogic())->getChatNotReadUser($user_id,$chat_id);
         foreach ($chatNotRead as $item) $temp[$item['chat_id']] = $item;
         $chatNotRead = $temp;
         $temp = [];
+        $lastMessage = (new ChatMessageLogic())->getChatLastMessage($user_id,$chat_id);
         foreach ($lastMessage as $item) $temp[$item['chat_id']] = $item;
         $lastMessage = $temp;
+
         foreach ($chat_list as &$item){
             $item['unread_messages_count'] = (isset($chatNotRead[$item['id']]))?$chatNotRead[$item['id']]['unread_messages_count']:0;
             $item['last_message'] = $lastMessage[$item['id']];
@@ -221,7 +217,7 @@ class ChatController extends Controller
                         });
                 })->orWhere(function (Builder $builder) use ($user_id, $search) {
                     $builder->where('second_user_id', $user_id)
-                        ->whereHas('firstUser', function ($query) use ($search) {
+                        ->whereHas('', function ($query) use ($search) {
                             $query->where('name', 'like', "%$search%");
                         });
                 });
