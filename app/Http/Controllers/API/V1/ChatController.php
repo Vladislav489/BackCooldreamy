@@ -130,8 +130,6 @@ class ChatController extends Controller
             $perPage = $request->per_page;
         $user_id = Auth::id();
         $params['search_id'] = '1';
-        $t = new ChatLogic($params,['*','id',DB::raw()]);
-
         $chat_list = (new ChatLogic())->getListChatUser($user_id,$request);
         $chat_id = [];
 
