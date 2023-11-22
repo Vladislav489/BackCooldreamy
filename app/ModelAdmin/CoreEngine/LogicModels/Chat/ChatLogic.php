@@ -23,21 +23,23 @@ class ChatLogic extends CoreEngine {
 
     public function getListChatUser($user_id,$request){
         $params = ['ancet' => (string)$user_id, 'deleted_first_user' => '0', 'deleted_second_user' => '0', 'exist_message' => '1'];
-        if ($request->filter == 'favorite') {
+        if($request['id'])
+            $params['id'] =$request['id'];
+
+
+        if ($request['filter'] == 'favorite') {
             $favorite_users = FavoriteProfile::where('user_id', $user_id)->where('disabled', false)->pluck('favorite_user_id');
             $params['chat_by_first_sec_user'] = [[$user_id],$favorite_users];
         }
-        if ($request->filter == 'unread') {
+        if ($request['filter'] == 'unread') {
             $params['read_by_recepient'] = '0';
             $params['recepient_user'] = $user_id;
         }
-        if ($request->filter == 'ignored') {
-            $params['is_ignored_by'] = '1';
-        }
 
-        if (isset($request->search) && !empty($request->search)) {
-            $params['search_name'] = $request->search;
-        }
+        if ($request['filter'] == 'ignored')
+            $params['is_ignored_by'] = '1';
+        if (isset($request['search']) && !empty($request['search']))
+            $params['search_name'] = $request['search'];
 
 
         $chat = new ChatLogic($params,
@@ -50,25 +52,23 @@ class ChatLogic extends CoreEngine {
 
         $chat_list = $chat->offPagination()->order("desc", 'updated_at')->getList()['result'];
         foreach ($chat_list as &$item) {
-            $item['unread_messages_count'] = (isset($countNotReadMessage[$item['id']]))?$countNotReadMessage[$item['id']]['unread_messages_count']:0;
             $item['first_user'] = json_decode($item['first_user'],true);
             $item['second_user'] = json_decode($item['second_user'],true);
-            if($item['first_user']['id'] ==  $user_id){
-                $item['my_self_user'] = $item['first_user'];
-                unset($item['first_user']);
-                $item['another_user'] = $item['second_user'];
-                unset($item['first_user']);
-            }else if($item['second_user']['id'] ==  $user_id){
-                $item['my_self_user'] = $item['second_user'];
-                unset($item['second_user']);
-                $item['another_user'] = $item['first_user'];
-                unset($item['first_user']);
-            }
+            $this->reversUserChat($item,$user_id);
         }
         return $chat_list;
     }
 
-
+    public function reversUserChat($item,$user_id){
+        if($item['first_user']['id'] ==  $user_id){
+            $item['my_self_user'] = $item['first_user'];
+            $item['another_user'] = $item['second_user'];
+        }else if($item['second_user']['id'] ==  $user_id){
+            $item['my_self_user'] = $item['second_user'];
+            $item['another_user'] = $item['first_user'];
+        }
+        return $item;
+    }
 
 
     protected function defaultSelect(){

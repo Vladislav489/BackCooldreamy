@@ -332,8 +332,41 @@ class ChatController extends Controller
         return response(json_encode($resp));
     }
 
-    public function get_current_chat(Request $request)
-    {
+    public function get_current_chat1(Request $request){
+        $validator = Validator::make($request->all(), [
+            'chat_id' => ['required',Rule::exists('chats', 'id')],
+        ]);
+        if ($validator->fails())
+            return response()->json(['error' => $validator->errors()], 500);
+
+        $user_id = Auth::id();
+        $chat = (new ChatLogic())->getListChatUser($user_id,$request->get())[0];
+        if(count($chat) == 0)
+            return response()->json(['error' => 'You deleted the chat.'], 404);
+
+        if ($chat['first_user_id'] !== $user_id && $chat['second_user_id'] !== $user_id)
+            return response()->json(['error' => 'You are not authorized to open this chat.'], 401);
+
+        //page
+        //pageSize
+        $chatMessage = (new ChatMessageLogic([
+            'chat_id' => $chat['id'],
+            'page' => $request->get('page'),
+            'pageSize' => $request->get('pageSize')]));
+        $chatMessage->offPagination()->
+
+
+        $chat_messages = $this->getChat_messages($chat, $perPage);
+        $resp = new \stdClass();
+        $resp->chat_messages = $chat_messages;
+        $resp->chat_id = $chat->id;
+        $resp->another_user = $chat->another_user;
+
+        return response(json_encode($resp));
+
+    }
+
+    public function get_current_chat(Request $request){
         $validator = Validator::make($request->all(), [
             'chat_id' => [
                 'required',
@@ -373,7 +406,7 @@ class ChatController extends Controller
         $resp->chat_id = $chat->id;
         $resp->another_user = $chat->another_user;
 
-        return response(json_encode($resp));
+        return response($resp);
     }
 
     public function send_chat_text_message(Request $request)
