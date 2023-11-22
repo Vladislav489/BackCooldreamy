@@ -50,6 +50,7 @@ class ChatMessageLogic extends CoreEngine {
 
     public function getList(){
        $result =  parent::getList();
+       dd($result);
        $result['result'] = $this->getCurrentChatMessageable($result['result']);
        return $result;
     }
