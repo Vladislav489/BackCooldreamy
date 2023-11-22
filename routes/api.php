@@ -101,7 +101,7 @@ Route::get('get_states', [\App\Http\Controllers\API\V1\LocationController::class
 
 
 Route::get('chats/get_my_chat_list1', [\App\Http\Controllers\API\V1\ChatController::class, 'get_my_chat_list1'])->middleware('auth:sanctum');
-Route::get('chats/get_chat_messages',[\App\Http\Controllers\API\V1\ChatController::class, 'get_current_chat'])->middleware('auth:sanctum');
+Route::get('get_chat_messages',[\App\Http\Controllers\API\V1\ChatController::class, 'get_current_chat'])->middleware('auth:sanctum');
 
 
 
