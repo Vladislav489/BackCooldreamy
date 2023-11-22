@@ -395,7 +395,7 @@ class ChatController extends Controller
         $resp->chat_id = $chat->id;
         $resp->another_user = $chat->another_user;
 
-        return response()->json($chat_messages);
+        return response(json_encode($chat_messages));
     }
 
     public function send_chat_text_message(Request $request)
