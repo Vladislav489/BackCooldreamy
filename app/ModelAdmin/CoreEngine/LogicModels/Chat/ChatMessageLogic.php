@@ -139,7 +139,7 @@ class ChatMessageLogic extends CoreEngine {
     public function  getChatMessage($user_id,$chat_ids){
 
         $chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;
-        $chatMessage = new ChatMessageLogic(['chat_id'=>(string)$chat_ids],
+        $chatMessage = new ChatMessageLogic(['chat_id'=>$chat_ids],
             ['id','chat_id','chat_messageable_id','chat_messageable_type',
                 'is_read_by_recepient', 'disabled', 'created_at', 'updated_at', 'is_payed' , 'is_ace']);
         return  $chatMessage->offPagination()
