@@ -352,6 +352,7 @@ class ChatController extends Controller
             ->order('desc','chat_messages.updated_at')
             ->setJoin(['TextMessageSub','WinkMessageSub', 'ImageMessageSub','GiftMessageSub','StickerMessageSub'])
             ->getList();
+        dd(['chat_messages' => $Message,'chat_id' => $chat['id'],'another_user' => $chat['another_user']]);
         return response()->json(['chat_messages' => $Message,'chat_id' => $chat['id'],'another_user' => $chat['another_user']]);
     }
 
