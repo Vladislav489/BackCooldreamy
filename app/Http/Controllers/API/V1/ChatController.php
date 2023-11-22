@@ -333,13 +333,14 @@ class ChatController extends Controller
     }
 
     public function get_current_chat1(Request $request){
+        dd($request);
         $validator = Validator::make($request->all(), ['chat_id' => ['required',Rule::exists('chats', 'id')]]);
         if ($validator->fails())
             return response()->json(['error' => $validator->errors()], 500);
 
         $user_id = Auth::id();
         $chat = (new ChatLogic())->getListChatUser($user_id,$request->get())[0];
-        dd($chat);
+
         if(count($chat) == 0)
             return response()->json(['error' => 'You deleted the chat.'], 404);
 
