@@ -333,9 +333,7 @@ class ChatController extends Controller
     }
 
     public function get_current_chat1(Request $request){
-        $validator = Validator::make($request->all(), [
-            'chat_id' => ['required',Rule::exists('chats', 'id')],
-        ]);
+        $validator = Validator::make($request->all(), ['chat_id' => ['required',Rule::exists('chats', 'id')]]);
         if ($validator->fails())
             return response()->json(['error' => $validator->errors()], 500);
 
@@ -347,23 +345,14 @@ class ChatController extends Controller
         if ($chat['first_user_id'] !== $user_id && $chat['second_user_id'] !== $user_id)
             return response()->json(['error' => 'You are not authorized to open this chat.'], 401);
 
-        //page
-        //pageSize
-        $chatMessage = (new ChatMessageLogic([
-            'chat_id' => $chat['id'],
-            'page' => $request->get('page'),
-            'pageSize' => $request->get('pageSize')]));
-        $chatMessage->offPagination()->
-
-
-        $chat_messages = $this->getChat_messages($chat, $perPage);
-        $resp = new \stdClass();
-        $resp->chat_messages = $chat_messages;
-        $resp->chat_id = $chat->id;
-        $resp->another_user = $chat->another_user;
-
-        return response(json_encode($resp));
-
+        $chatMessage = new ChatMessageLogic(['chat_id'=>$chat['id']], ['id','chat_id','chat_messageable_id',
+            'chat_messageable_type','is_read_by_recepient', 'disabled', 'created_at', 'updated_at',
+             'is_payed' , 'is_ace']);
+        $Message = $chatMessage->offPagination()
+            ->order('desc','update_at')
+            ->setJoin(['TextMessageSub','WinkMessageSub', 'ImageMessageSub','GiftMessageSub','StickerMessageSub'])
+            ->getList();
+        return response(['chat_messages' => $Message,'chat_id' => $chat['id'],'another_user' => $chat['another_user']]);
     }
 
     public function get_current_chat(Request $request){

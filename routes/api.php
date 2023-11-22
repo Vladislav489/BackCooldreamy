@@ -105,6 +105,7 @@ Route::get('chats/get_my_chat_list1', [\App\Http\Controllers\API\V1\ChatControll
 Route::get('chats/get_my_chat_list', [\App\Http\Controllers\API\V1\ChatController::class, 'get_my_chat_list'])->middleware('auth:sanctum');
 Route::get('chats/get_my_favorite_chat_list', [\App\Http\Controllers\API\V1\ChatController::class, 'get_my_favorite_chat_list'])->middleware('auth:sanctum');
 Route::get('chats/get_chat_with_user', [\App\Http\Controllers\API\V1\ChatController::class, 'get_chat_with_user'])->middleware('auth:sanctum');
+Route::get('chats/get_current_chat1', [\App\Http\Controllers\API\V1\ChatController::class, 'get_current_chat1'])->middleware('auth:sanctum');
 Route::get('chats/get_current_chat', [\App\Http\Controllers\API\V1\ChatController::class, 'get_current_chat'])->middleware('auth:sanctum');
 Route::get('chats/search_chat_message', [\App\Http\Controllers\API\V1\ChatController::class, 'searchChatMessage'])->middleware('auth:sanctum');
 Route::post('chats/send_chat_text_message', [\App\Http\Controllers\API\V1\ChatController::class, 'send_chat_text_message'])->middleware('auth:sanctum');

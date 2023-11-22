@@ -47,6 +47,14 @@ class ChatMessageLogic extends CoreEngine {
        return $this->offPagination()->OnDebug()->getGroup();
    }
 
+
+    public function getList(){
+       $result =  parent::getList();
+       $result['result'] = $this->getCurrentChatMessageable($result['result']);
+       return $result;
+    }
+
+
     public function getAverageCountSendManMessage(){
        $this->setJoin(['OUserSender']);
        $this->getTotal();
@@ -125,6 +133,33 @@ class ChatMessageLogic extends CoreEngine {
             return $lastMessage;
         }
         return [];
+    }
+
+    public function  getChatMessage($user_id,$chat_ids){
+
+        $chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;
+        $chatMessage = new ChatMessageLogic(['chat_id'=>$chat_ids],
+            ['id','chat_id','chat_messageable_id','chat_messageable_type',
+                'is_read_by_recepient', 'disabled', 'created_at', 'updated_at', 'is_payed' , 'is_ace']);
+        return  $chatMessage->offPagination()
+            ->setJoin(['TextMessageSub','WinkMessageSub','ImageMessageSub','GiftMessageSub','StickerMessageSub'])
+            ->getList();
+    }
+
+    public function getCurrentChatMessageable($lastMessage){
+        $chechData = ['text','wink','image','gift','sticker'];
+        foreach ($lastMessage as $key => $item){
+            foreach ($chechData as $field){
+                if(isset($item['chat_messageable_'.$field]) && !is_null($item['chat_messageable_'.$field])) {
+                    $item['chat_messageable'] = json_decode($item['chat_messageable_' . $field], true);
+                    unset($item['chat_messageable_' . $field]);
+                } else {
+                    unset($item['chat_messageable_'.$field]);
+                }
+            }
+            $lastMessage[$key] = $item;
+        }
+        return $lastMessage;
     }
 
 
