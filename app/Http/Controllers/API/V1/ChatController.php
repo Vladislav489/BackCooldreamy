@@ -349,7 +349,7 @@ class ChatController extends Controller
             'chat_messageable_type','is_read_by_recepient', 'disabled', 'created_at', 'updated_at',
              'is_payed' , 'is_ace']);
         $Message = $chatMessage->offPagination()
-            ->order('desc','update_at')
+            ->order('desc','chat_messages.update_at')
             ->setJoin(['TextMessageSub','WinkMessageSub', 'ImageMessageSub','GiftMessageSub','StickerMessageSub'])
             ->getList();
         return response()->json(['chat_messages' => $Message,'chat_id' => $chat['id'],'another_user' => $chat['another_user']]);
