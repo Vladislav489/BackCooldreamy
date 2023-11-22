@@ -55,11 +55,12 @@ class ChatLogic extends CoreEngine {
             $item['first_user'] = json_decode($item['first_user'],true);
             $item['second_user'] = json_decode($item['second_user'],true);
             $this->reversUserChat($item,$user_id);
+
         }
         return $chat_list;
     }
 
-    public function reversUserChat($item,$user_id){
+    public function reversUserChat(&$item,$user_id){
         if($item['first_user']['id'] ==  $user_id){
             $item['my_self_user'] = $item['first_user'];
             $item['another_user'] = $item['second_user'];
@@ -67,7 +68,6 @@ class ChatLogic extends CoreEngine {
             $item['my_self_user'] = $item['second_user'];
             $item['another_user'] = $item['first_user'];
         }
-        return $item;
     }
 
 
