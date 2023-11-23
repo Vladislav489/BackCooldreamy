@@ -345,14 +345,25 @@ class ChatController extends Controller
         if ($chat['first_user_id'] !== $user_id && $chat['second_user_id'] !== $user_id)
             return response()->json(['error' => 'You are not authorized to open this chat.'], 401);
 
-        $chatMessage = new ChatMessageLogic(['chat_id'=>(string)$chat['id']], ['id','chat_id','chat_messageable_id',
+        $chatMessage = new ChatMessageLogic(['chat_id'=>(string)$chat['id']], ['id','sender_user_id','recepient_user_id','','chat_id','chat_messageable_id',
             'chat_messageable_type','is_read_by_recepient', 'disabled', 'created_at', 'updated_at',
              'is_payed' , 'is_ace']);
         $Message = $chatMessage->offPagination()
-            ->order('desc','chat_messages.updated_at')
-            ->setJoin(['TextMessageSub','WinkMessageSub', 'ImageMessageSub','GiftMessageSub','StickerMessageSub'])
-            ->getList();
-        return response()->json(['chat_messages' => $Message['result'],'chat_id' => $chat['id'],'another_user' => $chat['another_user']]);
+            ->order('desc','chat_messages.updated_at')->setJoin(['TextMessageSub','WinkMessageSub', 'ImageMessageSub','GiftMessageSub','StickerMessageSub'])->getList();
+        foreach ($Message as &$item){
+            if($item['first_user']['id'] ==  $user_id){
+                $item['sender_user_id'] = $item['first_user'];
+                $item['recepient_user_id'] = $item['second_user'];
+            }else if($item['second_user']['id'] ==  $user_id){
+                $item['sender_user_id'] = $item['second_user'];
+                $item['recepient_user_id'] = $item['first_user'];
+            }
+        }
+        $resp = new \stdClass();
+        $resp->chat_messages = $Message['result'];
+        $resp->chat_id = $chat['id'];
+        $resp->another_user = $chat['another_user'];
+        return response(json_encode($resp));
     }
 
     public function get_current_chat(Request $request){
