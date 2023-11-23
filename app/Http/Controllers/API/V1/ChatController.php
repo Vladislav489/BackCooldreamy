@@ -345,7 +345,7 @@ class ChatController extends Controller
         if ($chat['first_user_id'] !== $user_id && $chat['second_user_id'] !== $user_id)
             return response()->json(['error' => 'You are not authorized to open this chat.'], 401);
 
-        $chatMessage = new ChatMessageLogic(['chat_id'=>(string)$chat['id']], ['id','sender_user_id','recepient_user_id','','chat_id','chat_messageable_id',
+        $chatMessage = new ChatMessageLogic(['chat_id'=>(string)$chat['id']], ['id','sender_user_id','recepient_user_id','chat_id','chat_messageable_id',
             'chat_messageable_type','is_read_by_recepient', 'disabled', 'created_at', 'updated_at',
              'is_payed' , 'is_ace']);
         $Message = $chatMessage->offPagination()
