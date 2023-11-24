@@ -23,8 +23,8 @@ class ChatLogic extends CoreEngine {
 
     public function getListChatUser($user_id,$request){
         $params = ['ancet' => (string)$user_id, 'deleted_first_user' => '0', 'deleted_second_user' => '0', 'exist_message' => '1'];
-        if($request['id'])
-            $params['id'] = $request['id'];
+        if($request['chat_id'])
+            $params['id'] = $request['chat_id'];
 
 
         if ($request['filter'] == 'favorite') {
