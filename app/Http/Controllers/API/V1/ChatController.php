@@ -356,11 +356,11 @@ class ChatController extends Controller
             ->order('desc','chat_messages.updated_at')->setJoin(['TextMessageSub','WinkMessageSub', 'ImageMessageSub','GiftMessageSub','StickerMessageSub'])->getList();
         foreach ($Message as &$item){
             if($item['first_user']['id'] ==  $user_id){
-                $item['sender_user_id'] = $item['first_user'];
-                $item['recepient_user_id'] = $item['second_user'];
+                $item['sender_user_id'] = $chat['first_user'];
+                $item['recepient_user_id'] = ($chat['second_user'];
             }else if($item['second_user']['id'] ==  $user_id){
-                $item['sender_user_id'] = $item['second_user'];
-                $item['recepient_user_id'] = $item['first_user'];
+                $item['sender_user_id'] = ($chat['second_user'];
+                $item['recepient_user_id'] = ($chat['first_user'];
             }
         }
         $resp = new \stdClass();
