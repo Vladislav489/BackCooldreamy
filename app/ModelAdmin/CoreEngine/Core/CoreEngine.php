@@ -83,6 +83,7 @@ class CoreEngine{
         return $this;
     }
     public function setModel($model) {
+        dd(get_parent_class($model),get_parent_class($model) ==  "Model");
         if( get_parent_class($model) ==  "Model") {
             $this->engine = $model;
             $this->query = $this->engine->newQuery();
