@@ -353,7 +353,6 @@ class ChatController extends Controller
             ->setJoin(['TextMessageSub','WinkMessageSub', 'ImageMessageSub','GiftMessageSub','StickerMessageSub'])
             ->getList()['result'];
        // dd($chat);
-        dd($chatMessage->getSqlToStrFromQuery());
         foreach ($Message as &$item){
                 if ($item['sender_user_id'] == $user_id) {
                     $item['sender_user'] = $chat['first_user'];
