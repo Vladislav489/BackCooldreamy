@@ -353,10 +353,12 @@ class ChatController extends Controller
             'chat_messageable_type','is_read_by_recepient', 'disabled', 'created_at', 'updated_at',
              'is_payed' , 'is_ace']);
         $Message = $chatMessage->offPagination()
-            ->order('desc','chat_messages.updated_at')->setJoin(['TextMessageSub','WinkMessageSub', 'ImageMessageSub','GiftMessageSub','StickerMessageSub'])->getList()['result'];
+            ->order('desc','chat_messages.updated_at')
+            ->setJoin(['TextMessageSub','WinkMessageSub', 'ImageMessageSub','GiftMessageSub','StickerMessageSub'])
+            ->getList()['result'];
        // dd($chat);
+        dd($chatMessage->getSqlToStrFromQuery());
         foreach ($Message as &$item){
-            try {
                 if ($item['sender_user_id'] == $user_id) {
                     $item['sender_user'] = $chat['first_user'];
                     $item['recepient_user'] = $chat['second_user'];
@@ -364,9 +366,6 @@ class ChatController extends Controller
                     $item['sender_user'] = $chat['second_user'];
                     $item['recepient_user'] = $chat['first_user'];
                 }
-            }catch (\Throwable $e){
-               dd($item,$chat);
-            }
         }
         $resp = new \stdClass();
         $resp->chat_messages = $Message;
