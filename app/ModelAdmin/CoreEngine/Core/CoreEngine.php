@@ -87,7 +87,7 @@ class CoreEngine{
             $this->engine = $model;
             $this->query = $this->engine->newQuery();
         }else{
-            throw  new \sException("Это не Модель");
+            throw  new \Exception("Это не Модель");
         }
         return $this;
     }
