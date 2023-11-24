@@ -339,6 +339,10 @@ class ChatController extends Controller
 
         $user_id = Auth::id();
         $chat = (new ChatLogic())->getListChatUser($user_id,$request)[0];
+
+
+
+
         if(count($chat) == 0)
             return response()->json(['error' => 'You deleted the chat.'], 404);
 

@@ -282,7 +282,7 @@ class ChatRepository
         }
         $chat->setSelect($select);
         //var_dump($chat->offPagination()->order(['desc','updated_at'])->setLimit(false)->setGroupBy($group)->setJoin($join)->getSqlToStr());
-        $query = $chat->offPagination()->order('desc','updated_at')->setLimit(false)->setGroupBy($group)
+        $query = $chat->setModel((new Chat()))->offPagination()->order('desc','updated_at')->setLimit(false)->setGroupBy($group)
             ->setJoin($join)->getFullQuery()
             ->with($array);
 
