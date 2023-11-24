@@ -356,12 +356,16 @@ class ChatController extends Controller
             ->order('desc','chat_messages.updated_at')->setJoin(['TextMessageSub','WinkMessageSub', 'ImageMessageSub','GiftMessageSub','StickerMessageSub'])->getList();
        // dd($chat);
         foreach ($Message as &$item){
-            if($item['first_user']['id'] ==  $user_id){
-                $item['sender_user_id'] = $chat['first_user'];
-                $item['recepient_user_id'] = $chat['second_user'];
-            }else if($item['second_user']['id'] ==  $user_id){
-                $item['sender_user_id'] = $chat['second_user'];
-                $item['recepient_user_id'] = $chat['first_user'];
+            try {
+                if ($item['first_user']['id'] == $user_id) {
+                    $item['sender_user_id'] = $chat['first_user'];
+                    $item['recepient_user_id'] = $chat['second_user'];
+                } else if ($item['second_user']['id'] == $user_id) {
+                    $item['sender_user_id'] = $chat['second_user'];
+                    $item['recepient_user_id'] = $chat['first_user'];
+                }
+            }catch (\Throwable $e){
+               dd($item,$chat);
             }
         }
         $resp = new \stdClass();
