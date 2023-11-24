@@ -357,10 +357,10 @@ class ChatController extends Controller
        // dd($chat);
         foreach ($Message as &$item){
             try {
-                if ($item['first_user']['id'] == $user_id) {
+                if ($item['sender_user_id'] == $user_id) {
                     $item['sender_user_id'] = $chat['first_user'];
                     $item['recepient_user_id'] = $chat['second_user'];
-                } else if ($item['second_user']['id'] == $user_id) {
+                } else if ($item['recepient_user_id'] == $user_id) {
                     $item['sender_user_id'] = $chat['second_user'];
                     $item['recepient_user_id'] = $chat['first_user'];
                 }
