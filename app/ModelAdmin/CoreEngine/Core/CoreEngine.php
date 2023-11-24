@@ -1,10 +1,9 @@
 <?php
 namespace App\ModelAdmin\CoreEngine\Core;
-use App\Models\User;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use mysql_xdevapi\Exception;
-use function Sodium\library_version_major;
+
 
 class CoreEngine{
     const DEFAULT_LIMI = 100;
@@ -83,8 +82,7 @@ class CoreEngine{
         return $this;
     }
     public function setModel($model) {
-        dd(get_parent_class($model),get_parent_class($model) ==  "Model");
-        if( get_parent_class($model) ==  "Model") {
+        if( get_parent_class($model) ==  "Illuminate\Database\Eloquent\Model") {
             $this->engine = $model;
             $this->query = $this->engine->newQuery();
         }else{
