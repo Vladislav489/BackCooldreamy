@@ -353,7 +353,7 @@ class ChatController extends Controller
             'chat_messageable_type','is_read_by_recepient', 'disabled', 'created_at', 'updated_at',
              'is_payed' , 'is_ace']);
         $Message = $chatMessage->offPagination()
-            ->order('desc','chat_messages.updated_at')->setJoin(['TextMessageSub','WinkMessageSub', 'ImageMessageSub','GiftMessageSub','StickerMessageSub'])->getList();
+            ->order('desc','chat_messages.updated_at')->setJoin(['TextMessageSub','WinkMessageSub', 'ImageMessageSub','GiftMessageSub','StickerMessageSub'])->getList()['result'];
        // dd($chat);
         foreach ($Message as &$item){
             try {
@@ -369,7 +369,7 @@ class ChatController extends Controller
             }
         }
         $resp = new \stdClass();
-        $resp->chat_messages = $Message['result'];
+        $resp->chat_messages = $Message;
         $resp->chat_id = $chat['id'];
         $resp->another_user = $chat['another_user'];
         return response(json_encode($resp));
