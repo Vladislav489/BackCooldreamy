@@ -354,7 +354,7 @@ class ChatController extends Controller
              'is_payed' , 'is_ace']);
         $Message = $chatMessage->offPagination()
             ->order('desc','chat_messages.updated_at')->setJoin(['TextMessageSub','WinkMessageSub', 'ImageMessageSub','GiftMessageSub','StickerMessageSub'])->getList();
-        dd($chat);
+       // dd($chat);
         foreach ($Message as &$item){
             if($item['first_user']['id'] ==  $user_id){
                 $item['sender_user_id'] = $chat['first_user'];
