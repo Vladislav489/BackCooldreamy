@@ -83,11 +83,12 @@ class CoreEngine{
         return $this;
     }
     public function setModel($model) {
+        dd($model);
         if($model instanceof  Model) {
             $this->engine = $model;
             $this->query = $this->engine->newQuery();
         }else{
-            throw  new Exception("Это не Модель");
+            throw  new \sException("Это не Модель");
         }
         return $this;
     }

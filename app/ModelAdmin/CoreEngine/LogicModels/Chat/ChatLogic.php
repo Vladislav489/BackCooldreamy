@@ -70,14 +70,17 @@ class ChatLogic extends CoreEngine {
         }
     }
 
+    public function getListChatUserOperator(){
+
+    }
+
+
 
     protected function defaultSelect(){
         $tab = $this->engine->tableName();
         $this->default = [];
         return $this->default;
     }
-
-
     private function filterChat(){
         $tab = $this->engine->getTable();
         $validate = ["string" => true, "empty" => true];
