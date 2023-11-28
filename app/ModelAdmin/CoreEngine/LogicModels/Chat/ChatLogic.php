@@ -313,6 +313,7 @@ class ChatLogic extends CoreEngine {
         $this->filter = array_merge($this->filter,parent::getFilter());
         return $this->filter;
     }
+
     protected function compileGroupParams() {
         $this->group_params = [
             "select" => [],
@@ -335,12 +336,6 @@ class ChatLogic extends CoreEngine {
                     "entity" => DB::raw((new OperatorLinkUsers())->getTable()." as OperatorAncet  ON
                         OperatorAncet.user_id = first_user_id  OR  OperatorAncet.user_id = second_user_id"),
                 ],
-                "OperatorWork1" =>[
-                    "entity" => DB::raw("(SELECT operator_id,user_id,users.name
-                            FROM operator_link_users as SOLU  LEFT JOIN users ON users.id = operator_id   WHERE (SOLU.user_id = chats.first_user_id  OR SOLU.user_id = chats.second_user_id) LIMIT 1) as OperatorWork ON
-                        (OperatorWork.user_id = first_user_id  OR OperatorWork.user_id = second_user_id)"),
-                ],
-
 
                 "OperatorWork" =>[
                     "entity" => DB::raw((new OperatorLinkUsers())->getTable()." as OperatorWork ON
