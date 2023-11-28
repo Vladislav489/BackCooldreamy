@@ -8,6 +8,7 @@ use App\Events\LetChatMessageNewReadEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Operator\OperatorChatResource;
 use App\Mail\MessageUserMail;
+use App\ModelAdmin\CoreEngine\LogicModels\Chat\ChatLogic;
 use App\Models\AceLog;
 use App\Models\Auth\CreditLog;
 use App\Models\Chat;
@@ -116,6 +117,7 @@ class OperatorChatController extends Controller
 
 
     public function index1(Request $request){
+        
         $operator = Auth::user();
         $join = ['firstUser', 'secondUser','lastMessage'];
         $params = [
