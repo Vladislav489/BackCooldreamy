@@ -188,7 +188,7 @@ class OperatorChatController extends Controller
         $chat = new ChatLogic($params,$select);
         $chats = $chat->setModel((new Chat\Chat()))
             ->offPagination()->order('desc','updated_at')
-            ->setLimit(false)
+            ->setLimit(20)
             ->setJoin($join)
             ->getList();
         return response()->json(['data'=>$chats['result']]);
