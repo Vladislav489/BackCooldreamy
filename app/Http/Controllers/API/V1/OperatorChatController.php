@@ -114,6 +114,84 @@ class OperatorChatController extends Controller
         });
     }
 
+
+    public function index1(Request $request){
+        $operator = Auth::user();
+        $join = ['firstUser', 'secondUser','lastMessage'];
+        $params = [
+            'per_page' => $request->get('per_page'),
+            "search" => $request->get('search'),
+            'filter_type' => $request->get('filter_type'),
+        ];
+
+        if($request->get('chat_limit')) {
+            $params['chat_limit'] = $request->get('chat_limit');
+            $join[] = "OperatorWork";
+        }else{
+            $params['limit_more'] = '1';
+            $join[] = "OperatorWork";
+        }
+
+
+        if($operator->getRoleNames()->toArray()[0] != 'admin') {
+            $params['operator_id'] = (string)$operator->id;
+            $params['deleted_by_first_user'] = '0';
+            $params['deleted_by_second_user'] = '0';
+        }
+
+        if(isset($params['search'])) {
+            $params['real'] = '1';
+            $params['search_id'] = $params['search'];
+        }
+
+        if(isset($params['search_message']))
+            $params['text_message'] = "%".$params['search_message']."%";
+
+        if(isset($params['filter_type'])){
+            switch ($params['filter_type']){
+                case "online":
+                    $params['online'] = '1';
+                    break;
+                case "premium":
+                    $params['real'] = '1';
+                    $params['premium_more'] ='1';
+                    break;
+                case "subscription":
+                    $params['real'] = '1';
+                    $params['subscription_more'] ='1';
+                    break;
+                case "payed":
+                    $params['real'] = '1';
+                    $params['payed_more'] ='1';
+                    break;
+            }
+        }
+        $select = [DB::raw("chats.*")];
+
+        $chat = new ChatLogic($params);
+        if(isset($params['operator_id'])) {
+            $select[] = DB::raw("'0' as operator_id");
+            $select[] = DB::raw("'none' as operator_name");
+        }else{
+            $select[] = DB::raw("'0' as operator_id");
+            $select[] = DB::raw("'name' as operator_name");
+            $group[]  = 'id';
+        }
+        $chat->setSelect($select);
+        $chats = $chat->setModel((new Chat\Chat()))->offPagination()->order('desc','updated_at')->setLimit(false)->setGroupBy($group)
+            ->setJoin($join)->getList();
+        dd($chats);
+
+        //$anketChats->getCollection()->each(function ($item) use($operator) {
+        //    $item->available_limit = $item->limit ? floor($item->limit->limits) : 0;
+        //    $item->max_limit = CreditLog::query()->where('credit_type', CreditLogTypeEnum::OUTCOME)->where('user_id', $item->otherUser->id)->where('other_user_id', $item->selfUser->id)->sum('credits');
+        //    return $item;
+        //});
+        //return $anketChats;
+    }
+
+
+
     public function index(Request $request){
          $operator = Auth::user();
            $filter = [

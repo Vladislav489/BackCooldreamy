@@ -275,6 +275,7 @@ Route::group(['prefix' => 'operators/', 'middleware' => ['auth:sanctum', 'role:o
     /** Чаты */
     Route::group(['prefix' => 'chats/'], function () {
         // Получение всех чатов с пользователем
+        Route::get('/1', [\App\Http\Controllers\API\V1\OperatorChatController::class, 'index1']);
         Route::get('/', [\App\Http\Controllers\API\V1\OperatorChatController::class, 'index']);
         // Поиск по сообщениям
         Route::get('/{id}/search', [\App\Http\Controllers\API\V1\OperatorChatController::class, 'searchChatMessage']);
