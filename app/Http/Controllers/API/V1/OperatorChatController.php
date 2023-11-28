@@ -178,7 +178,7 @@ class OperatorChatController extends Controller
             $select[] = DB::raw("'name' as operator_name");
             $group[]  = 'id';
         }
-        $select[] =DB::raw("(SELECT json_object('operator_id',operator_id,'user_id',user_id,'name',users.name)
+        $select[] =DB::raw("SELECT json_object('operator_id',operator_id,'user_id',user_id,'name',users.name)
                             FROM operator_link_users as SOLU LEFT JOIN users ON users.id = operator_id
                             WHERE (SOLU.user_id = first_user_id  OR SOLU.user_id = second_user_id) LIMIT 1)");
 
