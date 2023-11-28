@@ -117,7 +117,7 @@ class OperatorChatController extends Controller
 
 
     public function index1(Request $request){
-        
+
         $operator = Auth::user();
         $join = ['firstUser', 'secondUser','lastMessage'];
         $params = [
@@ -180,7 +180,7 @@ class OperatorChatController extends Controller
             $group[]  = 'id';
         }
         $chat->setSelect($select);
-        $chats = $chat->setModel((new Chat\Chat()))->offPagination()->order('desc','updated_at')->setLimit(false)->setGroupBy($group)
+        $chats = $chat->setModel((new Chat\Chat()))->offPagination()->order('desc','updated_at')->setLimit(false)
             ->setJoin($join)->getList();
         dd($chats);
 
