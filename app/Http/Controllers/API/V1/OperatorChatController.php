@@ -168,9 +168,8 @@ class OperatorChatController extends Controller
                     break;
             }
         }
-        $select = [DB::raw("chats.*")];
+        $select = ['id','first_user_id','second_user_id','disabled','updated_at','is_answered_by_operator'];
 
-        $chat = new ChatLogic($params);
         if(isset($params['operator_id'])) {
             $select[] = DB::raw("'0' as operator_id");
             $select[] = DB::raw("'none' as operator_name");
@@ -179,10 +178,16 @@ class OperatorChatController extends Controller
             $select[] = DB::raw("'name' as operator_name");
             $group[]  = 'id';
         }
-        $chat->setSelect($select);
-        $chats = $chat->setModel((new Chat\Chat()))->offPagination()->order('desc','updated_at')->setLimit(false)
-            ->setJoin($join)->getList();
-        dd($chats);
+        $chat = new ChatLogic($params,$select);
+        $chats = $chat->setModel((new Chat\Chat()))
+            ->offPagination()
+            ->order('desc','updated_at')
+            ->setLimit(false)
+            ->setJoin($join)
+            ->getList();
+        return response()->json(['data'=>$chats['result']]);
+
+
 
         //$anketChats->getCollection()->each(function ($item) use($operator) {
         //    $item->available_limit = $item->limit ? floor($item->limit->limits) : 0;
