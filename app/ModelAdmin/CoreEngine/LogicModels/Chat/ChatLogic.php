@@ -282,7 +282,7 @@ class ChatLogic extends CoreEngine {
                 "type" => 'string|array', "action" => '>=', "concat" => 'AND',
                 'relatedModel'=>"ChatLimit"
             ],
-            [   "field" =>'OperatorWork.operator_id', "params" => 'operator_id',
+          /*  [   "field" =>'OperatorWork.operator_id', "params" => 'operator_id',
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'IN', "concat" => 'AND',
                 'relatedModel'=>'OperatorWork'
@@ -291,7 +291,7 @@ class ChatLogic extends CoreEngine {
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'IN', "concat" => 'AND',
                 'relatedModel'=>'OperatorWork'
-            ],
+            ],*/
 
 
 
@@ -336,7 +336,7 @@ class ChatLogic extends CoreEngine {
                         OperatorAncet.user_id = first_user_id  OR  OperatorAncet.user_id = second_user_id"),
                 ],
                 "OperatorWork" =>[
-                    "entity" => DB::raw((new OperatorLinkUsers())->getTable()." as OperatorWork ON
+                    "entity" => DB::raw("(SELECT )   as OperatorWork ON
                         (OperatorWork.user_id = first_user_id  OR OperatorWork.user_id = second_user_id)"),
                 ],
 
