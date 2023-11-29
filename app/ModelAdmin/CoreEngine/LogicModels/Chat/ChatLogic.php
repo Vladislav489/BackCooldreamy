@@ -3,6 +3,7 @@ namespace App\ModelAdmin\CoreEngine\LogicModels\Chat;
 use App\ModelAdmin\CoreEngine\Core\CoreEngine;
 use App\Models\Chat;
 use App\Models\ChatMessage;
+use App\Models\Operator\WorkingShiftLog;
 use App\Models\OperatorChatLimit;
 use App\Models\OperatorLinkUsers;
 use App\Models\Subscriptions;
@@ -282,18 +283,15 @@ class ChatLogic extends CoreEngine {
                 "type" => 'string|array', "action" => '>=', "concat" => 'AND',
                 'relatedModel'=>"ChatLimit"
             ],
-            [   "field" =>"(SELECT operator_id
-                            FROM operator_link_users as SOLU
-                            WHERE (SOLU.user_id = first_user_id  OR SOLU.user_id = second_user_id) LIMIT 1)", "params" => 'operator_id',
+            [   "field" =>'OperatorWork.operator_id', "params" => 'operator_id',
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'IN', "concat" => 'AND',
-
+                'relatedModel'=>'OperatorWork'
             ],
-            [   "field" =>"(SELECT operator_work
-                            FROM operator_link_users as SOLU
-                            WHERE (SOLU.user_id = first_user_id  OR SOLU.user_id = second_user_id) LIMIT 1)", "params" => 'operator_work',
+            [   "field" =>'OperatorWork.operator_work', "params" => 'operator_work',
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'IN', "concat" => 'AND',
+                'relatedModel'=>'OperatorWork'
             ],
 
 
@@ -341,7 +339,7 @@ class ChatLogic extends CoreEngine {
                 ],
 
                 "OperatorWork" =>[
-                    "entity" => DB::raw((new OperatorLinkUsers())->getTable()." as OperatorWork ON
+                    "entity" => DB::raw((new WorkingShiftLog())->getTable()." as OperatorWork ON
                         (OperatorWork.user_id = first_user_id  OR OperatorWork.user_id = second_user_id)"),
                 ],
 
