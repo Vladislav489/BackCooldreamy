@@ -199,29 +199,28 @@ class OperatorChatController extends Controller
         WHERE credit_type = '".CreditLogTypeEnum::OUTCOME."' AND ((user_id = first_user_id AND other_user_id = second_user_id) || (user_id = second_user_id AND other_user_id = first_user_id) )) as max_limit");
 
         $chat = new ChatLogic($params,$select);
-        $chats = $chat->setModel((new Chat\Chat()))
+        $chats = $chat->setModel((new Chat()))
             ->offPagination()->order('desc','updated_at')
             ->setLimit(20)
             ->setGroupBy($group)
             ->setJoin($join)
             ->getList();
         $chat_id = [];
-        foreach ($chats['result'] as $item){
+        foreach ($chats['result'] as $item)
             $chat_id[] = (string)$item['id'];
-        }
 
         //self_user
         //other_user
-        //last_message
 
 
-        $lastMessage = (new ChatMessageLogic())->getChatLastMessage(null,$chat_id);
-        foreach ($lastMessage as $item) $temp[$item['chat_id']] = $item;
-        $lastMessage = $temp;
-        foreach ($chats['result'] as &$item){
-            if(isset($lastMessage[$item['id']]))
-                $item['last_message'] = $lastMessage[$item['id']];
-        }
+
+     //   $lastMessage = (new ChatMessageLogic())->getChatLastMessage(null,$chat_id);
+     //   foreach ($lastMessage as $item) $temp[$item['chat_id']] = $item;
+     //   $lastMessage = $temp;
+     //   foreach ($chats['result'] as &$item){
+     //       if(isset($lastMessage[$item['id']]))
+      //          $item['last_message'] = $lastMessage[$item['id']];
+      //  }
         return response()->json(['data'=>$chats['result']]);
 
 
