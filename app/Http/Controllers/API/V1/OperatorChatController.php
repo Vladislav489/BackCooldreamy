@@ -215,6 +215,8 @@ class OperatorChatController extends Controller
         $lastMessage = (new ChatMessageLogic())->getChatLastMessage(null,$chat_id);
         foreach ($lastMessage as $item) $temp[$item['chat_id']] = $item;
         $lastMessage = $temp;
+
+        dd($lastMessage,$chats['result']);
         foreach ($chats['result'] as &$item){
             $item['last_message'] = $lastMessage[$item['id']];
         }
