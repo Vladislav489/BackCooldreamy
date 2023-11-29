@@ -122,6 +122,7 @@ class OperatorChatController extends Controller
         $operator = Auth::user();
         $join = ['firstUser', 'secondUser','lastMessage'];
         $params = [
+            'page' => $request->get('page'),
             'pageSize' => $request->get('per_page'),
             "search" => $request->get('search'),
             'filter_type' => $request->get('filter_type'),
@@ -189,7 +190,7 @@ class OperatorChatController extends Controller
         $chat->setModel((new Chat()))->offPagination()->order('desc','updated_at')->setGroupBy($group);
         $chat->getQueryLink()->with($join);
         $chats = $chat->getList();
-        return response()->json(['data'=>$chats['result'],'count' => count($chats['result'])]);
+        return response()->json(['data'=>$chats['result'],'count'=>count($chats['result'])]);
     }
 
 
