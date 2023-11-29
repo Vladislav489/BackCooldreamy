@@ -204,8 +204,7 @@ class OperatorChatController extends Controller
             ->getList();
         $chat_id = [];
         foreach ($chats['result'] as $item){
-            dd($item);
-            $chat_id[] = $item['id'];
+            $chat_id[] = (string)$item['id'];
         }
 
         //self_user
