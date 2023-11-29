@@ -196,7 +196,7 @@ class OperatorChatController extends Controller
         $select[] = DB::raw(" CEIL(ChatLimit.limits) as 'available_limit'");
 
         $select[] = DB::raw("(SELECT SUM(credits) FROM credit_logs
-        WHERE credit_type = ".CreditLogTypeEnum::OUTCOME." AND ((user_id = first_user_id AND other_user_id = second_user_id) || (user_id = second_user_id AND other_user_id = first_user_id) ) as max_limit");
+        WHERE credit_type = '".CreditLogTypeEnum::OUTCOME."' AND ((user_id = first_user_id AND other_user_id = second_user_id) || (user_id = second_user_id AND other_user_id = first_user_id) )) as max_limit");
 
         $chat = new ChatLogic($params,$select);
         $chats = $chat->setModel((new Chat\Chat()))
