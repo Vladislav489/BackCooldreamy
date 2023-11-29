@@ -122,17 +122,15 @@ class OperatorChatController extends Controller
         $operator = Auth::user();
         $join = ['firstUser', 'secondUser','lastMessage'];
         $params = [
-            'per_page' => $request->get('per_page'),
+            'pageSize' => $request->get('per_page'),
             "search" => $request->get('search'),
             'filter_type' => $request->get('filter_type'),
         ];
 
         if($request->get('chat_limit')) {
             $params['chat_limit'] = $request->get('chat_limit');
-           // $join[] = "OperatorWork";
         }else{
             $params['limit_more'] = '1';
-           // $join[] = "OperatorWork";
         }
 
 
