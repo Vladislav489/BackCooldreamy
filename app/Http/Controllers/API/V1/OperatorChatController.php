@@ -202,7 +202,7 @@ class OperatorChatController extends Controller
             ->setGroupBy($group)
             ->setJoin($join)
             ->getList();
-
+        $chat_id = [];
         foreach ($chats as $item){
             $chat_id[] = $item['id'];
         }
