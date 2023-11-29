@@ -180,7 +180,7 @@ class OperatorChatController extends Controller
                             WHERE (SOLU.user_id = first_user_id  OR SOLU.user_id = second_user_id) LIMIT 1) as operator_ansver");
         }*/
 
-
+        $group=[];
         if(isset($params['operator_id'])) {
             $select[] = DB::raw("IF(OperatorWork.operator_work = 1,OperatorWork.operator_id , '" . Auth::user()->id . "'  ) as operator_id");
             $select[] = DB::raw("IF(OperatorWork.operator_work = 1,(SELECT name FROM users WHERE id = OperatorWork.operator_id),'" . Auth::user()->name . "') as operator_name");
