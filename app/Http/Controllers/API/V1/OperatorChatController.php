@@ -171,16 +171,6 @@ class OperatorChatController extends Controller
         }
         $select = ['id','first_user_id','second_user_id','disabled','updated_at','is_answered_by_operator'];
 
-      /*  if(isset($params['operator_id'])) {
-            $select[] =DB::raw("(SELECT json_object('operator_id',operator_id,'user_id',user_id,'name',users.name)
-                            FROM operator_link_users as SOLU LEFT JOIN users ON users.id = operator_id
-                            WHERE (SOLU.user_id = first_user_id  OR SOLU.user_id = second_user_id) LIMIT 1) as operator_ansver");
-        }else{
-            $select[] =DB::raw("(SELECT json_object('operator_id',operator_id,'user_id',user_id,'name',users.name)
-                            FROM operator_link_users as SOLU LEFT JOIN users ON users.id = operator_id
-                            WHERE (SOLU.user_id = first_user_id  OR SOLU.user_id = second_user_id) LIMIT 1) as operator_ansver");
-        }*/
-
         $group=[];
         if(isset($params['operator_id'])) {
             $select[] = DB::raw("IF(OperatorWork.operator_work = 1,OperatorWork.operator_id , '" . Auth::user()->id . "'  ) as operator_id");
@@ -201,36 +191,11 @@ class OperatorChatController extends Controller
         $chat = new ChatLogic($params,$select);
         $chat->setModel((new Chat()))
             ->offPagination()->order('desc','updated_at')
-            ->setLimit(20)
+            //->setLimit(20)
             ->setGroupBy($group);
             $chat->getQueryLink()->with($join);
         $chats = $chat->getList();
-        $chat_id = [];
-        foreach ($chats['result'] as $item)
-            $chat_id[] = (string)$item['id'];
-
-        //self_user
-        //other_user
-
-
-
-     //   $lastMessage = (new ChatMessageLogic())->getChatLastMessage(null,$chat_id);
-     //   foreach ($lastMessage as $item) $temp[$item['chat_id']] = $item;
-     //   $lastMessage = $temp;
-     //   foreach ($chats['result'] as &$item){
-     //       if(isset($lastMessage[$item['id']]))
-      //          $item['last_message'] = $lastMessage[$item['id']];
-      //  }
         return response()->json(['data'=>$chats['result']]);
-
-
-
-        //$anketChats->getCollection()->each(function ($item) use($operator) {
-        //    $item->available_limit = $item->limit ? floor($item->limit->limits) : 0;
-        //    $item->max_limit = CreditLog::query()->where('credit_type', CreditLogTypeEnum::OUTCOME)->where('user_id', $item->otherUser->id)->where('other_user_id', $item->selfUser->id)->sum('credits');
-        //    return $item;
-        //});
-        //return $anketChats;
     }
 
 
