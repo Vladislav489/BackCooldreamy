@@ -206,7 +206,7 @@ class OperatorChatController extends Controller
         foreach ($chats['result'] as $item){
             $chat_id[] = (string)$item['id'];
         }
-
+        dd($chat_id);
         //self_user
         //other_user
         //last_message
