@@ -170,25 +170,33 @@ class OperatorChatController extends Controller
         }
         $select = ['id','first_user_id','second_user_id','disabled','updated_at','is_answered_by_operator'];
 
-        if(isset($params['operator_id'])) {
-            $select[] = DB::raw("'0' as operator_id");
-            $select[] = DB::raw("'none' as operator_name");
-        }else{
-            $select[] = DB::raw("'0' as operator_id");
-            $select[] = DB::raw("'name' as operator_name");
-            $group[]  = 'id';
-        }
-        $select[] =DB::raw("(SELECT json_object('operator_id',operator_id,'user_id',user_id,'name',users.name)
+      /*  if(isset($params['operator_id'])) {
+            $select[] =DB::raw("(SELECT json_object('operator_id',operator_id,'user_id',user_id,'name',users.name)
                             FROM operator_link_users as SOLU LEFT JOIN users ON users.id = operator_id
                             WHERE (SOLU.user_id = first_user_id  OR SOLU.user_id = second_user_id) LIMIT 1) as operator_ansver");
+        }else{
+            $select[] =DB::raw("(SELECT json_object('operator_id',operator_id,'user_id',user_id,'name',users.name)
+                            FROM operator_link_users as SOLU LEFT JOIN users ON users.id = operator_id
+                            WHERE (SOLU.user_id = first_user_id  OR SOLU.user_id = second_user_id) LIMIT 1) as operator_ansver");
+        }*/
 
 
+        if(isset($params['operator_id'])) {
+            $select[] = DB::raw("IF(OperatorWork.operator_work = 1,OperatorWork.operator_id , '" . Auth::user()->id . "'  ) as operator_id");
+            $select[] = DB::raw("IF(OperatorWork.operator_work = 1,(SELECT name FROM users WHERE id = OperatorWork.operator_id),'" . Auth::user()->name . "') as operator_name");
+        }else{
+            $select[] = DB::raw("GROUP_CONCAT(IF(OperatorWork.operator_work = 1,OperatorWork.operator_id , '" . Auth::user()->id . "'  )) as operator_id");
+            $select[] = DB::raw("GROUP_CONCAT(IF(OperatorWork.operator_work = 1,(SELECT name FROM users WHERE id = OperatorWork.operator_id),'" . Auth::user()->name . "')) as operator_name");
+            //  $select[] = DB::raw("OperatorWork.operator_work");
+            $group[]  = 'id';
 
+        }
 
         $chat = new ChatLogic($params,$select);
         $chats = $chat->setModel((new Chat\Chat()))
             ->offPagination()->order('desc','updated_at')
             ->setLimit(20)
+            ->setGroupBy($group)
             ->setJoin($join)
             ->getList();
         return response()->json(['data'=>$chats['result']]);
