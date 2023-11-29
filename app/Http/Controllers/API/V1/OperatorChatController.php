@@ -193,7 +193,7 @@ class OperatorChatController extends Controller
             ->setGroupBy($group);
             $chat->getQueryLink()->with($join);
         $chats = $chat->getList();
-        return response()->json(['data'=>$chats['result']]);
+        return response()->json(['data'=>$chats['result'],'count'=>count($chats['result'])]);
     }
 
 
