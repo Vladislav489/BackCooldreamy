@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Operator\OperatorChatResource;
 use App\Mail\MessageUserMail;
 use App\ModelAdmin\CoreEngine\LogicModels\Chat\ChatLogic;
+use App\ModelAdmin\CoreEngine\LogicModels\Chat\ChatMessageLogic;
 use App\Models\AceLog;
 use App\Models\Auth\CreditLog;
 use App\Models\Chat;
@@ -201,12 +202,21 @@ class OperatorChatController extends Controller
             ->setGroupBy($group)
             ->setJoin($join)
             ->getList();
+
+        foreach ($chats as $item){
+            $chat_id[] = $item['id'];
+        }
+
         //self_user
         //other_user
         //last_message
-        //limit
-        foreach ($chats['result'] as $item){
-           // $item
+
+
+        $lastMessage = (new ChatMessageLogic())->getChatLastMessage(null,$chat_id);
+        foreach ($lastMessage as $item) $temp[$item['chat_id']] = $item;
+        $lastMessage = $temp;
+        foreach ($chats as &$item){
+            $item['last_message'] = $lastMessage[$item['id']];
         }
 
 
