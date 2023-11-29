@@ -250,23 +250,14 @@ class CoreEngine{
     // ОСНОВНЫЕ ФУНКЦИИ ДЛЯ  ВЫПОЛНЕНИЯ ЗАПРОСОВ
     public function executeFilter() {
         $this->selectQuery()->connectEntityJoin()->whereQuery($this->coreParams->getWhereSql());
-        if (!$this->paginationOff) {
-            $this->pagination();
-        } else {
-            ($this->limit && $this->limit !== self::DEFAULT_LIMI)? $this->query->limit($this->limit):"";
-        }
+        $this->pagination();
         $this->order();
         if ($this->debug_sql) $this->debugQuery();
         return $this->query;
     }
     public function executeGroup() {
         $this->selectQueryGroup()->connectEntityJoin()->whereQuery($this->coreParams->getWhereSql());
-        if (!$this->paginationOff) {
              $this->pagination();
-        } else {
-            if($this->limit &&  $this->limit !== self::DEFAULT_LIMI)
-                $this->query->limit($this->limit);
-        }
         $this->groupQuery()->order();
         if ($this->debug_sql) $this->debugQuery();
         return $this->query;
@@ -274,7 +265,11 @@ class CoreEngine{
     // ПАГИНАЦИЯ ВКЛЮЧАЕТСЯ ТОЛЬКО ЕСЛИ ЕСТЬ PAGESIZE ИЛИ LIMIT
     public function pagination($page = null,$pageSize = null) {
         $query = clone $this->query;
-        $totalCount = $query->count();
+        if (!$this->paginationOff) {
+            $totalCount = $query->count();
+        }else{
+            $totalCount = 1;
+        }
         if(is_null($page) && is_null($pageSize)){
             $pageSize = $this->coreParams->getParamsFilter('pageSize');
             $page = $this->coreParams->getParamsFilter('page');
