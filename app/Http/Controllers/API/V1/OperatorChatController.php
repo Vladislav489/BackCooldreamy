@@ -129,10 +129,10 @@ class OperatorChatController extends Controller
 
         if($request->get('chat_limit')) {
             $params['chat_limit'] = $request->get('chat_limit');
-            $join[] = "OperatorWork";
+           // $join[] = "OperatorWork";
         }else{
             $params['limit_more'] = '1';
-            $join[] = "OperatorWork";
+           // $join[] = "OperatorWork";
         }
 
 
