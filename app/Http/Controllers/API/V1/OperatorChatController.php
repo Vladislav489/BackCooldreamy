@@ -191,7 +191,7 @@ class OperatorChatController extends Controller
             $group[]  = 'id';
 
         }
-
+        $select[] = DB::raw("ChatLimit.limit as CEIL(limit)");
         $chat = new ChatLogic($params,$select);
         $chats = $chat->setModel((new Chat\Chat()))
             ->offPagination()->order('desc','updated_at')
@@ -199,6 +199,15 @@ class OperatorChatController extends Controller
             ->setGroupBy($group)
             ->setJoin($join)
             ->getList();
+        //self_user
+        //other_user
+        //last_message
+        //limit
+        foreach ($chats['result'] as $item){
+           // $item
+        }
+
+
         return response()->json(['data'=>$chats['result']]);
 
 
