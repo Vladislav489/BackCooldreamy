@@ -339,7 +339,7 @@ class ChatLogic extends CoreEngine {
                 ],
 
                 "OperatorWork" =>[
-                    "entity" => DB::raw((new WorkingShiftLog())->getTable()." as OperatorWork ON
+                    "entity" => DB::raw((new OperatorLinkUsers())->getTable()." as OperatorWork ON
                         (OperatorWork.user_id = first_user_id  OR OperatorWork.user_id = second_user_id)"),
                 ],
 
