@@ -180,7 +180,7 @@ class OperatorChatController extends Controller
         }
         $select[] =DB::raw("(SELECT json_object('operator_id',operator_id,'user_id',user_id)
                             FROM operator_link_users as SOLU
-                            WHERE (SOLU.user_id = first_user_id  OR SOLU.user_id = second_user_id) AND operator_work = 1 LIMIT 1) as operator_ansver");
+                            WHERE (SOLU.user_id = first_user_id  OR SOLU.user_id = second_user_id) AND SOLU.operator_work = 1 LIMIT 1) as operator_ansver");
 
 
 
