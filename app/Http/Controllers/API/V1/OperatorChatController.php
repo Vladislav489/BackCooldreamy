@@ -199,12 +199,12 @@ class OperatorChatController extends Controller
         WHERE credit_type = '".CreditLogTypeEnum::OUTCOME."' AND ((user_id = first_user_id AND other_user_id = second_user_id) || (user_id = second_user_id AND other_user_id = first_user_id) )) as max_limit");
 
         $chat = new ChatLogic($params,$select);
-        $chats = $chat->setModel((new Chat()))
+        $chat->setModel((new Chat()))
             ->offPagination()->order('desc','updated_at')
             ->setLimit(20)
-            ->setGroupBy($group)
-            ->getQueryLink()->with($join)
-            ->getList();
+            ->setGroupBy($group);
+            $chat->getQueryLink()->with($join);
+        $chats = $chat->getList();
         $chat_id = [];
         foreach ($chats['result'] as $item)
             $chat_id[] = (string)$item['id'];
