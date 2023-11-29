@@ -218,7 +218,8 @@ class OperatorChatController extends Controller
 
       //  dd($lastMessage,$chats['result']);
         foreach ($chats['result'] as &$item){
-            $item['last_message'] = $lastMessage[$item['id']];
+            if(isset($lastMessage[$item['id']]))
+                $item['last_message'] = $lastMessage[$item['id']];
         }
 
 
