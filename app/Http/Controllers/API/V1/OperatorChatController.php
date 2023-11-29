@@ -129,10 +129,10 @@ class OperatorChatController extends Controller
 
         if($request->get('chat_limit')) {
             $params['chat_limit'] = $request->get('chat_limit');
-            //$join[] = "OperatorWork";
+            $join[] = "OperatorWork";
         }else{
             $params['limit_more'] = '1';
-          //  $join[] = "OperatorWork";
+            $join[] = "OperatorWork";
         }
 
 
@@ -195,6 +195,9 @@ class OperatorChatController extends Controller
         $select[] = DB::raw(" ChatLimit.limits as 'limit'");
         $select[] = DB::raw(" CEIL(ChatLimit.limits) as 'available_limit'");
 
+        $select[] = DB::raw("(SELECT SUM(credits) FROM credit_logs
+        WHERE credit_type = ".CreditLogTypeEnum::OUTCOME." AND ((user_id = first_user_id AND other_user_id = second_user_id) || (user_id = second_user_id AND other_user_id = first_user_id) ) as max_limit");
+
         $chat = new ChatLogic($params,$select);
         $chats = $chat->setModel((new Chat\Chat()))
             ->offPagination()->order('desc','updated_at')
@@ -215,14 +218,10 @@ class OperatorChatController extends Controller
         $lastMessage = (new ChatMessageLogic())->getChatLastMessage(null,$chat_id);
         foreach ($lastMessage as $item) $temp[$item['chat_id']] = $item;
         $lastMessage = $temp;
-
-      //  dd($lastMessage,$chats['result']);
         foreach ($chats['result'] as &$item){
             if(isset($lastMessage[$item['id']]))
                 $item['last_message'] = $lastMessage[$item['id']];
         }
-
-
         return response()->json(['data'=>$chats['result']]);
 
 
