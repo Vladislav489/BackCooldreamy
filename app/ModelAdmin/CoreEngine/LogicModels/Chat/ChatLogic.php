@@ -283,15 +283,15 @@ class ChatLogic extends CoreEngine {
                 "type" => 'string|array', "action" => '>=', "concat" => 'AND',
                 'relatedModel'=>"ChatLimit"
             ],
-            [   "field" =>'(SELECT operator_id  FROM operator_link_users WHERE  user_id = first_user_id  OR user_id = second_user_id LIMIT 1 )', "params" => 'operator_id',
-                "validate" => ["string" => true, "empty" => true],
-                "type" => 'string|array', "action" => '=', "concat" => 'AND',
-               // 'relatedModel'=>'OperatorWork'
-            ],
-            [   "field" =>'(SELECT operator_id  FROM operator_link_users WHERE  user_id = first_user_id  OR user_id = second_user_id  AND operator_work =1 LIMIT 1 )', "params" => 'operator_work',
+            [   "field" =>'OperatorWork.operator_id', "params" => 'operator_id',
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'IN', "concat" => 'AND',
-              //  'relatedModel'=>'OperatorWork'
+                'relatedModel'=>'OperatorWork'
+            ],
+            [   "field" =>'OperatorWork.operator_work', "params" => 'operator_work',
+                "validate" => ["string" => true, "empty" => true],
+                "type" => 'string|array', "action" => 'IN', "concat" => 'AND',
+                'relatedModel'=>'OperatorWork'
             ],
 
 
