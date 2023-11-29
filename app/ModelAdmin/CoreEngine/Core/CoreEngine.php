@@ -136,6 +136,7 @@ class CoreEngine{
     }
     public function getEngine() {return $this->engine;}
     public function getQuery() {return $this->query;}
+    public function &getQueryLink() {return $this->query;}
     public function getParams() {return  $this->params;}
     public function getGroupBy() {return $this->group_by;}
     //ПОЛУЧЕНИЕ СВОЙСТВ ПО ИМЕНИ ПАРАМЕТРА

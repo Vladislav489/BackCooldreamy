@@ -203,7 +203,7 @@ class OperatorChatController extends Controller
             ->offPagination()->order('desc','updated_at')
             ->setLimit(20)
             ->setGroupBy($group)
-            ->setJoin($join)
+            ->getQueryLink()->with($join)
             ->getList();
         $chat_id = [];
         foreach ($chats['result'] as $item)
