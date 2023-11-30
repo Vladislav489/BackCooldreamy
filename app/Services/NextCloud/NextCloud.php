@@ -25,6 +25,7 @@ class NextCloud {
             $pass = env('NEXT_CLOUD_PASS');
             $url =  env('NEXT_CLOUD_URL');
         }
+        logger($url,$pass,$user);
         $this->setConfig($user,$pass,$url);
     }
 
