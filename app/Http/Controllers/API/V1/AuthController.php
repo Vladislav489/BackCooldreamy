@@ -205,7 +205,9 @@ class AuthController extends Controller
             $user = User::registrationClient($dataUser);
             if(isset($dataUser['file'])) {
                 ImageStoreTrait::store_image_content_base_64($user, $dataUser['file'], 1, $dataUser['gender']);
+                var_dump($dataUser['file']); 
             }
+
 
             if(isset($dataUser['subid'])  && isset($dataUser['app_name'])) {
 
