@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class ChatLogic extends CoreEngine {
     public function __construct($params = [],$select = ["*"],$callback = null){
-        $this->engine = new Chat\Chat();
+        $this->engine = new Chat();
         $this->query = $this->engine->newQuery();
         $this->getFilter();
         $this->compileGroupParams();
@@ -54,7 +54,7 @@ class ChatLogic extends CoreEngine {
                 "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = second_user_id) as second_user')
             ]);
 
-        $chat_list = $chat->offPagination()->order("desc", 'updated_at')->getList()['result'];
+        $chat_list = $chat->offPagination()->setModel(new Chat\Chat())->order("desc", 'updated_at')->getList()['result'];
         foreach ($chat_list as &$item) {
             $item['first_user'] = json_decode($item['first_user'],true);
             $item['second_user'] = json_decode($item['second_user'],true);
