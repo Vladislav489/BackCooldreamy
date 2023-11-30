@@ -190,7 +190,7 @@ class OperatorChatController extends Controller
         $chat->setModel((new Chat()))->offPagination()->order('desc','updated_at')->setGroupBy($group);
         $chat->getQueryLink()->with($join);
         $chats = $chat->getList();
-        return response()->json(['data'=>$chats['result'],'count'=>count($chats['result'])]);
+        return response()->json(['data'=>$chats['result']]);
     }
 
 
