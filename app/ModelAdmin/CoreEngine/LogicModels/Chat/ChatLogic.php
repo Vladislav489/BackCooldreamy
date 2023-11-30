@@ -27,7 +27,12 @@ class ChatLogic extends CoreEngine {
         if($request['chat_id'])
             $params['id'] = $request['chat_id'];
 
-
+        if(isset($request['per_page'])){
+            $params['pageSize'] =$request['per_page'];
+        }
+        if(isset($request['page'])) {
+            $params['page'] = $request['page'];
+        }
         if ($request['filter'] == 'favorite') {
             $favorite_users = FavoriteProfile::where('user_id', $user_id)->where('disabled', false)->pluck('favorite_user_id');
             $params['chat_by_first_sec_user'] = [[$user_id],$favorite_users];
