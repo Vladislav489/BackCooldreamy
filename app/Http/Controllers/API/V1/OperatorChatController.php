@@ -187,7 +187,7 @@ class OperatorChatController extends Controller
         $select[] = DB::raw("(SELECT SUM(credits) FROM credit_logs
         WHERE credit_type = '".CreditLogTypeEnum::OUTCOME."' AND ((user_id = first_user_id AND other_user_id = second_user_id) || (user_id = second_user_id AND other_user_id = first_user_id) )) as max_limit");
         $chat = new ChatLogic($params,$select);
-        $chat->setModel((new Chat()))->offPagination()->order('desc','updated_at')->setGroupBy($group);
+        $chat->setModel((new Chat()))->offPagination()->order('desc','updated_at')->setJoin(['OperatorWork'])->setGroupBy($group);
         $chat->getQueryLink()->with($join);
         $chats = $chat->getList();
         return response()->json(['data'=>$chats['result']]);
