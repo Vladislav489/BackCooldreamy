@@ -178,7 +178,7 @@ class OperatorChatController extends Controller
            // $select[] = DB::raw("GROUP_CONCAT(IF(OperatorWork.operator_work = 1,OperatorWork.operator_id , '" . Auth::user()->id . "'  )) as operator_id");
            // $select[] = DB::raw("GROUP_CONCAT(IF(OperatorWork.operator_work = 1,(SELECT name FROM users WHERE id = OperatorWork.operator_id),'" . Auth::user()->name . "')) as operator_name");
             //  $select[] = DB::raw("OperatorWork.operator_work");
-         //   $group[]  = 'id';
+            $group[]  = 'id';
 
         }
         $select[] = DB::raw(" ChatLimit.limits as 'limit'");
@@ -187,7 +187,7 @@ class OperatorChatController extends Controller
         $select[] = DB::raw("(SELECT SUM(credits) FROM credit_logs
         WHERE credit_type = '".CreditLogTypeEnum::OUTCOME."' AND ((user_id = first_user_id AND other_user_id = second_user_id) || (user_id = second_user_id AND other_user_id = first_user_id) )) as max_limit");
         $chat = new ChatLogic($params,$select);
-        $chat->setModel((new Chat()))->offPagination()->order('desc','updated_at')->setJoin(['OperatorWork']);//->setGroupBy($group);
+        $chat->setModel((new Chat()))->offPagination()->order('desc','updated_at')->setJoin(['OperatorWork'])->setGroupBy($group);
         $chat->getQueryLink()->with($join);
         $chats = $chat->getList();
         return response()->json(['data'=>$chats['result']]);
