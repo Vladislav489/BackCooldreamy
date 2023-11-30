@@ -146,7 +146,7 @@ class ChatController extends Controller
             $item['last_message'] = $lastMessage[$item['id']];
         }
 
-        return response($chat_list);
+        return response(['data'=>$chat_list]);
     }
 
 
