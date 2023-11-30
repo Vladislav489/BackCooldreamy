@@ -80,8 +80,10 @@ class NextCloud {
 
         curl_setopt_array($curl,$paramsCurl);
         $response = curl_exec($curl);
+        logger(json_encode($response));
         if (curl_errno($curl)) {
             $this->error = curl_error($curl);
+            logger(json_encode($this->error));
         }
         curl_close($curl);
         return $response;
