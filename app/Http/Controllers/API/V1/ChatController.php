@@ -130,15 +130,28 @@ class ChatController extends Controller
         $user_id = Auth::id();
         $chat_list = (new ChatLogic())->getListChatUser($user_id,$request);
         $chat_id = [];
-        foreach ($chat_list as $item)
-            array_push($chat_id,(string)$item['id']);
+        $chatBuffer = [];
+        foreach ($chat_list as $item) {
+            array_push($chat_id, (string)$item['id']);
+            $chatBuffer[$item['id']] = $item;
+        }
         $temp = [];
         $chatNotRead = (new ChatMessageLogic())->getChatNotReadUser($user_id,$chat_id);
         foreach ($chatNotRead as $item) $temp[$item['chat_id']] = $item;
         $chatNotRead = $temp;
         $temp = [];
         $lastMessage = (new ChatMessageLogic())->getChatLastMessage($user_id,$chat_id);
-        foreach ($lastMessage as $item) $temp[$item['chat_id']] = $item;
+        foreach ($lastMessage as $item){
+            if($item['sender_user_id'] == $user_id){
+                $item['sender_user'] = $chatBuffer[$item['chat_id']]['my_self_user'];
+                $item['recepient_user'] = $chatBuffer[$item['chat_id']]['another_user'];
+            }
+             if($item['recepient_user_id'] == $user_id){
+                 $item['recepient_user'] = $chatBuffer[$item['chat_id']]['my_self_user'];
+                 $item['sender_user'] = $chatBuffer[$item['chat_id']]['another_user'];
+             }
+            $temp[$item['chat_id']] = $item;
+        }
         $lastMessage = $temp;
 
         foreach ($chat_list as &$item){
