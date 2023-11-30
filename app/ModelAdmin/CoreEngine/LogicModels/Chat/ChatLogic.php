@@ -45,9 +45,9 @@ class ChatLogic extends CoreEngine {
 
         $chat = new ChatLogic($params,
             ['id', 'is_answered_by_operator','first_user_id','second_user_id',
-                DB::raw('(SELECT  json_object("id",id,"name",name,"avatar_url_thumbnail",avatar_url_thumbnail,"avatar_url",avatar_url,"online",online,
+                DB::raw('(SELECT  json_object("id",id,"name",name,"avatar_url_thumbnail",avatar_url_thumbnail,"avatar_url_big_thumbnail",avatar_url_big_thumbnail,"avatar_url",avatar_url,"online",online,
                 "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = first_user_id) as first_user'),
-                DB::raw('(SELECT  json_object("id",id,"name",name,"avatar_url_thumbnail",avatar_url_thumbnail,"avatar_url",avatar_url,"online",online,
+                DB::raw('(SELECT  json_object("id",id,"name",name,"avatar_url_thumbnail",avatar_url_thumbnail,"avatar_url_big_thumbnail",avatar_url_big_thumbnail,"avatar_url",avatar_url,"online",online,
                 "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = second_user_id) as second_user')
             ]);
 
