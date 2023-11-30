@@ -117,7 +117,7 @@ class OperatorChatController extends Controller
     }
 
 
-    public function index1(Request $request){
+    public function index(Request $request){
 
         $operator = Auth::user();
         $join = ['firstUser', 'secondUser','lastMessage'];
@@ -195,7 +195,7 @@ class OperatorChatController extends Controller
 
 
 
-    public function index(Request $request){
+    public function index1(Request $request){
          $operator = Auth::user();
            $filter = [
                 'per_page' => $request->get('per_page'),
