@@ -123,7 +123,7 @@ class ChatController extends Controller
     }
 
 
-    public function get_my_chat_list1(Request $request){
+    public function get_my_chat_list(Request $request){
         $perPage = 10;
         if (isset($request->per_page))
             $perPage = $request->per_page;
@@ -151,7 +151,7 @@ class ChatController extends Controller
 
 
 
-    public function get_my_chat_list(Request $request){
+    public function get_my_chat_list1(Request $request){
         $perPage = 10;
         if (isset($request->per_page))
             $perPage = $request->per_page;
