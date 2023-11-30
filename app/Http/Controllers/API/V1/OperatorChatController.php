@@ -175,8 +175,8 @@ class OperatorChatController extends Controller
             $select[] = DB::raw("IF(OperatorWork.operator_work = 1,OperatorWork.operator_id , '" . Auth::user()->id . "'  ) as operator_id");
             $select[] = DB::raw("IF(OperatorWork.operator_work = 1,(SELECT name FROM users WHERE id = OperatorWork.operator_id),'" . Auth::user()->name . "') as operator_name");
         }else{
-            $select[] = DB::raw("GROUP_CONCAT(IF(OperatorWork.operator_work = 1,OperatorWork.operator_id , '" . Auth::user()->id . "'  )) as operator_id");
-            $select[] = DB::raw("GROUP_CONCAT(IF(OperatorWork.operator_work = 1,(SELECT name FROM users WHERE id = OperatorWork.operator_id),'" . Auth::user()->name . "')) as operator_name");
+           // $select[] = DB::raw("GROUP_CONCAT(IF(OperatorWork.operator_work = 1,OperatorWork.operator_id , '" . Auth::user()->id . "'  )) as operator_id");
+           // $select[] = DB::raw("GROUP_CONCAT(IF(OperatorWork.operator_work = 1,(SELECT name FROM users WHERE id = OperatorWork.operator_id),'" . Auth::user()->name . "')) as operator_name");
             //  $select[] = DB::raw("OperatorWork.operator_work");
          //   $group[]  = 'id';
 
