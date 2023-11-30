@@ -41,13 +41,16 @@ class ChatLogic extends CoreEngine {
             $params['is_ignored_by'] = '1';
         if (isset($request['search']) && !empty($request['search']))
             $params['search_name'] = $request['search'];
-
+/*
+ *  "user_avatar_url": "https://media.cooldreamy.com/698/ava/2022-02-08%2007.07.02%202768884895650424161_7171224381_result.jpg",
+                "user_thumbnail_url": "https://media.cooldreamy.com/698/ava/2022-02-08%2007.07.02%202768884895650424161_7171224381_result.jpg"
+ */
 
         $chat = new ChatLogic($params,
             ['id', 'is_answered_by_operator','first_user_id','second_user_id',
-                DB::raw('(SELECT  json_object("id",id,"name",name,"avatar_url_thumbnail",avatar_url_thumbnail,"avatar_url_big_thumbnail",avatar_url_big_thumbnail,"avatar_url",avatar_url,"online",online,
+                DB::raw('(SELECT  json_object("id",id,"name",name,"user_avatar_url",avatar_url,"user_thumbnail_url",avatar_url,"avatar_url_thumbnail",avatar_url_thumbnail,"avatar_url_big_thumbnail",avatar_url_big_thumbnail,"avatar_url",avatar_url,"online",online,
                 "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = first_user_id) as first_user'),
-                DB::raw('(SELECT  json_object("id",id,"name",name,"avatar_url_thumbnail",avatar_url_thumbnail,"avatar_url_big_thumbnail",avatar_url_big_thumbnail,"avatar_url",avatar_url,"online",online,
+                DB::raw('(SELECT  json_object("id",id,"name",name,"user_avatar_url",avatar_url,"user_thumbnail_url",avatar_url,"avatar_url_thumbnail",avatar_url_thumbnail,"avatar_url_big_thumbnail",avatar_url_big_thumbnail,"avatar_url",avatar_url,"online",online,
                 "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = second_user_id) as second_user')
             ]);
 
