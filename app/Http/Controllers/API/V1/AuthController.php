@@ -493,7 +493,7 @@ class AuthController extends Controller
            $user->save();
         }
 
-       if ($user->is_blocked)
+       if ($user->is_blocked == 1)
             return response()->json(['error' => 'You are blocked.'], 403);
 
         //(new LimitChatOperatorLogic())->changeUserGroup($user,2);
