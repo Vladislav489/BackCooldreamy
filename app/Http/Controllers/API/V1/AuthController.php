@@ -179,6 +179,17 @@ class AuthController extends Controller
        Mail::to($user)->send(new VerificationMail($user->token, $user));
    }
 
+   public function deleteUser(Request $request){
+        try {
+            $user = User::find(Auth::id());
+            User::query()->where('id', '=', $request->get('id'))->update(['is_blocked' => 1]);
+            return response()->json(['message' => 'success']);
+        }catch (\Throwable $e){
+            return response()->json(['message' =>'error']);
+        }
+       return response()->json(['message' =>'error']);
+   }
+
     public function register(Request $request){
         try {
         $validator = Validator::make(

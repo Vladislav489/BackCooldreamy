@@ -55,6 +55,7 @@ Route::post('send/password/change', [\App\Http\Controllers\API\V1\AuthController
 Route::post('send/verification', [\App\Http\Controllers\API\V1\AuthController::class, 'sendVerificationMail'])->middleware('auth:sanctum');
 
 
+Route::post('delete/account', [\App\Http\Controllers\API\V1\AuthController::class, 'deleteUser'])->middleware('auth:sanctum');
 
 Route::post('ace/add', [\App\Http\Controllers\API\V1\AuthController::class, 'setAces'])->middleware('auth:sanctum');
 Route::post('/email/resend', [\App\Http\Controllers\API\V1\AuthController::class, 'resendEmail'])->middleware('auth:sanctum', 'throttle:3.10');
