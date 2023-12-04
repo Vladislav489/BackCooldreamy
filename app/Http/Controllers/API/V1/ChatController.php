@@ -752,12 +752,8 @@ class ChatController extends Controller
     public function send_chat_gift_message(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => [
-                'required', 'integer',
-            ],
-            'gifts' => [
-                'required',
-            ],
+            'user_id' => ['required'],
+            'gifts' => ['required'],
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 500);
