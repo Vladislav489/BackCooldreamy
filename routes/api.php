@@ -182,6 +182,8 @@ Route::post('/verify', [\App\Http\Controllers\API\V1\AuthController::class, 'ver
 
 // Подписки
 Route::group(['prefix' => 'payments/', 'middleware' => ['auth:sanctum']], function () {
+    Route::post('/google/pay/save/transaction', [\App\Http\Controllers\PaymentController::class, 'saveGooglePay']);
+
     Route::post('/watch', [\App\Http\Controllers\PaymentController::class, 'watch']);
     Route::get('/credits/list', [\App\Http\Controllers\PaymentController::class, 'creditList']);
     Route::get('/subscription/list', [\App\Http\Controllers\PaymentController::class, 'subscriptionList']);
