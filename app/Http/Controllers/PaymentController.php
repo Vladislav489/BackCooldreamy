@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enum\Payment\PaymentStatusEnum;
+use App\Models\Pay\PayGoogle;
 use App\Models\Promotion;
 use App\Models\Subscription\SubscriptionList;
 use App\Models\Subscriptions;
@@ -199,12 +200,9 @@ class PaymentController
         return response()->json(['clientSecret' => $link->client_secret, 'link' => $link, 'model' => $model]);
     }
 
-    public function subscribe(Request $request)
-    {
+    public function subscribe(Request $request){
         $validator = Validator::make($request->all(), [
-            'list_id' => [
-                'required', 'integer',
-            ],
+            'list_id' => ['required', 'integer'],
             'list_type' => ['required', 'string', 'in:subscription,premium'],
         ]);
 
@@ -269,6 +267,22 @@ class PaymentController
         return response()->json(['message' => 'success']);
     }
 
+    public function saveGooglePay(Request $request){
+        $validator = Validator::make($request->all(), [
+            'user_id' => ['required'],
+            'data_pay' =>['required']
+        ]);
+        if(!$validator->valid())
+            return response()->json(['error' => $validator->errors()], 500);
+       $result = PayGoogle::create([
+                'user_id' => $request->get("user_id"),
+                'data_pay' => json_encode($request->get("data_pay"))
+       ]);
+       if(!is_null($result)) {
+           return response()->json(['message' => "success"]);
+       }
+       return response()->json(['message' => "error"]);
+    }
 
     public function testWebHook(){
        $data  =  json_decode('{"id":"evt_3NzR3rFjkPZRdnX10mKp9CYu","object":"event","api_version":"2022-11-15","created":1696887303,"data":{"object":{"id":"pi_3NzR3rFjkPZRdnX10aZgcIto","object":"payment_intent","amount":5000,"amount_capturable":0,"amount_details":{"tip":[]},"amount_received":5000,"application":null,"application_fee_amount":null,"automatic_payment_methods":{"allow_redirects":"always","enabled":true},"canceled_at":null,"cancellation_reason":null,"capture_method":"automatic","client_secret":"pi_3NzR3rFjkPZRdnX10aZgcIto_secret_RNwRs3i7kf9xPdTMBAzNcV0TQ","confirmation_method":"automatic","created":1696887143,"currency":"usd","customer":null,"description":null,"invoice":null,"last_payment_error":null,"latest_charge":"ch_3NzR3rFjkPZRdnX10GRlg3Fs","livemode":true,"metadata":[],"next_action":null,"on_behalf_of":null,"payment_method":"pm_1NzR6OFjkPZRdnX13BMKXqcR","payment_method_configuration_details":{"id":"pmc_1MzoFwFjkPZRdnX1o4y1HWQX","parent":null},"payment_method_options":{"card":{"installments":null,"mandate_options":null,"network":null,"request_three_d_secure":"automatic"},"link":{"persistent_token":null}},"payment_method_types":["card","link"],"processing":null,"receipt_email":null,"review":null,"setup_future_usage":null,"shipping":null,"source":null,"statement_descriptor":null,"statement_descriptor_suffix":null,"status":"succeeded","transfer_data":null,"transfer_group":null}},"livemode":true,"pending_webhooks":1,"request":{"id":"req_V3xPcCNojn2gto","idempotency_key":"ec6b3069-0232-49ff-bcb8-9c7319e30e8f"},"type":"payment_intent.succeeded"}',true);
