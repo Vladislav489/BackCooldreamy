@@ -105,9 +105,9 @@ class ChatRepository
 
 
     public static function findHowWorkAnket($ancet_id){
-       $ancet =  new  OperatorLinksUserLogic(['user'=>(string)$ancet_id,'work'=>'1'],["id"]);
+       $ancet =  new  OperatorLinksUserLogic(['user'=>(string)$ancet_id,'work'=>'1'],["id","operator_id"]);
        $res = $ancet->setJoin(['User'])->offPagination()->setLimit(1)->getOne();
-            return (count($res) > 0)?$res['operator_id']:User::find(124487)->id;
+            return (count($res) > 0 && isset($res['operator_id']))?$res['operator_id']:User::find(124487)->id;
     }
     public function findForAnket(User $user, string $id, array $with = []): JsonResponse|Chat {
         $chat = (new ChatLogic(['id' => $id]))->getFullQuery()->with($with)->first();
