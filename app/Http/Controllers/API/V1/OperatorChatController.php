@@ -123,7 +123,7 @@ class OperatorChatController extends Controller
         $join = ['firstUser', 'secondUser','lastMessage'];
         $params = [
             'page' => $request->get('page'),
-            'pageSize' => $request->get('per_page'),
+            'pageSize' =>30, //$request->get('per_page'),
             "search" => $request->get('search'),
             'filter_type' => $request->get('filter_type'),
         ];
