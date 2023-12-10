@@ -228,6 +228,7 @@ class OperatorRepository
 
     public function getOperatorLimits(User $operator, $page,$pageSize, array $requestData = [])
     {
+
         if ($operator->getRoleNames()->toArray()[0] == 'admin') {
             $ankets = OperatorLinkUsers::all()->pluck('user_id');
         }else{
@@ -248,7 +249,7 @@ class OperatorRepository
             });
         }
 
-        $results = $chats->orderByDesc('updated_at')->paginate($pageSize,['*']);
+        $results = $chats->orderByDesc('updated_at')->paginate(40,['*']);
 
         $results->getCollection()->each(function ($item) {
             $item->girl = User::query()->find($item->girl_id);
