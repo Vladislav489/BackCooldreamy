@@ -20,11 +20,9 @@ class NextCloud {
     //$username = 'dmitry';
     //$password = 'Aa@19528091!';
     public function __construct($user = null,$pass = null,$url = null){
-        if(is_null($user) || is_null($pass) || is_null($url)){
-            $user = env('NEXT_CLOUD_USER');
-            $pass = env('NEXT_CLOUD_PASS');
-            $url =  env('NEXT_CLOUD_URL');
-        }
+          $user = 'dmitry';
+          $pass = 'Ag@19836373!';
+          $url =  'nc.cooldreamy.com';
         logger($url."--".$pass."--".$user);
         $this->setConfig($user,$pass,$url);
     }
