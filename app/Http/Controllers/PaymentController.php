@@ -12,6 +12,7 @@ use App\Models\User\Payment;
 use App\Models\User\PremiumList;
 use App\Models\User\Premuim;
 use App\Models\UserPromotion;
+use App\Services\Payment\GooglePayService;
 use App\Services\Payment\StripeService;
 use App\Services\Premium\PremuimService;
 use App\Services\Promotion\PromotionService;
@@ -36,17 +37,21 @@ class PaymentController
 
     private PromotionService $promotionService;
 
+    private GooglePayService $googlePayService;
+
     public function __construct(
         StripeService $stripeService,
         SubscriptionService $subscriptionService,
         PremuimService $premuimService,
         PromotionService $promotionService,
+        GooglePayService $googlePayService,
     )
     {
         $this->stripeService = $stripeService;
         $this->subscriptionService = $subscriptionService;
         $this->premuimService = $premuimService;
         $this->promotionService = $promotionService;
+        $this->googlePayService = $googlePayService;
     }
 
     public function creditList(){
@@ -269,19 +274,28 @@ class PaymentController
 
     public function saveGooglePay(Request $request){
         $validator = Validator::make($request->all(), [
-            'user_id' => ['required'],
+            'user_id' => ['required', 'numeric'],
             'data_pay' =>['required']
         ]);
-        if(!$validator->valid())
+        $data = $validator->valid();
+        if(!$data) {
             return response()->json(['error' => $validator->errors()], 500);
+        }
+        $userId = $request->get('user_id');
        $result = PayGoogle::create([
-                'user_id' => $request->get("user_id"),
-                'data_pay' => json_encode($request->get("data_pay"))
+                'user_id' => $data['user_id'],
+                'data_pay' => $data['data_pay']
        ]);
        if(!is_null($result)) {
-           return response()->json(['message' => "success"]);
-       }
+//           $response = $this->googlePayService->pay($userId);
+           return response()->json(['message' => $response ?? 0]);
+       } else
        return response()->json(['message' => "error"]);
+    }
+
+    public function googlePay()
+    {
+        $this->googlePayService->pay();
     }
 
     public function testWebHook(){
