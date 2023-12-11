@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\ModelAdmin\CoreEngine\LogicModels\OperatorLinksUserLogic;
+use App\ModelAdmin\CoreEngine\LogicModels\Operator\OperatorLinksUserLogic;
 use App\ModelAdmin\CoreEngine\LogicModels\Statistic\RoutingLogic;
 use App\ModelAdmin\CoreEngine\LogicModels\Statistic\UserInputsLogic;
 use App\ModelAdmin\CoreEngine\LogicModels\UserLogic;
