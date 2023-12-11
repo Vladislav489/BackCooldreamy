@@ -62,7 +62,7 @@ class NextCloud {
             }
             array_unshift($header,"Content-Type: {$type}");
         }
-//        logger($this->requestUrl);
+        logger($this->requestUrl);
         $paramsCurl = array(
             CURLOPT_URL =>$this->requestUrl,
             CURLOPT_RETURNTRANSFER => true,
