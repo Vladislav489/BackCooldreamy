@@ -289,14 +289,13 @@ class PaymentController
        if(!is_null($result)) {
            try{
                $response = $this->googlePayService->pay($userId);
-               dd($response);
+               return response()->json(['message' => $response]);
            } catch (\Throwable $e) {
-               dd($e->getMessage());
+               return response()->json(['message' => 'error: ' . $e->getMessage()]);
            }
-
-           return response()->json(['message' => $response ?? 0]);
-       } else
-       return response()->json(['message' => "error"]);
+       } else {
+           return response()->json(['message' => 'error']);
+       }
     }
 
     public function testWebHook(){

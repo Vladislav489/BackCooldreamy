@@ -15,13 +15,11 @@ trait PreparePayment
     public function prepare(Payment $payment, $log) {
         $user = $payment->user;
         if ($payment->list_type == CreditList::class) {
-
             $creditList = CreditList::find($payment->list_id);
             if (!$creditList) {
                 $log->error('Not Found Credit List' . $creditList->id);
             }
             $user->addCreditsReal($creditList->credits);
-
             $log->info('User add credits: '. $creditList->credits);
         } else if ($payment->list_type == SubscriptionList::class) {
             $subscriptionList = SubscriptionList::find($payment->list_id);
@@ -29,7 +27,6 @@ trait PreparePayment
             if (!$subscriptionList) {
                 $log->error('Not Found Subscription List' . $subscriptionList->id);
             }
-
 
             $log->info('User accept subscription: '. $subscriptionList->id);
 

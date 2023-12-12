@@ -104,6 +104,8 @@ class Subscriptions extends Model
             'service_id' => $modelType->id,
             'period_start' => Carbon::now(),
             'period_end' => Carbon::now()->addMinutes( $modelType->duration),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
             'one_time' =>  $modelType->one_time,
             'count_letters' =>  $modelType->count_letters,
             'count_watch_or_send_photos' =>  $modelType->count_watch_or_send_photos,

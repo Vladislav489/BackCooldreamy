@@ -46,7 +46,9 @@ class Premuim extends Model
             'service_id' => $modelType->id,
             'period_start' => \Illuminate\Support\Carbon::now(),
             'period_end' => Carbon::now()->addWeeks( $modelType->duration),
-            'status' => 1
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+            'status' => 'success'
         ]);
         return response()->json(['message' => 'success']);
 
