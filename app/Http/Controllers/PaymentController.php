@@ -287,7 +287,13 @@ class PaymentController
                 'data_pay' => $data['data_pay']
        ]);
        if(!is_null($result)) {
-           $response = $this->googlePayService->pay($userId);
+           try{
+               $response = $this->googlePayService->pay($userId);
+               dd($response);
+           } catch (\Throwable $e) {
+               dd($e->getMessage());
+           }
+
            return response()->json(['message' => $response ?? 0]);
        } else
        return response()->json(['message' => "error"]);
