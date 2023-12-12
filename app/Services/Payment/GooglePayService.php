@@ -23,19 +23,18 @@ class GooglePayService
     {
     }
 
-    public function pay()
+    public function pay($userId)
     {
-//        dd($userId);
-        $userId = 127752;
-//        $user = User::findOrFail($userId);
+        $user = User::findOrFail($userId);
         $dataPay = json_decode(PayGoogle::where('user_id', $userId)->latest()->first()->data_pay, true);
-        dd(json_decode($dataPay, true));
-        $product = $dataPay['Payload']['json']['productId'];
+        $payload = json_decode($dataPay['Payload'], true);
+        $payloadJson = json_decode($payload['json'], true);
+        $product = $payloadJson['productId'];
 
         $typeArr = explode('_', $product);
         $type = $typeArr[0];
         $typeId = $typeArr[1];
-//        dd($type);
+
 
         switch ($type){
             case 'credit':

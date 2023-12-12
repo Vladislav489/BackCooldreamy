@@ -287,15 +287,10 @@ class PaymentController
                 'data_pay' => $data['data_pay']
        ]);
        if(!is_null($result)) {
-//           $response = $this->googlePayService->pay($userId);
+           $response = $this->googlePayService->pay($userId);
            return response()->json(['message' => $response ?? 0]);
        } else
        return response()->json(['message' => "error"]);
-    }
-
-    public function googlePay()
-    {
-        $this->googlePayService->pay();
     }
 
     public function testWebHook(){
