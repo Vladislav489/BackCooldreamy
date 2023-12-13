@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pay_googles', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger("user_id")->index();
-            $table->json("data_pay");
-            $table->timestamps();
+        Schema::table('routing_users', function (Blueprint $table) {
+            $table->index('user_id', 'ru_user_id_index');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pay_googles');
+        Schema::table('routing_users', function (Blueprint $table) {
+            $table->dropIndex('ru_user_id_index');
+        });
     }
 };

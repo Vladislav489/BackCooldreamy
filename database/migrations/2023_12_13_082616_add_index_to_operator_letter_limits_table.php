@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pay_googles', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger("user_id")->index();
-            $table->json("data_pay");
-            $table->timestamps();
+        Schema::table('operator_letter_limits', function (Blueprint $table) {
+            $table->index('letter_id', 'oll_letter_id_index');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pay_googles');
+        Schema::table('operator_letter_limits', function (Blueprint $table) {
+            $table->dropIndex('oll_letter_id_index');
+        });
     }
 };
