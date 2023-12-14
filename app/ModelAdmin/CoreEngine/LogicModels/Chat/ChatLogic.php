@@ -3,12 +3,12 @@ namespace App\ModelAdmin\CoreEngine\LogicModels\Chat;
 use App\ModelAdmin\CoreEngine\Core\CoreEngine;
 use App\Models\Chat;
 use App\Models\ChatMessage;
+use App\Models\FavoriteProfile;
 use App\Models\Operator\WorkingShiftLog;
 use App\Models\OperatorChatLimit;
 use App\Models\OperatorLinkUsers;
 use App\Models\Subscriptions;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 
@@ -34,8 +34,9 @@ class ChatLogic extends CoreEngine {
             $params['page'] = $request['page'];
         }
         if ($request['filter'] == 'favorite') {
-            $favorite_users = FavoriteProfile::where('user_id', $user_id)->where('disabled', false)->pluck('favorite_user_id');
-            $params['chat_by_first_sec_user'] = [[$user_id],$favorite_users];
+            $favorite_users = FavoriteProfile::where('user_id', $user_id)->where('disabled', false)->pluck('favorite_user_id')->toArray();
+            $favorite_users = implode("','", $favorite_users);
+            $params['chat_by_first_sec_user'] = [$user_id, $favorite_users];
         }
         if ($request['filter'] == 'unread') {
             $params['read_by_recepient'] = '0';
@@ -46,6 +47,7 @@ class ChatLogic extends CoreEngine {
             $params['is_ignored_by'] = '1';
         if (isset($request['search']) && !empty($request['search']))
             $params['search_name'] = $request['search'];
+
 /*
  *  "user_avatar_url": "https://media.cooldreamy.com/698/ava/2022-02-08%2007.07.02%202768884895650424161_7171224381_result.jpg",
                 "user_thumbnail_url": "https://media.cooldreamy.com/698/ava/2022-02-08%2007.07.02%202768884895650424161_7171224381_result.jpg"
@@ -59,7 +61,8 @@ class ChatLogic extends CoreEngine {
                 "age",DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(birthday)), "%Y")+0) FROM users WHERE  users.id = second_user_id) as second_user')
             ]);
 
-        $chat_list = $chat->offPagination()->setModel(new Chat\Chat())->order("desc", 'updated_at')->getList()['result'];
+//        dd($chat->getPropertyFilterByParam('is_ignored_by'));
+        $chat_list = $chat->offPagination()->setModel(new Chat\Chat())->order("desc", 'chats.updated_at')->getList()['result'];
         foreach ($chat_list as &$item) {
             $item['first_user'] = json_decode($item['first_user'],true);
             $item['second_user'] = json_decode($item['second_user'],true);
@@ -174,12 +177,12 @@ class ChatLogic extends CoreEngine {
             ],
 
 
-            [   "field" =>"(".$tab.'.is_ignored_by_first_user  = "?"',
+            [   "field" =>"(".$tab.'.is_ignored_by_first_user  = ?',
                 "params" => 'is_ignored_by',
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'RAW', "concat" => 'AND',
             ],
-            [   "field" =>$tab.'is_ignored_by_second_user  = "?" )',
+            [   "field" =>$tab.'.is_ignored_by_second_user  = ? )',
                 "params" => 'is_ignored_by',
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'RAW', "concat" => 'OR',
