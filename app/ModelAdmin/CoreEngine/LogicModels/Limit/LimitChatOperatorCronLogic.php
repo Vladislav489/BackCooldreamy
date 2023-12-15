@@ -178,6 +178,7 @@ class LimitChatOperatorCronLogic extends LimitChatOperatorLogic {
 
                     $newArr[$id] = ['id' => $id, 'profile_type_id' => $profile_type_id];
                 }
+                var_dump(implode("\n UNION \n", $sql);
                 $result = DB::select(implode("\n UNION \n", $sql));
                 $result = json_decode(json_encode($result), true);
                 foreach ($result as $item) {
