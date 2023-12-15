@@ -139,7 +139,8 @@ class AnketProbabilityService
         $randomNumber = mt_rand(1, 100);
 
         $probabilityKey = $probability * 100;
-        if ($probabilityKey >= $randomNumber) {
+
+        if ($probabilityKey <= $randomNumber) {
             return true;
         }
         $this->log->info("[AnketProbabilityService::watch] Random number: {$randomNumber} to {$probabilityKey}");
