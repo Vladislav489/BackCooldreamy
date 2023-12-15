@@ -79,11 +79,11 @@ class ProfileController extends Controller
         FireBaseService::sendPushFireBase($user,"СoolDreamy","Someone visited your page", Auth::user()->avatar_url);
 //        UpdateNotificationEvent::dispatch($user->id);
 
-        if (!$user->is_real && $user->gender == 'female') {
-            $service = new AnketProbabilityService();
-
-            $service->watch($user, $authUser);
-        }
+//        if (!$user->is_real && $user->gender == 'female') {
+//            $service = new AnketProbabilityService();
+//
+//            $service->watch($user, $authUser);
+//        }
 
         if (!$user->is_real && ($user->profile_type_id != ProfileTypeEnum::STANDARD)) {
 //            if (!$request->uuid) {
