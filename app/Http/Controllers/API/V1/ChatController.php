@@ -122,19 +122,6 @@ class ChatController extends Controller
         $item['chat'] = $chat;
         return $item;
     }
-    public function test11(){
-        $chatNotRead = (new ChatMessageLogic())->getChatNotReadUser('127948',['53710']);
-
-        //$chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;
-        $chatMessage = new ChatMessageLogic([
-            'chat_id' => ['53710'],
-            'recepient' => '127948',
-            'read_by_recepient' =>'0'
-        ],
-            [DB::raw("COUNT(*) as unread_messages_count")]);
-        $countNotReadMessage =  $chatMessage->OnDebug()->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
-        dd($chatNotRead);
-    }
 
     public function get_my_chat_list(Request $request){
         $perPage = 10;
