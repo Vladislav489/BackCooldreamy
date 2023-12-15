@@ -151,10 +151,12 @@ class LimitChatOperatorCronLogic extends LimitChatOperatorLogic {
     public function getAncetForUser(array $user_ids){
             if(count($user_ids)>0) {
                 $probabilites = LimitProbabilityByAnketType::get()->toArray();
+                var_dump($probabilites);
                 $sql = [];
                 $newArr = [];
                 foreach ($user_ids as $key => $id) {
                     $profile_type_id = $this->probabiliteProfil($probabilites);
+                    var_dump('profile_type_id',$profile_type_id);
                     $offset = rand(0, 1);
                     $randOrder = rand(0, 8);
                     $randOrderType = rand(0, 1);
