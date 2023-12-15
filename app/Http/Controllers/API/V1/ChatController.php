@@ -33,6 +33,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -123,6 +124,15 @@ class ChatController extends Controller
     }
     public function test11(){
         $chatNotRead = (new ChatMessageLogic())->getChatNotReadUser('127948',['53710']);
+
+        //$chat_ids = (!is_array($chat_ids))?[$chat_ids]:$chat_ids;
+        $chatMessage = new ChatMessageLogic([
+            'chat_id' => ['53710'],
+            'recepient' => '127948',
+            'read_by_recepient' =>'0'
+        ],
+            [DB::raw("COUNT(*) as unread_messages_count")]);
+        $countNotReadMessage =  $chatMessage->OnDebug()->setGroupBy(['chat_id'])->offPagination()->getGroup()['result'];
         dd($chatNotRead);
     }
 
