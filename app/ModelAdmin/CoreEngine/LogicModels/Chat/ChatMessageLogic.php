@@ -56,7 +56,7 @@ class ChatMessageLogic extends CoreEngine {
 
 
     public function getAverageCountSendManMessage(){
-       $this->setJoin(['OUserSender']);
+       $this->setJoin(['UserSender']);
        $this->getTotal();
    }
 
@@ -225,7 +225,6 @@ class ChatMessageLogic extends CoreEngine {
             [   "field" => 'is_read_by_recepient', "params" => 'read_by_recepient',
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string', "action" => '=', "concat" => 'AND',
-                'relatedModel'=>'OperatorChat'
             ],
 
             [   "field" => 'OperatorChat.model_id', "params" => 'operator',
