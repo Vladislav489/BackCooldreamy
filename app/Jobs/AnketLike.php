@@ -43,8 +43,8 @@ class AnketLike implements ShouldQueue
         ]);
 
         if (!$this->likeUser->liked_me()->where('users.id', $this->user->id)->exists()) {
-            //$this->user->addViewedUser($this->likeUser);
-           // $this->user->addLike($this->likeUser);
+            $this->user->addViewedUser($this->likeUser);
+            $this->user->addLike($this->likeUser);
            // SympathyEvent::dispatch($this->likeUser->id, AnketProbabilityService::LIKE, $this->user);
            // SympathyEvent::dispatch($this->likeUser->id, AnketProbabilityService::WATCH, $this->user);
 

@@ -6,12 +6,15 @@ use App\Enum\Payment\PaymentStatusEnum;
 use App\ModelAdmin\CoreEngine\LogicModels\User\UserCooperationCronLogic;
 use App\Models\Subscription\SubscriptionList;
 use App\Models\Subscriptions;
+use App\Models\User;
 use App\Models\User\CreditList;
 use App\Models\User\Payment;
 use App\Models\User\PremiumList;
 use App\Models\User\Premuim;
 use App\Models\UserPromotion;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Stripe\Checkout\Session;
 use Stripe\PaymentIntent;
@@ -28,13 +31,17 @@ class StripeService
      */
     public function payCheckout(Payment $payment)
     {
+        $url = 'https://cooldreamy.com/payment';
         Stripe::setApiKey(config('stripe.sk'));
 
         $session = Session::create([
+            'mode' => 'payment',
+            'success_url' => $url . '?session_id={CHECKOUT_SESSION_ID}&user_id=' . $payment->user_id . '&app_key=' . env('APP_KEY'),
+            'cancel_url' => $url . '?success=false',
             'line_items' => [
                 [
                     'price_data' => [
-                        'currency' => 'USD',
+                        'currency' => 'usd',
                         'product_data' => [
                             'name' => 'Payment'
                         ],
@@ -43,13 +50,41 @@ class StripeService
                     'quantity' => 1
                 ]
             ],
-            'mode' => 'payment',
-            // TODO
-            'success_url' => 'https://cool-date.netlify.app',
-            'cancel_url' => 'https://cool-date.netlify.app',
         ]);
 
         return $session;
+    }
+
+    public function checkoutSuccess($request)
+    {
+        $log = Log::build([
+            'driver' => 'daily',
+            'path' => storage_path('logs/payments/stripe/stripe.log')
+        ]);
+        $appKey = $request->get('app_key');
+        $userId = $request->get('user_id');
+        $sessionId = $request->get('session_id');
+
+        if ($appKey != env('APP_KEY')) {
+            return 'error';
+        }
+
+        try {
+            User::findOrFail($userId);
+        } catch (\Throwable $e) {
+            return 'no such user';
+        }
+
+        $payment = Payment::where('payment_id', $sessionId)->where('user_id', $userId)->first();
+        if (is_null($payment)) {
+            $log->error('Payment not found: ' . $payment->id);
+            return 'no payments found';
+        } else {
+            $payment->status = PaymentStatusEnum::SUCCESS;
+            $payment->save();
+            $this->prepare($payment, $log);
+            return 'success';
+        }
     }
 
     public function pay(Payment $payment)
@@ -127,6 +162,5 @@ class StripeService
 
         return Session::retrieve($payment->payment_id);
     }
-
 
 }

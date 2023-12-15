@@ -26,7 +26,7 @@ Route::middleware('auth:sanctum')->get('/name', function (Request $request) {
     return response()->json(['name' => $request->user()->name]);
 });
 
-
+Route::get('/payment', [\App\Http\Controllers\PaymentController::class, 'checkoutSuccess']);
 
 
 
@@ -193,6 +193,9 @@ Route::group(['prefix' => 'payments/', 'middleware' => ['auth:sanctum']], functi
 
     Route::post('/subscribe', [\App\Http\Controllers\PaymentController::class, 'subscribe']);
     Route::post('/pay', [\App\Http\Controllers\PaymentController::class, 'pay']);
+
+    Route::post('/pay1', [\App\Http\Controllers\PaymentController::class, 'paySession']);
+
     Route::post('/promotions/activate', [\App\Http\Controllers\PaymentController::class, 'activatePromotion']);
     Route::get('/subscription', [\App\Http\Controllers\PaymentController::class, 'subscription']);
     Route::get('/premium', [\App\Http\Controllers\PaymentController::class, 'premium']);
