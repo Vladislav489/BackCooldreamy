@@ -257,7 +257,7 @@ class AceCronLogic extends AceLogic  {
     public function chengeCounterStepCron(){
         try {
             Db::statement("UPDATE {$this->engine->getTable()}
-                SET step_cron_counter = step_cron_counter - 1");
+                SET step_cron_counter = IF(step_cron_counter - 1 < 0,1000,step_cron_counter - 1)");
         // 126603
             return true;
         }catch (\Throwable $e){
