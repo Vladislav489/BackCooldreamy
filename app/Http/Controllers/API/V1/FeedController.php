@@ -82,10 +82,10 @@ class FeedController extends Controller
         // Отправляем евент человеку которому ставим лайк
         FireBaseService::sendPushFireBase($another_user,"СoolDreamy","You have a new like",$sender->avatar_url);
         //SympathyEvent::dispatch($another_user->id, AnketProbabilityService::LIKE, Auth::user());
-        if ($another_user->gender == 'female' && $another_user->is_real == false) {
-            $service = new AnketProbabilityService();
-            $service->like($another_user,$sender);
-        }
+//        if ($another_user->gender == 'female' && $another_user->is_real == false) {
+//            $service = new AnketProbabilityService();
+//            $service->like($another_user,$sender);
+//        }
 
         if (!$another_user->is_real) {
             OperatorLimitController::addChatLimits($another_user->id, 4);
