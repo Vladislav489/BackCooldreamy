@@ -130,7 +130,7 @@ class LimitChatOperatorCronLogic extends LimitChatOperatorLogic {
             AnketWatch::insert($addViewedUser);
             FavoriteProfile::insert($favorite);
             Feed::insert($like);
-
+            var_dump($list);
             foreach ($list as $item){
                 if (!OperatorChatLimit::query()->where('man_id', $item['id'])->where('girl_id',$item['send_user'])->exists()) {
                     $chatLimit = OperatorChatLimit::create([
