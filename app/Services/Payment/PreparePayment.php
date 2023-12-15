@@ -4,6 +4,7 @@ namespace App\Services\Payment;
 
 use App\Models\Subscription\SubscriptionList;
 use App\Models\Subscriptions;
+use App\Models\User;
 use App\Models\User\CreditList;
 use App\Models\User\Payment;
 use App\Models\User\PremiumList;
@@ -19,6 +20,7 @@ trait PreparePayment
             if (!$creditList) {
                 $log->error('Not Found Credit List' . $creditList->id);
             }
+            $user = User::find($payment->user_id);
             $user->addCreditsReal($creditList->credits);
             $log->info('User add credits: '. $creditList->credits);
         } else if ($payment->list_type == SubscriptionList::class) {
