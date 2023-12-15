@@ -281,7 +281,7 @@ class LimitChatOperatorCronLogic extends LimitChatOperatorLogic {
                 }
                 var_dump($user_ids);
                 $user_ids = (new self())->getAncetForUser($user_ids);
-
+                var_dump($user_ids);
                 if ($user_ids) {
                     var_dump("chat");
                     (new self())->ChatLimit($user_ids);
