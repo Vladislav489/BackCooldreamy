@@ -121,7 +121,10 @@ class ChatController extends Controller
         $item['chat'] = $chat;
         return $item;
     }
-
+    public function test11(){
+        $chatNotRead = (new ChatMessageLogic())->getChatNotReadUser('127948',['53710']);
+        dd($chatNotRead);
+    }
 
     public function get_my_chat_list(Request $request){
         $perPage = 10;
