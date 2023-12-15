@@ -264,6 +264,7 @@ class LimitChatOperatorCronLogic extends LimitChatOperatorLogic {
             $listUserSend = (isset($listUserSend['result'])) ? $listUserSend['result'] : [];
             $user_ids = [];
             $apdateAssignments = [];
+            var_dump($listUserSend);
             if (count($listUserSend)) {
                 foreach ($listUserSend as $user) {
                         //$user__ = \App\Models\User::find($user['user_id']);
@@ -271,16 +272,18 @@ class LimitChatOperatorCronLogic extends LimitChatOperatorLogic {
                             !is_null($user__->prompt_want_kids_id) || !is_null($user__->prompt_relationship_id) || !is_null($user__->prompt_career_id)) {
                             $user_ids[] = $user__->id;
                         }*/
-                    $user_ids[] = $user['user_id'];
+                        $user_ids[] = $user['user_id'];
                         if (!isset($apdateAssignments[$user['group_id']]))
                             $apdateAssignments[$user['group_id']] = [];
                         if (!isset($apdateAssignments[$user['group_id']][$user['last_assignments_sort']]))
                             $apdateAssignments[$user['group_id']][$user['last_assignments_sort']] = [];
                         $apdateAssignments[$user['group_id']][$user['last_assignments_sort']][] = $user['user_id'];
                 }
-
+                var_dump($user_ids);
                 $user_ids = (new self())->getAncetForUser($user_ids);
+
                 if ($user_ids) {
+                    var_dump("chat");
                     (new self())->ChatLimit($user_ids);
                 }
             }
