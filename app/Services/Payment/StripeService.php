@@ -31,13 +31,13 @@ class StripeService
      */
     public function payCheckout(Payment $payment)
     {
-        $url = 'https://cooldreamy.com/payment';
+        $url = 'https://cooldreamy.com/profile';
         Stripe::setApiKey(config('stripe.sk'));
 
         $session = Session::create([
             'mode' => 'payment',
             'success_url' => $url . '?session_id={CHECKOUT_SESSION_ID}&user_id=' . $payment->user_id . '&app_key=' . env('APP_KEY'),
-            'cancel_url' => $url . '?success=false',
+            'cancel_url' => $url,
             'line_items' => [
                 [
                     'price_data' => [
