@@ -70,7 +70,8 @@ class User extends Authenticatable
         'search_age_from',
         'search_age_to',
         'search_gender',
-        'is_pwa'
+        'is_pwa',
+        'google_id'
     ];
 
     /**

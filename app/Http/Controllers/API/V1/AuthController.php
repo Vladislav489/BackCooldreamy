@@ -199,7 +199,8 @@ class AuthController extends Controller
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|min:6',
                 'gender' => 'required',
-                'birthday' => 'required'
+                'birthday' => 'required',
+                'google_id' => 'nullable|unique:users,google_id'
             ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 401);
