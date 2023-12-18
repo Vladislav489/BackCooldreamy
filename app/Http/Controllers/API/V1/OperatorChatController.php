@@ -31,6 +31,7 @@ use App\Repositories\Operator\OperatorRepository;
 use App\Repositories\Operator\StickerRepository;
 use App\Repositories\User\FavoriteRepository;
 use App\Services\FireBase\FireBaseService;
+use App\Services\OneSignal\OneSignalService;
 use App\Services\Operator\LimitService;
 use App\Services\Operator\WorkingShiftService;
 use App\Services\Rating\RatingService;
@@ -326,6 +327,9 @@ class OperatorChatController extends Controller
         $sender = User::find($chat->user_id);
         $recepient =  User::find($chat->recepient_id);
         $chatMessage = $this->chatRepository->saveChatMessage($chat, $request->text);
+        if ($recepient->is_real == 1 && !is_null($recepient->onesignal_token)) {
+            OneSignalService::sendNotification($recepient->google_id, 'You have a new message', $request->text);
+        }
         if (!$recepient->online && $recepient->is_real == 1 &&  $recepient->is_email_verified == 1) {
             try {
                 Mail::to($recepient)->send(new MessageUserMail($recepient, $sender));

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('google_id', 50)->unique()->nullable();
+            $table->string('onesignal_token', 50)->unique()->nullable();
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('google_id');
+            $table->dropColumn('onesignal_token');
         });
     }
 };

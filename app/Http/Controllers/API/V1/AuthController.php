@@ -30,6 +30,7 @@ use App\Repositories\Auth\AuthLogRepository;
 use App\Repositories\Geo\UserGeoRepository;
 use App\Repositories\Operator\WorkingShiftRepository;
 use App\Services\Geo\GeoRequest;
+use App\Services\OneSignal\OneSignalService;
 use App\Services\Operator\WorkingShiftService;
 use App\Traits\ImageStoreTrait;
 use GuzzleHttp\Client;
@@ -53,11 +54,13 @@ class AuthController extends Controller
 
     /** @var AuthLogRepository */
     private AuthLogRepository $authLogRepository;
+    private OneSignalService $oneSignalService;
 
-    public function __construct(UserGeoRepository $userGeoRepository, AuthLogRepository $authLogRepository)
+    public function __construct(UserGeoRepository $userGeoRepository, AuthLogRepository $authLogRepository, OneSignalService $oneSignalService)
     {
         $this->userGeoRepository = $userGeoRepository;
         $this->authLogRepository = $authLogRepository;
+        $this->oneSignalService = $oneSignalService;
     }
 
     public function testJob()
@@ -199,8 +202,7 @@ class AuthController extends Controller
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|min:6',
                 'gender' => 'required',
-                'birthday' => 'required',
-                'google_id' => 'nullable|unique:users,google_id'
+                'birthday' => 'required'
             ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 401);
@@ -598,5 +600,15 @@ class AuthController extends Controller
         $data = json_decode($body, true);
 
         return response()->json($data);
+    }
+
+    public function addOneSignalToken(Request $request)
+    {
+        $validator = Validator::make($request->all(), ['token' => 'required|string']);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 500);
+        }
+        $response = $this->oneSignalService->addToken($request->token);
+        return response()->json(['message' => $response]);
     }
 }
