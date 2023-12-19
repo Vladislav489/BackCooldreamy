@@ -10,10 +10,10 @@ use App\Models\User;
 use App\Traits\ImageStoreTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use PHPUnit\Framework\MockObject\Exception;
-use Hash;
 use Illuminate\Support\Facades\File;
 
 //use Illuminate\Http\File;
@@ -23,7 +23,7 @@ class ImageController extends Controller
 {
     use ImageStoreTrait;
 
-    public function store(Request $request) {
+    public function store1(Request $request) {
         logger(json_encode($request));
         logger(json_encode($_FILES));
         logger(json_encode($request->header()));
@@ -41,6 +41,23 @@ class ImageController extends Controller
         }
     }
 
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'image' => ['required'],
+            'category_id' => ['required', Rule::exists('image_categories', 'id'),]
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 500);
+        }
+        try {
+            $user = Auth::user();
+            return self::store_image_content_base_64($user, $request->image, $request->category_id, $user ? $user->gender : null);
+        } catch (\Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function deleteImage(Request $request) {
         $validator = Validator::make($request->all(), [
             'image_id' => ['required'],
@@ -53,7 +70,7 @@ class ImageController extends Controller
         return Image::find($request->image_id)->deleteWithImage($request->user_id);
     }
 
-    public function storeImages(Request $request) {
+    public function storeImages1(Request $request) {
         $validator = Validator::make($request->all(), [
             'count_image' => ['required'],
             'user_id' => ['required'],
@@ -79,6 +96,25 @@ class ImageController extends Controller
         } else {
             return response()->json([self::store_image($user ,$request->file('image'), $request->category_id,  null)]);
         }
+    }
+
+    public function storeImages(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'count_image' => ['required'],
+            'user_id' => ['required'],
+            'category_id' => ['required', Rule::exists('image_categories', 'id'),]
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 500);
+        }
+        $user = User::where('user_id', $request->user_id)->first();
+        $listResponseImage = [];
+        for ($i = 0; $i < $request->count_image;$i++){
+            if($request->exists('image' . $i)) {
+                $listResponseImage[] = self::store_image_content_base_64($user, $request->get('image' . $i), $request->category_id, $user ? $user->gender : null);
+            }
+        } return response()->json($listResponseImage);
     }
 
 
