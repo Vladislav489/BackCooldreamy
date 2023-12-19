@@ -447,6 +447,6 @@ class PaymentController
     public function checkoutSuccess(Request $request)
     {
         $response = $this->stripeService->checkoutSuccess($request);
-        return response()->json(['message' => $response]);
+        return redirect('https://cooldreamy.com/profile');
     }
 }
