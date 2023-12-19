@@ -8,6 +8,7 @@ use App\Models\AceLog;
 use App\Models\Chat;
 use App\Models\ChatMessage;
 use App\Models\ChatWinkMessage;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -50,7 +51,10 @@ class WinkController extends Controller
 
         $another_user = User::find($target_user_id);
         if (!$another_user->is_real) {
-            OperatorLimitController::addChatLimits($target_user_id, 3);
+            $probability = Setting::where('name', 'wink_limit_probability')->first()->value;
+            if (mt_rand(1, 100) <= $probability) {
+                OperatorLimitController::addChatLimits($target_user_id, 3);
+            }
         }
 
         return response($chat_wink_message);
