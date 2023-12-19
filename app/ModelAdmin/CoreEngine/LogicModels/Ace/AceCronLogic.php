@@ -20,6 +20,7 @@ use App\Models\FavoriteProfile;
 use App\Models\Feed;
 use App\Models\ListOfGreeting;
 use App\Services\FireBase\FireBaseService;
+use App\Services\OneSignal\OneSignalService;
 use App\Services\Probability\AnketProbabilityService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -233,12 +234,21 @@ class AceCronLogic extends AceLogic  {
          Feed::insert($like);
          foreach ($list as $item){
             $user = User::find($item['id']);
+            $secondUser = User::find($item['send_user']);
              if(!is_null($user)){
                 FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","Someone visited your page", $user->avatar_url);
                 usleep(400);
                 FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","Someone liked your photo", $user->avatar_url);
                 usleep(400);
                 FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","{$user->name} sent you a message", $user->avatar_url);
+                if (!is_null($secondUser->onesignal_token)) {
+                    $to_user = $secondUser->onesignal_token;
+                    OneSignalService::sendNotification($to_user, 'CoolDreamy', 'Someone visited your page', $user->avatar_url);
+                    usleep(400);
+                    OneSignalService::sendNotification($to_user, 'CoolDreamy', 'Someone liked your photo', $user->avatar_url);
+                    usleep(400);
+                    OneSignalService::sendNotification($to_user, 'CoolDreamy', "{$user->name} sent you a message", $user->avatar_url);
+                }
              }
             // SympathyEvent::dispatch($item['send_user'], AnketProbabilityService::LIKE, $item['id']);
          }

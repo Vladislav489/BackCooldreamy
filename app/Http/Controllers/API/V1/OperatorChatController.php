@@ -328,7 +328,7 @@ class OperatorChatController extends Controller
         $recepient =  User::find($chat->recepient_id);
         $chatMessage = $this->chatRepository->saveChatMessage($chat, $request->text);
         if ($recepient->is_real == 1 && !is_null($recepient->onesignal_token)) {
-            OneSignalService::sendNotification($recepient->google_id, 'You have a new message', $request->text);
+            OneSignalService::sendNotification($recepient->onesignal_token, 'CoolDreamy', "{$sender->name} sent you a message.", $sender->avatar_url);
         }
         if (!$recepient->online && $recepient->is_real == 1 &&  $recepient->is_email_verified == 1) {
             try {
