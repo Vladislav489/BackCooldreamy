@@ -12,12 +12,13 @@ use App\Models\User\Payment;
 use App\Models\User\PremiumList;
 use App\Models\UserPromotion;
 use App\Services\Promotion\PromotionService;
+use App\Traits\PaymentTypeTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class GooglePayService
 {
-    use PreparePayment;
+    use PreparePayment, PaymentTypeTrait;
 
     public function __construct(private PromotionService $promotionService)
     {
@@ -30,62 +31,23 @@ class GooglePayService
         $payload = json_decode($dataPay['Payload'], true);
         $payloadJson = json_decode($payload['json'], true);
         $product = $payloadJson['productId'];
+        $orderId = $payloadJson['orderId'];
 
         $typeArr = explode('_', $product);
-        $type = $typeArr[0];
-        $typeId = $typeArr[1];
+        $typeData['list_type'] = $typeArr[0];
+        $typeData['list_id'] = $product;
+        $typeData['column_id'] = 'googlepay_id';
 
+        $model = $this->getProductModel($typeData);
+        $isOneTime = $this->checkOneTime($model, $user);
 
-        switch ($type){
-            case 'credit':
-                $modelType = CreditList::findOrFail($typeId);
-                break;
-            case 'subscription':
-                $modelType = SubscriptionList::findOrFail($typeId);
-                break;
-            case 'premium':
-                $modelType = PremiumList::findOrFail($typeId);
-                break;
-            case 'promotion':
-                $modelType = Promotion::findOrFail($typeId);
-                break;
-            default:
-                return response()->json(['error' => 'type error'], 500);
-                break;
-        }
-        // Проверка на one_time
-        if ($modelType->is_one_time) {
-            if (Payment::query()->where('user_id', $user->id)->where('list_id', $modelType->id)->where('status', '=', PaymentStatusEnum::SUCCESS)->exists()) {
-                return response()->json(['error' => 'This is one time service!'], 500);
-            }
-        }
-        if ($modelType instanceof Promotion) {
-            if (UserPromotion::query()->where('promotion_id', $modelType->id)->where('user_id', Auth::id())->where('status', '!=','new')->exists()) {
-                return response()->json(['error' => 'This is one time service!'], 500);
-            }
-        }
+        $payment = null;
 
-//        dd($price = $dataPay['Payload']['skuDetails'][0]['price_amount_micros'] * 0.000001);
-
-        switch ($type){
-            case 'credit':
-            case 'subscription':
-            case 'premium':
-                $model = $modelType;
-                $payment = Payment::create([
-                    'user_id' => $user->id,
-                    'status' => PaymentStatusEnum::SUCCESS,
-                    'price' => $model->price,
-                    'list_id' => $model->id,
-                    'list_type' => get_class($model),
-                ]);
-                break;
-            case 'promotion':
-                $model = $this->promotionService->subscribe($user, $modelType, PaymentStatusEnum::WAITING_PAYMENT);
-                break;
-            default:
-                abort(500);
-                break;
+        if (!$isOneTime) {
+            $payment = $this->createPayment($model, $typeData['list_type'], $user);
+            $payment->status = PaymentStatusEnum::SUCCESS;
+            $payment->payment_id = $orderId;
+            $payment->save();
         }
 
         $log = Log::build([
