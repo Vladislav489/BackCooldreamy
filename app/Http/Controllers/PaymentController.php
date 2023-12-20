@@ -22,6 +22,7 @@ use App\Traits\PaymentTypeTrait;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Stripe\Checkout\Session;
@@ -313,9 +314,8 @@ class PaymentController
 
         $payment = null;
 
-        if (!$isOneTime) {
-            $payment = $this->createPayment($model, $typeData['list_type'], $user);
-        }
+
+        $payment = $this->createPayment($model, $typeData['list_type'], $user);
 
         if(!is_null($payment)) {
             try{
@@ -449,4 +449,10 @@ class PaymentController
         $response = $this->stripeService->checkoutSuccess($request);
         return redirect('https://cooldreamy.com/profile');
     }
+
+//    public function pay11(Request $request)
+//    {
+//        $response = $this->googlePayService->pay($request->user_id);
+//        return $response;
+//    }
 }

@@ -43,17 +43,13 @@ class GooglePayService
 
         $payment = null;
 
-        if (!$isOneTime) {
-            $payment = $this->createPayment($model, $typeData['list_type'], $user);
-            $payment->status = PaymentStatusEnum::SUCCESS;
-            $payment->payment_id = $orderId;
-            $payment->save();
-        }
+        $payment = $this->createPayment($model, $typeData['list_type'], $user);
+        $payment->status = PaymentStatusEnum::SUCCESS;
+        $payment->payment_id = $orderId;
+        $payment->save();
 
-        $log = Log::build([
-            'driver' => 'daily',
-            'path' => storage_path('logs/payments/google/gpay.log')
-        ]);
+
+        $log = Log::build(['driver' => 'daily', 'path' => storage_path('logs/payments/google/gpay.log')]);
         if (!is_null($payment)) {
             $this->prepare($payment, $log);
             return 'success';
