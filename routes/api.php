@@ -26,7 +26,7 @@ Route::middleware('auth:sanctum')->get('/name', function (Request $request) {
     return response()->json(['name' => $request->user()->name]);
 });
 
-Route::get('/payment', [\App\Http\Controllers\PaymentController::class, 'checkoutSuccess']);
+Route::any('/payment', [\App\Http\Controllers\PaymentController::class, 'checkoutSuccess']);
 
 
 

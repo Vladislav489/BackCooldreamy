@@ -60,31 +60,30 @@ class StripeService
     {
         $log = Log::build([
             'driver' => 'daily',
-            'path' => storage_path('logs/payments/stripe/stripe.log')
+            'path' => storage_path('logs/payments/stripe/stripe_redirect_page.log')
         ]);
         $appKey = $request->get('app_key');
         $userId = $request->get('user_id');
         $sessionId = $request->get('session_id');
 
         if ($appKey != env('APP_KEY')) {
-            return 'error';
+            $log->error('app_key does not match.');
         }
 
         try {
             User::findOrFail($userId);
         } catch (\Throwable $e) {
-            return 'no such user';
+            $log->error('user not found.');
         }
 
         $payment = Payment::where('payment_id', $sessionId)->where('user_id', $userId)->first();
-        if (is_null($payment)) {
-            $log->error('Payment not found: ' . $payment->id);
-            return 'no payments found';
-        } else {
+        if (!is_null($payment) && $payment->status == PaymentStatusEnum::WAITING_PAYMENT) {
             $payment->status = PaymentStatusEnum::SUCCESS;
             $payment->save();
             $this->prepare($payment, $log);
-            return 'success';
+            $log->alert('SuccessFully changed payment status: ' . $payment->id);
+        } else {
+            $log->error('Payment not found: ' . $payment->id);
         }
     }
 
