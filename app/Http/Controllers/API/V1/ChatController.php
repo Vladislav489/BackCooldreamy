@@ -922,7 +922,8 @@ class ChatController extends Controller
             $chat = Chat::create([
                 'first_user_id' => $user_id,
                 'second_user_id' => $target_user_id,
-                'uuid' => Str::uuid()
+                'uuid' => Str::uuid(),
+                'is_answered_by_operator' => 0
             ]);
         }
         return $chat;

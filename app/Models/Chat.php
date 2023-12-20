@@ -27,7 +27,8 @@ class Chat extends Model implements Forwarded{
         'disabled',
         'deleted_by_first_user',
         'deleted_by_second_user',
-        'uuid'
+        'uuid',
+        'is_answered_by_operator'
     ];
     protected $table = 'chats';
     protected $appends = [
