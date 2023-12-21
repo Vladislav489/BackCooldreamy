@@ -53,7 +53,7 @@ class WinkController extends Controller
         if (!$another_user->is_real) {
             $probability = Setting::where('name', 'wink_limit_probability')->first()->value;
             if (mt_rand(1, 100) <= $probability) {
-                OperatorLimitController::addChatLimits($target_user_id, 3);
+                OperatorLimitController::addChatLimits($target_user_id, 3, $chat->id);
                 $chat->is_answered_by_operator = 0;
                 $chat->save();
             }
