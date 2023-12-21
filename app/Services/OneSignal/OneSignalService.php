@@ -11,9 +11,7 @@ class OneSignalService
     {
         $user = Auth::user();
         try {
-            $user->update([
-                'onesignal_token' => $token
-            ]);
+            $user->onesignal_token = $token;
             $user->save();
             return 'success';
         } catch (\Throwable $e) {
