@@ -14,6 +14,7 @@ class OneSignalService
             $user->update([
                 'onesignal_token' => $token
             ]);
+            $user->save();
             return 'success';
         } catch (\Throwable $e) {
             return 'error: ' . $e->getMessage();
