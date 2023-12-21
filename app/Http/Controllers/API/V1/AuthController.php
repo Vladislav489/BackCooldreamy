@@ -49,6 +49,8 @@ use Psr\Log\LoggerInterface;
 
 class AuthController extends Controller
 {
+    use ImageStoreTrait;
+
     /** @var UserGeoRepository */
     private UserGeoRepository $userGeoRepository;
 
@@ -217,8 +219,12 @@ class AuthController extends Controller
 
 
             $user = User::registrationClient($dataUser);
+            if (isset($dataUser['from_mobile_app'])) {
+                $user->from_mobile_app = $dataUser['from_mobile_app'];
+                $user->save();
+            }
             if(isset($dataUser['file'])) {
-                ImageStoreTrait::store_image_content_base_64($user, $dataUser['file'], 1, $dataUser['gender']);
+                self::store_image_content_base_64($user, $dataUser['file'], 1, $dataUser['gender']);
                 logger("image Profile     ".$dataUser['file']);
             }
 

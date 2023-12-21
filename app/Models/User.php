@@ -71,7 +71,8 @@ class User extends Authenticatable
         'search_age_to',
         'search_gender',
         'is_pwa',
-        'onesignal_token'
+        'onesignal_token',
+        'from_mobile_app'
     ];
 
     /**
