@@ -108,7 +108,7 @@ class ImageController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 500);
         }
-        $user = User::where('user_id', $request->user_id)->first();
+        $user = User::where('id', $request->user_id)->first();
         $listResponseImage = [];
         for ($i = 0; $i < $request->count_image;$i++){
             if($request->exists('image' . $i)) {

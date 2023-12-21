@@ -450,9 +450,4 @@ class PaymentController
         return redirect('https://cooldreamy.com/profile');
     }
 
-//    public function pay11(Request $request)
-//    {
-//        $response = $this->googlePayService->pay($request->user_id);
-//        return $response;
-//    }
 }

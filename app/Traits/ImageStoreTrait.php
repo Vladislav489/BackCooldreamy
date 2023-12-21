@@ -137,10 +137,10 @@ trait ImageStoreTrait
 
             $image = new \App\Models\Image();
             $image->user_id = $user->id;
-            $image->image_url = $links->image_url;
-            $image->thumbnail_url = $links->image_url;
-            $image->big_thumbnail_url =  $links->image_url;
-            $image->blur_thumbnail_url =  $links->image_url;
+            $image->image_url = 'https://media.cooldreamy.com/' . $links->image_url;
+            $image->thumbnail_url = 'https://media.cooldreamy.com/' . $links->image_url;
+            $image->big_thumbnail_url = 'https://media.cooldreamy.com/' . $links->image_url;
+            $image->blur_thumbnail_url = 'https://media.cooldreamy.com/' . $links->image_url;
             $image->category_id = $category_id;
             $image->save();
 
