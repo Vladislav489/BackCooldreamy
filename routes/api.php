@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 //костыль ради фронта
+Route::any('/fix', [\App\Http\Controllers\UserController::class, 'fix',]);
 Route::post('add/token/firebase',[\App\Http\Controllers\API\V1\AuthController::class, 'addTokenFireBase'])->middleware('auth:sanctum');
 Route::post('/add/onesignal-token', [\App\Http\Controllers\API\V1\AuthController::class, 'addOneSignalToken'])->middleware('auth:sanctum');
 Route::any('/stripe', [\App\Http\Controllers\PaymentController::class, 'stripeWebhook']);
