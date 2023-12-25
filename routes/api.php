@@ -30,8 +30,6 @@ Route::middleware('auth:sanctum')->get('/name', function (Request $request) {
 
 Route::any('/payment', [\App\Http\Controllers\PaymentController::class, 'checkoutSuccess']);
 
-Route::post('/fill_probabilites', [\App\Http\Controllers\API\V1\FeedController::class, 'fillProbabilities']);
-
 
 Route::get('library/countries', [\App\Http\Controllers\API\V1\Library\LibraryController::class, 'countries']);
 
