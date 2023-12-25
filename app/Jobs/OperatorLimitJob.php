@@ -111,7 +111,7 @@ class OperatorLimitJob implements ShouldQueue
             $log->info('Limit Assignment: ' . $chatLimit->id . 'for user: ' . $user->id);
             $log->info('New Limits: ' . $chatLimit->id . ' by time: ' . $timeAssignment->id);
             $log->info('Sended new event for time: ' . $time);
-            OperatorLimitJob::dispatch($user)->onQueue('default')->delay($time);
+//            OperatorLimitJob::dispatch($user)->onQueue('default')->delay($time);
         } else {
             $log->warning('Not found girl for : ' . $user->id);
         }

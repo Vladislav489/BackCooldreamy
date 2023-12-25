@@ -40,7 +40,7 @@ class AnketFavorite implements ShouldQueue
         ]);
 
         $this->user->addViewedUser($this->favorite);
-        $this->user->addFavorite($this->favorite);
+//        $this->user->addFavorite($this->favorite);
 
         $log->info("[AnketFavorite::handle] Add Favorite from anket: {$this->user->id} to user: {$this->favorite->id}");
     }

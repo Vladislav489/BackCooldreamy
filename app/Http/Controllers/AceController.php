@@ -41,7 +41,7 @@ class AceController extends Controller
         $chat_text_message->chat_message()->save($chat_message);
         $chat_message->chat_messageable = $chat_message->chat_messageable;
 
-        $chatListItem = ChatController::get_current_chat_list_item($chat->id, true, true, $ace_user);
+        $chatListItem = ChatController::get_current_chat_list_item($chat->id, $target_user, false, true, $ace_user);
         //ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem);
 
         return $chat_message;

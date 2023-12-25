@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Events\SympathyEvent;
+use App\Http\Controllers\AceController;
 use App\Http\Controllers\API\V1\Activities\AnketLikeController;
 use App\Http\Controllers\Controller;
 use App\Jobs\ResponsibleLikeJob;
 use App\Models\Feed;
 use App\Models\ResponsibleLikeProbability;
+use App\Services\EventProbability\EventProbabilityService;
 use App\Services\FireBase\FireBaseService;
+use App\Services\OneSignal\OneSignalService;
 use App\Services\Probability\AnketProbabilityService;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -21,6 +24,15 @@ use Illuminate\Pagination\Paginator;
 
 class FeedController extends Controller
 {
+    public function test(Request $request)
+    {
+        $user = Auth::user();
+        $girl = User::find($request->girl_id);
+        $ace = AceController::getAce($user, $girl);
+        $message = AceController::send_chat_message($user, $girl, $ace->text);
+        return $message;
+    }
+
     public function index(Request $request)
     {
 
@@ -80,13 +92,24 @@ class FeedController extends Controller
         $feed->is_liked = true;
         $feed->save();
         // Отправляем евент человеку которому ставим лайк
-        FireBaseService::sendPushFireBase($another_user,"СoolDreamy","You have a new like",$sender->avatar_url);
-        //SympathyEvent::dispatch($another_user->id, AnketProbabilityService::LIKE, Auth::user());
-//        if ($another_user->gender == 'female' && $another_user->is_real == false) {
-//            $service = new AnketProbabilityService();
-//            $service->like($another_user,$sender);
-//        }
-
+        FireBaseService::sendPushFireBase($another_user,"СoolDreamy","You have a new like", $sender->avatar_url);
+        if (!is_null($another_user->onesignal_token)) {
+            OneSignalService::sendNotification($another_user->onesignal_token, "СoolDreamy", "You have a new like", $sender->avatar_url);
+        }
+//        SympathyEvent::dispatch($another_user->id, AnketProbabilityService::LIKE, Auth::user());
+        if ($another_user->gender == 'female' && $another_user->is_real == false) {
+            $service = new AnketProbabilityService();
+            $isWatch = $service->watch($another_user, $sender);
+            if ($isWatch) {
+                $isLike = $service->like($another_user, $sender);
+                if ($isLike) {
+                    $isFavourite = $service->addToFavorite($another_user, $sender);
+                    if ($isFavourite) {
+                        $service->sendAce($another_user, $sender);
+                    }
+                }
+            }
+        }
         if (!$another_user->is_real) {
             OperatorLimitController::addChatLimits($another_user->id, 4);
         }
@@ -146,4 +169,5 @@ class FeedController extends Controller
 
         return response()->json(['message' => 'success']);
     }
+
 }

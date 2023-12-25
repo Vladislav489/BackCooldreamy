@@ -3,9 +3,15 @@
 namespace App\Services\Probability;
 
 use App\Events\SympathyEvent;
+use App\Http\Controllers\AceController;
+use App\Http\Controllers\API\V1\ChatController;
 use App\Jobs\AnketFavorite;
 use App\Jobs\AnketLike;
 use App\Jobs\AnketWatch;
+use App\Jobs\SendAce;
+use App\ModelAdmin\CoreEngine\LogicModels\Ace\AceLogic;
+use App\Models\AceSendingProbability;
+use App\Models\Chat;
 use App\Models\FavoriteProfileProbability;
 use App\Models\LikeProfileProbability;
 use App\Models\Setting;
@@ -29,6 +35,9 @@ class AnketProbabilityService
     // Просмотры
     const WATCH = 'WATCH';
 
+    // Отправка айса
+    const ACE = 'ACE';
+
     private $log;
 
     public function __construct()
@@ -47,13 +56,14 @@ class AnketProbabilityService
     {
        if (!$this->getUserProbabilityByType($user, self::FAVORITE)) {
            $this->log->info("[AnketProbabilityService::addToFavorite] Drooped Favorite Probability for user: {$user->id} to {$favoriteUser->id}");
-           return;
+           return false;
        }
 
        $time = $this->getProbabilityTimes(self::FAVORITE);
        $rand = rand($time['from'], $time['to']);
-       AnketFavorite::dispatch($user, $favoriteUser)->onQueue('default')->delay($rand);
-       $this->log->info("[AnketProbabilityService::addToFavorite] Send User Favorite Event from user: {$user->id} to {$favoriteUser->id} by {$rand}");
+        $this->log->info("[AnketProbabilityService::addToFavorite] Send User Favorite Event from user: {$user->id} to {$favoriteUser->id} by {$rand}");
+        AnketFavorite::dispatch($user, $favoriteUser)->onQueue('default')->delay($rand);
+        return true;
     }
 
     /**
@@ -64,13 +74,14 @@ class AnketProbabilityService
     {
         if (!$this->getUserProbabilityByType($user, self::LIKE)) {
             $this->log->info("[AnketProbabilityService::like] Drooped Like Probability for user: {$user->id} to {$likeUser->id}");
-            return;
+            return false;
         }
 
         $time = $this->getProbabilityTimes(self::LIKE);
         $rand = rand($time['from'], $time['to']);
         $this->log->info("[AnketProbabilityService::like] Send User Like Event from user: {$user->id} to {$likeUser->id} by {$rand}");
-        AnketLike::dispatch($user, $likeUser)->onQueue('default')->delay($rand);
+        AnketLike::dispatch($user, $likeUser)->onQueue('default')->delay(120);
+        return true;
     }
 
     /**
@@ -81,13 +92,30 @@ class AnketProbabilityService
     {
         if (!$this->getUserProbabilityByType($user, self::WATCH)) {
             $this->log->info("[AnketProbabilityService::watch] Drooped Watch Probability for user: {$user->id} to {$watchUser->id}");
-            return;
+            return false;
         }
 
         $time = $this->getProbabilityTimes(self::WATCH);
         $rand = rand($time['from'], $time['to']);
         $this->log->info("[AnketProbabilityService::watch] Send User Watch Event from user: {$user->id} to {$watchUser->id} by {$rand}");
         AnketWatch::dispatch($user, $watchUser)->onQueue('default')->delay($rand);
+        return true;
+    }
+
+    public function sendAce(User $user, User $girl)
+    {
+        if (!$this->getUserProbabilityByType($user, self::ACE)) {
+            $this->log->info("[AnketProbabilityService::watch] Drooped Watch Probability for user: {$girl->id} to {$user->id}");
+            return false;
+        }
+
+        $ace = AceController::getAce($user, $girl);
+        $time = $this->getProbabilityTimes(self::ACE);
+        $rand = rand($time['from'], $time['to']);
+        $this->log->info("[AnketProbabilityService::sendAce] Send User Ace Event from user: {girl->id} to {$user->id} by {$rand}");
+        SendAce::dispatch($user, $girl, $ace)->onQueue('default')->delay($rand);
+
+        return true;
     }
 
     /**
@@ -97,7 +125,8 @@ class AnketProbabilityService
      */
     private function getUserProbabilityByType($user, $type): bool
     {
-        $probability = $this->getProbabilities($user->profile_type_id, $type);
+        $userGroup = $this->getUserGroup($user);
+        $probability = $this->getProbabilities($user->profile_type_id, $type, $userGroup);
 
         if (!$probability) {
             return false;
@@ -111,14 +140,16 @@ class AnketProbabilityService
      * @param $probabilityType
      * @return float
      */
-    private function getProbabilities($profileType, $probabilityType): float
+    private function getProbabilities($profileType, $probabilityType, $userGroup): float
     {
         if ($probabilityType == self::LIKE) {
-            $probability = LikeProfileProbability::query()->where('profile_type_id', $profileType)->first();
+            $probability = LikeProfileProbability::query()->where([['profile_type_id', $profileType], ['user_group', $userGroup]])->first();
         } else if ($probabilityType == self::FAVORITE) {
-            $probability = FavoriteProfileProbability::query()->where('profile_type_id', $profileType)->first();
+            $probability = FavoriteProfileProbability::where([['profile_type_id', $profileType], ['user_group', $userGroup]])->first();
         } else if ($probabilityType == self::WATCH) {
-            $probability = WatchProfileProbability::query()->where('profile_type_id', $profileType)->first();
+            $probability = WatchProfileProbability::query()->where([['profile_type_id', $profileType], ['user_group', $userGroup]])->first();
+        } else if ($probabilityType == self::ACE) {
+            $probability = AceSendingProbability::query()->where([['profile_type_id', $profileType], ['user_group', $userGroup]])->first();
         } else {
             return 0;
         }
@@ -126,7 +157,6 @@ class AnketProbabilityService
         if (!$probability) {
             return 0;
         }
-
         return $probability->probability;
     }
 
@@ -140,7 +170,7 @@ class AnketProbabilityService
 
         $probabilityKey = $probability * 100;
 
-        if ($probabilityKey <= $randomNumber) {
+        if ($probabilityKey >= $randomNumber) {
             return true;
         }
         $this->log->info("[AnketProbabilityService::watch] Random number: {$randomNumber} to {$probabilityKey}");
@@ -162,8 +192,24 @@ class AnketProbabilityService
             $settingFrom = Setting::query()->where('name', 'watch_from_time')->first();
             $settingTo = Setting::query()->where('name', 'watch_to_time')->first();
             return ['from' => $settingFrom->value ?? 10, 'to' => $settingTo->value ?? 120];
+        } else if ($type == self::ACE) {
+            $settingFrom = Setting::query()->where('name', 'ace_from_time')->first();
+            $settingTo = Setting::query()->where('name', 'ace_to_time')->first();
+            return ['from' => $settingFrom->value ?? 10, 'to' => $settingTo->value ?? 120];
         } else {
             return ['from' => 0, 'to' => 0];
         }
     }
+
+    private function getUserGroup(User $user)
+    {
+        $count_likes = $user->feeds_users->count();
+        if ($count_likes <= 100) {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
+
+
 }

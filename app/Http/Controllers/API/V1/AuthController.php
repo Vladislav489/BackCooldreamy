@@ -507,7 +507,7 @@ class AuthController extends Controller
 
         //(new LimitChatOperatorLogic())->changeUserGroup($user,2);
         $this->authLogRepository->logAuth($user, AuthLogTypeEnum::AUTH);
-        OperatorLimitJob::dispatch($user)->onQueue('default')->delay(1);
+//        OperatorLimitJob::dispatch($user)->onQueue('default')->delay(1);
         return response()->json([
             'token' => $user->createToken('auth_token', ['subscriber'])->plainTextToken,
             'id' => $user->id,
