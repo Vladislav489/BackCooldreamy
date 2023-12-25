@@ -203,12 +203,16 @@ class AnketProbabilityService
 
     private function getUserGroup(User $user)
     {
+        /** 1 группа - 0-100 лайков, 2 группа - 101-150 лайков, 3 группа 151-200 лайков, 4 группа - 201-1000000
+         */
         $count_likes = $user->feeds_users->count();
         if ($count_likes <= 100) {
             return 1;
-        } else {
+        } elseif ($count_likes <= 150) {
             return 2;
-        }
+        } elseif (($count_likes <= 200)) {
+            return 3;
+        } else return 4;
     }
 
 

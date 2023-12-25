@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 //костыль ради фронта
+Route::post('/leads/store', [\App\Http\Controllers\LeadsController::class, 'store']);
+
 Route::post('add/token/firebase',[\App\Http\Controllers\API\V1\AuthController::class, 'addTokenFireBase'])->middleware('auth:sanctum');
 Route::post('/add/onesignal-token', [\App\Http\Controllers\API\V1\AuthController::class, 'addOneSignalToken'])->middleware('auth:sanctum');
 Route::any('/stripe', [\App\Http\Controllers\PaymentController::class, 'stripeWebhook']);
@@ -28,7 +30,7 @@ Route::middleware('auth:sanctum')->get('/name', function (Request $request) {
 
 Route::any('/payment', [\App\Http\Controllers\PaymentController::class, 'checkoutSuccess']);
 
-
+Route::post('/fill_probabilites', [\App\Http\Controllers\API\V1\FeedController::class, 'fillProbabilities']);
 
 
 Route::get('library/countries', [\App\Http\Controllers\API\V1\Library\LibraryController::class, 'countries']);

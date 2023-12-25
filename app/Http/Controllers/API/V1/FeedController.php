@@ -7,6 +7,7 @@ use App\Http\Controllers\AceController;
 use App\Http\Controllers\API\V1\Activities\AnketLikeController;
 use App\Http\Controllers\Controller;
 use App\Jobs\ResponsibleLikeJob;
+use App\Models\AceSendingProbability;
 use App\Models\Feed;
 use App\Models\ResponsibleLikeProbability;
 use App\Services\EventProbability\EventProbabilityService;
@@ -168,6 +169,112 @@ class FeedController extends Controller
         }
 
         return response()->json(['message' => 'success']);
+    }
+
+    public function fillProbabilities()
+    {
+        \App\Models\FavoriteProfileProbability::insert([
+            ['profile_type_id' => 1, 'probability' => 0.5, 'user_group' => 1],
+            ['profile_type_id' => 2, 'probability' => 0.5, 'user_group' => 1],
+            ['profile_type_id' => 3, 'probability' => 0.5, 'user_group' => 1],
+            ['profile_type_id' => 4, 'probability' => 0.5, 'user_group' => 1],
+        ]);
+        \App\Models\FavoriteProfileProbability::insert([
+            ['profile_type_id' => 1, 'probability' => 0.4, 'user_group' => 2],
+            ['profile_type_id' => 2, 'probability' => 0.4, 'user_group' => 2],
+            ['profile_type_id' => 3, 'probability' => 0.4, 'user_group' => 2],
+            ['profile_type_id' => 4, 'probability' => 0.4, 'user_group' => 2],
+        ]);
+        \App\Models\FavoriteProfileProbability::insert([
+            ['profile_type_id' => 1, 'probability' => 0.3, 'user_group' => 3],
+            ['profile_type_id' => 2, 'probability' => 0.3, 'user_group' => 3],
+            ['profile_type_id' => 3, 'probability' => 0.3, 'user_group' => 3],
+            ['profile_type_id' => 4, 'probability' => 0.3, 'user_group' => 3],
+        ]);
+        \App\Models\FavoriteProfileProbability::insert([
+            ['profile_type_id' => 1, 'probability' => 0.2, 'user_group' => 3],
+            ['profile_type_id' => 2, 'probability' => 0.2, 'user_group' => 3],
+            ['profile_type_id' => 3, 'probability' => 0.2, 'user_group' => 3],
+            ['profile_type_id' => 4, 'probability' => 0.2, 'user_group' => 3],
+        ]);
+
+
+        \App\Models\LikeProfileProbability::insert([
+            ['profile_type_id' => 1, 'probability' => 0.5, 'user_group' => 1],
+            ['profile_type_id' => 2, 'probability' => 0.5, 'user_group' => 1],
+            ['profile_type_id' => 3, 'probability' => 0.5, 'user_group' => 1],
+            ['profile_type_id' => 4, 'probability' => 0.5, 'user_group' => 1],
+        ]);
+        \App\Models\LikeProfileProbability::insert([
+            ['profile_type_id' => 1, 'probability' => 0.4, 'user_group' => 2],
+            ['profile_type_id' => 2, 'probability' => 0.4, 'user_group' => 2],
+            ['profile_type_id' => 3, 'probability' => 0.4, 'user_group' => 2],
+            ['profile_type_id' => 4, 'probability' => 0.4, 'user_group' => 2],
+        ]);
+        \App\Models\LikeProfileProbability::insert([
+            ['profile_type_id' => 1, 'probability' => 0.3, 'user_group' => 3],
+            ['profile_type_id' => 2, 'probability' => 0.3, 'user_group' => 3],
+            ['profile_type_id' => 3, 'probability' => 0.3, 'user_group' => 3],
+            ['profile_type_id' => 4, 'probability' => 0.3, 'user_group' => 3],
+        ]);
+        \App\Models\LikeProfileProbability::insert([
+            ['profile_type_id' => 1, 'probability' => 0.2, 'user_group' => 4],
+            ['profile_type_id' => 2, 'probability' => 0.2, 'user_group' => 4],
+            ['profile_type_id' => 3, 'probability' => 0.2, 'user_group' => 4],
+            ['profile_type_id' => 4, 'probability' => 0.2, 'user_group' => 4],
+        ]);
+
+
+        \App\Models\WatchProfileProbability::insert([
+            ['profile_type_id' => 1, 'probability' => 0.15, 'user_group' => 1],
+            ['profile_type_id' => 2, 'probability' => 0.15, 'user_group' => 1],
+            ['profile_type_id' => 3, 'probability' => 0.15, 'user_group' => 1],
+            ['profile_type_id' => 4, 'probability' => 0.15, 'user_group' => 1],
+        ]);
+        \App\Models\WatchProfileProbability::insert([
+            ['profile_type_id' => 1, 'probability' => 0.1, 'user_group' => 2],
+            ['profile_type_id' => 2, 'probability' => 0.1, 'user_group' => 2],
+            ['profile_type_id' => 3, 'probability' => 0.1, 'user_group' => 2],
+            ['profile_type_id' => 4, 'probability' => 0.1, 'user_group' => 2],
+        ]);
+        \App\Models\WatchProfileProbability::insert([
+            ['profile_type_id' => 1, 'probability' => 0.5, 'user_group' => 3],
+            ['profile_type_id' => 2, 'probability' => 0.5, 'user_group' => 3],
+            ['profile_type_id' => 3, 'probability' => 0.5, 'user_group' => 3],
+            ['profile_type_id' => 4, 'probability' => 0.5, 'user_group' => 3],
+        ]);
+        \App\Models\WatchProfileProbability::insert([
+            ['profile_type_id' => 1, 'probability' => 0.1, 'user_group' => 4],
+            ['profile_type_id' => 2, 'probability' => 0.1, 'user_group' => 4],
+            ['profile_type_id' => 3, 'probability' => 0.1, 'user_group' => 4],
+            ['profile_type_id' => 4, 'probability' => 0.1, 'user_group' => 4],
+        ]);
+
+
+        AceSendingProbability::insert([
+            ['profile_type_id' => 1, 'probability' => 0.2, 'user_group' => 1],
+            ['profile_type_id' => 2, 'probability' => 0.2, 'user_group' => 1],
+            ['profile_type_id' => 3, 'probability' => 0.2, 'user_group' => 1],
+            ['profile_type_id' => 4, 'probability' => 0.2, 'user_group' => 1],
+        ]);
+        AceSendingProbability::insert([
+            ['profile_type_id' => 1, 'probability' => 0.2, 'user_group' => 2],
+            ['profile_type_id' => 2, 'probability' => 0.2, 'user_group' => 2],
+            ['profile_type_id' => 3, 'probability' => 0.2, 'user_group' => 2],
+            ['profile_type_id' => 4, 'probability' => 0.2, 'user_group' => 2],
+        ]);
+        AceSendingProbability::insert([
+            ['profile_type_id' => 1, 'probability' => 0.2, 'user_group' => 3],
+            ['profile_type_id' => 2, 'probability' => 0.2, 'user_group' => 3],
+            ['profile_type_id' => 3, 'probability' => 0.2, 'user_group' => 3],
+            ['profile_type_id' => 4, 'probability' => 0.2, 'user_group' => 3],
+        ]);
+        AceSendingProbability::insert([
+            ['profile_type_id' => 1, 'probability' => 0.2, 'user_group' => 4],
+            ['profile_type_id' => 2, 'probability' => 0.2, 'user_group' => 4],
+            ['profile_type_id' => 3, 'probability' => 0.2, 'user_group' => 4],
+            ['profile_type_id' => 4, 'probability' => 0.2, 'user_group' => 4],
+        ]);
     }
 
 }
