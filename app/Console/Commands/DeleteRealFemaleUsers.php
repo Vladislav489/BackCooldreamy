@@ -32,7 +32,7 @@ class DeleteRealFemaleUsers extends Command
     {
         $log = Log::build(['driver' => 'daily', 'path' => storage_path('logs/users/deleted_users.log')]);
 
-        $users = DB::table('users')->where([['gender', '=', 'female'], ['is_real', '=', 1], ['is_operator', '=', 1]])->pluck('id')->toArray();
+        $users = DB::table('users')->where([['gender', '=', 'female'], ['is_real', '=', 1], ['is_operator', '=', 0]])->pluck('id')->toArray();
         $chats = DB::table('chats')->whereIn('first_user_id', $users)->orWhereIn('second_user_id', $users)->pluck('id')->toArray();
         $chat_messages = DB::table('chat_messages')->whereIn('chat_id', $chats)->delete();
         $winks = DB::table('chat_wink_messages')->whereIn('from_user_id', $users)->orWhereIn('to_user_id', $users)->delete();
