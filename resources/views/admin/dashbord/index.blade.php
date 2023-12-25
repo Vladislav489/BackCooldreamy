@@ -106,6 +106,7 @@
                             <th>ID</th>
                             <th>Почта</th>
                             <th>Имя</th>
+                            <th>Платформа</th>
                             <th>Sub_id</th>
                             <th>App</th>
                             <th>Страна</th>
@@ -158,6 +159,7 @@
                                 {data: 'id', name: 'id'},
                                 {data: 'email', name: 'email'},
                                 {data: 'name', name: 'name'},
+                                {data: 'platform', name: 'platform'},
                                 {data: 'subid', name: 'subid'},
                                 {data: 'app_name', name: 'app_name'},
                                 {data: 'country', name: 'country'},

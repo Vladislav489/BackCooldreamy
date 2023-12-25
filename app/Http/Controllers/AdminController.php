@@ -67,6 +67,7 @@ class AdminController extends Controller
         $users = new UserLogic($params,[
             'id', 'email', 'name',DB::raw("UserCooperation.subid as subid"),DB::raw("UserCooperation.app_name as app_name"), 'state','country','birthday','birthday','about_self',
             DB::raw(" DATE_FORMAT(users.created_at,\"%Y-%m-%d %H:%i:%s\") as created_at"),
+            DB::raw("CASE WHEN from_mobile_app = 0 THEN 'web' WHEN from_mobile_app = 1 THEN 'mobile' END as platform"),
             DB::raw("IFNULL((SELECT COUNT(*) FROM ".(new Feed())->getTable()." WHERE from_user_id = users.id),0) as like_"),
             DB::raw("IFNULL((SELECT COUNT(*) FROM ".(new UserInputs())->getTable()." WHERE user_id = users.id),0) as coming"),
             DB::raw("IFNULL((SELECT COUNT(*) FROM ".(new RoutingUser())->getTable()." WHERE user_id = users.id),0) as link"),
