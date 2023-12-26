@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ModelAdmin\CoreEngine\LogicModels\Chat\ChatMessageLogic;
 use App\ModelAdmin\CoreEngine\LogicModels\Operator\OperatorLinksUserLogic;
 use App\ModelAdmin\CoreEngine\LogicModels\Statistic\RoutingLogic;
 use App\ModelAdmin\CoreEngine\LogicModels\Statistic\UserInputsLogic;
@@ -36,6 +37,11 @@ class AdminController extends Controller
      $data = json_decode($this->getCountStatistic($request)->content(),true);
      $data['country'] = Country::all()->toArray();
      $data['state'] = State::all()->toArray();
+        $data['fake_ankets_with_messages'] = ChatMessage::whereHas('fakeRecepient')
+            ->whereNot('chat_messageable_type', 'App\Models\ChatWinkMessage')
+            ->distinct('recepient_user_id')
+            ->count();
+
      return view("admin.dashbord.index",$data);
     }
 
@@ -68,10 +74,15 @@ class AdminController extends Controller
             'id', 'email', 'name',DB::raw("UserCooperation.subid as subid"),DB::raw("UserCooperation.app_name as app_name"), 'state','country','birthday','birthday','about_self',
             DB::raw(" DATE_FORMAT(users.created_at,\"%Y-%m-%d %H:%i:%s\") as created_at"),
             DB::raw("CASE WHEN from_mobile_app = 0 THEN 'web' WHEN from_mobile_app = 1 THEN 'mobile' END as platform"),
+            DB::raw("IFNULL((SELECT COUNT(*) FROM " . (new ChatMessage())->getTable() . " WHERE recepient_user_id = users.id AND is_ace = 1),0) as received_aces"),
+            DB::raw("IFNULL((SELECT COUNT(*) FROM " . (new ChatMessage())->getTable() . " WHERE recepient_user_id = users.id AND is_ace = 1 AND is_read_by_recepient = 1),0) as read_aces"),
             DB::raw("IFNULL((SELECT COUNT(*) FROM ".(new Feed())->getTable()." WHERE from_user_id = users.id),0) as like_"),
             DB::raw("IFNULL((SELECT COUNT(*) FROM ".(new UserInputs())->getTable()." WHERE user_id = users.id),0) as coming"),
             DB::raw("IFNULL((SELECT COUNT(*) FROM ".(new RoutingUser())->getTable()." WHERE user_id = users.id),0) as link"),
             DB::raw("IFNULL((SELECT COUNT(*) FROM ".(new UserWatch())->getTable()." WHERE user_id = users.id),0) as view"),
+            DB::raw("IFNULL((SELECT COUNT(*) FROM ".(new ChatMessage())->getTable()." WHERE sender_user_id = users.id),0) as send_message"),
+            DB::raw("IFNULL((SELECT COUNT(*) FROM ".(new ChatMessage())->getTable()." WHERE recepient_user_id = users.id AND is_ace = 0),0) as received_message"),
+            DB::raw("IFNULL((SELECT COUNT(*) FROM ".(new ChatMessage())->getTable()." WHERE recepient_user_id = users.id AND is_ace = 0 AND is_read_by_recepient = 1),0) as read_message"),
             DB::raw("IFNULL((SELECT COUNT(*) FROM ".(new ChatMessage())->getTable()." WHERE sender_user_id = users.id),0) as send_message"),
             DB::raw("IFNULL((SELECT SUM(credits) FROM ".(new CreditLog())->getTable()." WHERE user_id = users.id AND credits IS NOT NULL ),0) as credits"),
             DB::raw("IFNULL((SELECT SUM(real_credits) FROM ".(new CreditLog())->getTable()." WHERE user_id = users.id AND real_credits IS NOT NULL),0) as real_credits"),

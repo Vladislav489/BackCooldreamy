@@ -36,6 +36,7 @@ class AceController extends Controller
             'chat_id' => $chat->id,
             'sender_user_id' => $sender_user_id,
             'recepient_user_id' => $recepient_user_id,
+            'is_ace' => 1
         ]);
 
         $chat_text_message->chat_message()->save($chat_message);

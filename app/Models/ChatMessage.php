@@ -45,6 +45,11 @@ class ChatMessage extends Model {
         return $this->belongsTo(User::class, 'recepient_user_id');
     }
 
+    public function fakeRecepient()
+    {
+        return $this->belongsTo(User::class, 'recepient_user_id')->where([['gender', 'female'], ['is_real', 0]]);
+    }
+
     public function chat_messageable() {
         return $this->morphTo();
     }
