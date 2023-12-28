@@ -15,5 +15,7 @@ class WorkingShiftAnserOperators extends Model {
         'man_id',
         'message_id',
     ];
+
+    protected $table = 'working_shift_anser_operators';
 }
 

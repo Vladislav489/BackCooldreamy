@@ -160,6 +160,11 @@ class StatisticService
             ->getFullQuery()->whereRaw("working_shift_anser_operators.operator_id = model_has_roles.model_id",[],'AND'));
 
 
+        $countMenAswer = new OperatorWorkingAnswerLogic($params,[DB::raw("COUNT(DISTINCT(man_id)) as count_message_operator")]);
+        $countMenAswer->setQuery($countMenAswer->offPagination()->setLimit(false)
+            ->getFullQuery()->whereRaw("working_shift_anser_operators.operator_id = model_has_roles.model_id",[],'AND'));
+
+
         ////////////
 
         $joinMessage = new  OperatorLogic(array_merge($params,['is_ace'=>'0']),[DB::raw("Message.chat_id,Message.sender_user_id,model_has_roles.model_id ,model_has_roles.role_id")]);
@@ -184,7 +189,6 @@ class StatisticService
             ->leftJoin(DB::raw("(".$joinMessage->getSqlToStr().") as OperatorChat ON  chat_messages.chat_id =  OperatorChat.chat_id"),function(){})
             ->whereRaw("OperatorChat.model_id = model_has_roles.model_id",[],'AND')->groupBy(["OperatorChat.model_id"])
         );
-
 
         //date_from date_to
         $limitOperator = new OperatorChatLimitLogic($params,[DB::raw("COUNT(*)")]);
@@ -231,6 +235,7 @@ class StatisticService
              DB::raw(" (".$limitOperator->getSqlToStrFromQuery().") as man_whith_limit"),
              DB::raw(" (".$operatorAnsverMan->getSqlToStrFromQuery().") as ancet_without_message"),
              DB::raw(" (".$workingShitMessageOperator->getSqlToStrFromQuery().") as ansver_operator_message"),
+             DB::raw(" (".$countMenAswer->getSqlToStrFromQuery().") as count_answer_men"),
              DB::raw(" (".$workingShitForfeitsOperator->getSqlToStrFromQuery().") as operator_forfeits"),
             ]);
         $result =  $operator->setJoin(['User'])->getList();

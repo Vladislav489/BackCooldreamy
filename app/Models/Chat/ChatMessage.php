@@ -21,4 +21,6 @@ class ChatMessage extends Model {
         'operator_get_ansver',
     ];
 
+    protected $table = 'chat_messages';
+
 }
