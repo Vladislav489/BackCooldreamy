@@ -190,6 +190,8 @@ class StatisticService
             ->whereRaw("OperatorChat.model_id = model_has_roles.model_id",[],'AND')->groupBy(["OperatorChat.model_id"])
         );
 
+        $chatMessageCount = new ChatMessageLogic(array_merge($params,['is_ace'=>'0']),[DB::raw("COUNT(*)")]);
+//        $chatMessageCount
         //date_from date_to
         $limitOperator = new OperatorChatLimitLogic($params,[DB::raw("COUNT(*)")]);
         $limitOperator->setQuery($limitOperator->offPagination()->setJoin(['OperatorAncet'])
@@ -218,6 +220,15 @@ class StatisticService
         $workingShitForfeitsOperator ->setQuery($workingShitForfeitsOperator->offPagination()->setLimit(false)
             ->getFullQuery()->whereRaw("operator_forfeits.operator_id = model_has_roles.model_id",[],'AND'));
 
+        $chatMessageMenCount = new ChatMessageLogic($params, [DB::raw("COUNT(*) as message_count")]);
+        $chatMessageMenCount = $chatMessageMenCount->setQuery($chatMessageMenCount->offPagination()->setLimit(false)
+            ->getFullQuery()
+            ->whereRaw("chat_messages.recepient_user_id IN (SELECT id FROM `users` WHERE is_real = 0 AND gender = 'female')"))->getOne();
+
+        $messagedMenCount = new ChatMessageLogic($params, [DB::raw("COUNT(DISTINCT sender_user_id) as men_texted_count")]);
+        $messagedMenCount = $messagedMenCount->setQuery($messagedMenCount->offPagination()->setLimit(false)
+            ->getFullQuery()
+            ->whereRaw("chat_messages.recepient_user_id IN (SELECT id FROM `users` WHERE is_real = 0 AND gender = 'female')"))->getOne();
 
         $operator = new OperatorLogic(['role' =>'2'],
             [
@@ -239,6 +250,12 @@ class StatisticService
              DB::raw(" (".$workingShitForfeitsOperator->getSqlToStrFromQuery().") as operator_forfeits"),
             ]);
         $result =  $operator->setJoin(['User'])->getList();
+
+        for ($i = 0; $i < count($result['result']); $i++) {
+            $result['result'][$i]['count_messages_men'] = $chatMessageMenCount['message_count'];
+            $result['result'][$i]['count_men'] = $messagedMenCount['men_texted_count'];
+        }
+
         return  $result;
 
     }
