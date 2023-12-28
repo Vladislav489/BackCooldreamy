@@ -20,6 +20,7 @@ use App\ModelAdmin\CoreEngine\LogicModels\User\UserCooperationLogic;
 use App\ModelAdmin\CoreEngine\LogicModels\UserLogic;
 use App\Models\Auth\UsersTokenFireBase;
 use App\Models\Chat;
+use App\Models\Lead;
 use App\Models\Operator\WorkingShiftLog;
 use App\Models\Promotion;
 use App\Models\StatisticSite\RoutingUser;
@@ -228,6 +229,21 @@ class AuthController extends Controller
                 logger("image Profile     ".$dataUser['file']);
             }
 
+            if ($request->has('utm_marks')) {
+                $utm = $request->get('utm_marks');
+                $lead = Lead::where([
+                    ['utm_source', $utm['utm_source']],
+                    ['utm_medium', $utm['utm_medium']],
+                    ['utm_campaign', $utm['utm_campaign']],
+                    ['utm_term', $utm['utm_term']],
+                    ['utm_advertiser', $utm['utm_advertiser']],
+                    ['user_id', null]
+                ])->latest()->first();
+                if (!is_null($lead)) {
+                    $lead->user_id = $user->id;
+                    $lead->save();
+                }
+            }
 
             if(isset($dataUser['subid'])  && isset($dataUser['app_name'])) {
 

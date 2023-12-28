@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
-            $table->string('utm_source', 255);
-            $table->string('utm_medium', 255);
-            $table->string('utm_campaign', 255);
-            $table->string('utm_term', 255);
+            $table->string('utm_source', 255)->nullable();
+            $table->string('utm_medium', 255)->nullable();
+            $table->string('utm_campaign', 255)->nullable();
+            $table->string('utm_term', 255)->nullable();
+            $table->string('utm_advertiser', 255)->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
         });
     }
