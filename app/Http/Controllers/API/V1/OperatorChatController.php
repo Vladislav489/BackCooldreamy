@@ -130,9 +130,9 @@ class OperatorChatController extends Controller
         ];
 
         if($request->get('chat_limit')) {
-            $params['chat_limit'] = $request->get('chat_limit');
-        }else{
             $params['limit_more'] = '1';
+        }else{
+            $params['limit_more'] = '0';
         }
 
 
@@ -190,9 +190,9 @@ class OperatorChatController extends Controller
         WHERE credit_type = '".CreditLogTypeEnum::OUTCOME."' AND ((user_id = first_user_id AND other_user_id = second_user_id) || (user_id = second_user_id AND other_user_id = first_user_id) )) as max_limit");
         $chat = new ChatLogic($params,$select);
         $chat->setModel((new Chat()))->offPagination()->order('desc','updated_at')->setJoin(['OperatorWork'])->setGroupBy($group);
-        if($operator->getRoleNames()->toArray()[0] == 'admin'){
-            $chat->getQueryLink()->groupBy(['chats.id', 'ChatLimit.limits']);
-        }
+//        if($operator->getRoleNames()->toArray()[0] == 'admin'){
+//            $chat->getQueryLink()->groupBy(['chats.id', 'ChatLimit.limits']);
+//        }
         $chat->getQueryLink()->with($join);
         $chats = $chat->getList();
         return response()->json(['data'=>$chats['result']]);
