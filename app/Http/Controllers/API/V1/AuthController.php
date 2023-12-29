@@ -248,11 +248,11 @@ class AuthController extends Controller
                 $userCooperation  = [
                     'user_id' => $user->id,
                     'subid' => 'empty',
-                    'utm_source' =>$dataUser['utm_source'],
-                    'utm_campaign' =>$dataUser['utm_campaign'],
-                    'utm_term' =>$dataUser['utm_term'],
-                    'utm_advertiser' =>$dataUser['utm_advertiser'],
-                    'utm_medium' =>$dataUser['utm_medium'],
+                    'utm_source' => $dataUser['utm_source'],
+                    'utm_campaign' => $dataUser['utm_campaign'],
+                    'utm_term' => $dataUser['utm_term'] ?? null,
+                    'utm_advertiser' => $dataUser['utm_advertiser'] ?? null,
+                    'utm_medium' => $dataUser['utm_medium'],
                 ];
                 User\UserCooperation::create($userCooperation);
             }
