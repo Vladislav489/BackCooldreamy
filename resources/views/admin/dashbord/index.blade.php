@@ -97,14 +97,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-sm-6 col-md-3">
-                    <div class="info-box">
-                        <div class="info-box-content">
-                            <span class="info-box-text">Количество анкет, на которые отправляли сообщения </span>
-                            <span id="pay_onsite" class="info-box-number">{{$fake_ankets_with_messages}}</span>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="row">
                 <div class="col-xs-12">
@@ -126,6 +118,7 @@
                             <th>Количесвот переходов</th>
                             <th>Просмотрел анкет</th>
                             <th>Отправил сообщений</th>
+                            <th>Написал анкетам</th>
                             <th>Получил айсов</th>
                             <th>Прочитал айсов</th>
                             <th>Получил сообщений</th>
@@ -183,6 +176,7 @@
                                 {data: 'link', name: 'link'},
                                 {data: 'view', name: 'view'},
                                 {data: 'send_message', name: 'send_message'},
+                                {data: 'send_to_ankets_count', name: 'send_to_ankets_count'},
                                 {data: 'received_aces', name: 'received_aces'},
                                 {data: 'read_aces', name: 'read_aces'},
                                 {data: 'received_message', name: 'received_message'},
