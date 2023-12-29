@@ -109,6 +109,12 @@
                             <th>Платформа</th>
                             <th>Sub_id</th>
                             <th>App</th>
+                            <th>UTM
+                                source
+                                medium
+                                campaign
+                                term
+                                advertiser</th>
                             <th>Страна</th>
                             <th>Город</th>
                             <th>Возраст</th>
@@ -167,6 +173,7 @@
                                 {data: 'platform', name: 'platform'},
                                 {data: 'subid', name: 'subid'},
                                 {data: 'app_name', name: 'app_name'},
+                                {data: 'UTM', name: 'UTM'},
                                 {data: 'country', name: 'country'},
                                 {data: 'state', name: 'state'},
                                 {data: 'age', name: 'age'},
