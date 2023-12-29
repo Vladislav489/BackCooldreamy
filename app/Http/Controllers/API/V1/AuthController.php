@@ -229,22 +229,6 @@ class AuthController extends Controller
                 logger("image Profile     ".$dataUser['file']);
             }
 
-            if ($request->has('utm_marks')) {
-                $utm = $request->get('utm_marks');
-                $lead = Lead::where([
-                    ['utm_source', $utm['utm_source']],
-                    ['utm_medium', $utm['utm_medium']],
-                    ['utm_campaign', $utm['utm_campaign']],
-                    ['utm_term', $utm['utm_term']],
-                    ['utm_advertiser', $utm['utm_advertiser']],
-                    ['user_id', null]
-                ])->latest()->first();
-                if (!is_null($lead)) {
-                    $lead->user_id = $user->id;
-                    $lead->save();
-                }
-            }
-
             if(isset($dataUser['subid'])  && isset($dataUser['app_name'])) {
 
                 $userCooperation  = [
@@ -258,6 +242,19 @@ class AuthController extends Controller
                 if($dataUser['gender'] =="male" && $dataUser['search_gender'] == "female") {
                     User\UserCooperation::create($userCooperation);
                 }
+            }
+
+            if (isset($dataUser['utm_source']) && isset($dataUser['utm_medium']) && isset($dataUser['utm_campaign'])) {
+                $userCooperation  = [
+                    'user_id' => $user->id,
+                    'subid' => 'empty',
+                    'utm_source' =>$dataUser['utm_source'],
+                    'utm_campaign' =>$dataUser['utm_campaign'],
+                    'utm_term' =>$dataUser['utm_term'],
+                    'utm_advertiser' =>$dataUser['utm_advertiser'],
+                    'utm_medium' =>$dataUser['utm_medium'],
+                ];
+                User\UserCooperation::create($userCooperation);
             }
             $token = $user->createToken('auth_token', ['subscriber'])->plainTextToken;
             /* try {

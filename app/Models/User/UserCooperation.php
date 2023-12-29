@@ -1,15 +1,26 @@
 <?php
+
 namespace App\Models\User;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-class UserCooperation extends Model{
+
+class UserCooperation extends Model
+{
     use HasFactory;
+
     protected $fillable = [
         'user_id',
         'subid',
         'af_id',
         'app_name',
+        'user_id',
+        'subid',
+        'utm_source',
+        'utm_campaign',
+        'utm_term',
+        'utm_advertiser',
+        'utm_medium'
     ];
 }
 /*
