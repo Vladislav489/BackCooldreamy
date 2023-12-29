@@ -82,7 +82,7 @@ class AdminController extends Controller
             DB::raw("IFNULL((SELECT SUM(credits) FROM ".(new CreditLog())->getTable()." WHERE user_id = users.id AND credits IS NOT NULL ),0) as credits"),
             DB::raw("IFNULL((SELECT SUM(real_credits) FROM ".(new CreditLog())->getTable()." WHERE user_id = users.id AND real_credits IS NOT NULL),0) as real_credits"),
             DB::raw("IFNULL((SELECT SUM(price) FROM ".(new User\Payment())->getTable()." WHERE user_id = users.id AND status ='success'),0) as pay") ,
-            DB::raw("CONCAT(COALESCE(UserCooperation.utm_source, ''),CHAR(13), COALESCE(UserCooperation.utm_medium, ''),CHAR(13), COALESCE(UserCooperation.utm_campaign, ''),CHAR(13), COALESCE(UserCooperation.utm_term, ''),CHAR(13), COALESCE(UserCooperation.utm_advertiser, '')) as UTM") ,
+            DB::raw("CONCAT(COALESCE(UserCooperation.utm_source, ''),CHAR(10), COALESCE(UserCooperation.utm_medium, ''),CHAR(10), COALESCE(UserCooperation.utm_campaign, ''),CHAR(10), COALESCE(UserCooperation.utm_term, ''),CHAR(10), COALESCE(UserCooperation.utm_advertiser, '')) as UTM") ,
         ]);
         $users->setLimit(false)->setJoin(['UserCooperationAll'])->order('desc','created_at');
         return response()->json($users->getList()['result']);
