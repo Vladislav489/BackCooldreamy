@@ -220,15 +220,11 @@ class StatisticService
         $workingShitForfeitsOperator ->setQuery($workingShitForfeitsOperator->offPagination()->setLimit(false)
             ->getFullQuery()->whereRaw("operator_forfeits.operator_id = model_has_roles.model_id",[],'AND'));
 
-        $chatMessageMenCount = new ChatMessageLogic($params, [DB::raw("COUNT(*) as message_count")]);
-        $chatMessageMenCount = $chatMessageMenCount->setQuery($chatMessageMenCount->offPagination()->setLimit(false)
+        $chatMessageMen = new ChatMessageLogic($params, [DB::raw("COUNT(*) as message_count, COUNT(DISTINCT sender_user_id) as men_texted_count")]);
+        $chatMessageMen = $chatMessageMen->setQuery($chatMessageMen->offPagination()->setLimit(false)
             ->getFullQuery()
             ->whereRaw("chat_messages.recepient_user_id IN (SELECT id FROM `users` WHERE is_real = 0 AND gender = 'female')"))->getOne();
 
-        $messagedMenCount = new ChatMessageLogic($params, [DB::raw("COUNT(DISTINCT sender_user_id) as men_texted_count")]);
-        $messagedMenCount = $messagedMenCount->setQuery($messagedMenCount->offPagination()->setLimit(false)
-            ->getFullQuery()
-            ->whereRaw("chat_messages.recepient_user_id IN (SELECT id FROM `users` WHERE is_real = 0 AND gender = 'female')"))->getOne();
 
         $operator = new OperatorLogic(['role' =>'2'],
             [
@@ -252,8 +248,8 @@ class StatisticService
         $result =  $operator->setJoin(['User'])->getList();
 
         for ($i = 0; $i < count($result['result']); $i++) {
-            $result['result'][$i]['count_messages_men'] = $chatMessageMenCount['message_count'];
-            $result['result'][$i]['count_men'] = $messagedMenCount['men_texted_count'];
+            $result['result'][$i]['count_messages_men'] = $chatMessageMen['message_count'];
+            $result['result'][$i]['count_men'] = $chatMessageMen['men_texted_count'];
         }
 
         return  $result;
