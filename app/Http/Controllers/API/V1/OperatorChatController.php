@@ -191,7 +191,7 @@ class OperatorChatController extends Controller
         $chat = new ChatLogic($params,$select);
         $chat->setModel((new Chat()))->offPagination()->order('desc','updated_at')->setJoin(['OperatorWork'])->setGroupBy($group);
         if($operator->getRoleNames()->toArray()[0] == 'admin'){
-            $chat->getQueryLink()->groupBy(['chats.id']);
+            $chat->getQueryLink()->groupBy(['chats.id', 'ChatLimit.limits']);
         }
         $chat->getQueryLink()->with($join);
         $chats = $chat->getList();
