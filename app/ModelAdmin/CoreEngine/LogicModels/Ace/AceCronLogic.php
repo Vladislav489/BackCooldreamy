@@ -234,10 +234,10 @@ class AceCronLogic extends AceLogic  {
          FavoriteProfile::insert($favorite);
          Feed::insert($like);
          foreach ($list as $item){
-             $log->info('to: ' . $item['id'] . ' from ' . $item['send_user']);
-            $user = User::find($item['id']);
-            $secondUser = User::find($item['send_user']);
+             $user = User::find($item['id']);
+             $secondUser = User::find($item['send_user']);
              if(!is_null($user->onesignal_token)){
+                 $log->info('to: ' . $item['id'] . ' from ' . $item['send_user']);
 //                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","Someone visited your page", $user->avatar_url);
 //                usleep(400);
 //                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","Someone liked your photo", $user->avatar_url);
