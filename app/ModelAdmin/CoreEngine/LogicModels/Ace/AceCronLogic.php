@@ -245,8 +245,8 @@ class AceCronLogic extends AceLogic  {
 //                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","{$user->name} sent you a message", $user->avatar_url);
                     $to_user = $user->onesignal_token;
                     $log->info('pre-push 1: ' . $user->id);
-                    OneSignalService::sendNotification($to_user, 'CoolDreamy', 'Someone visited your page', $secondUser->avatar_url);
-                    $log->info('visit push info: ' . $user->id);
+                    $res = OneSignalService::sendNotification($to_user, 'CoolDreamy', 'Someone visited your page', $secondUser->avatar_url);
+                    $log->info('info: ' . $res);
                     usleep(400);
 //                    OneSignalService::sendNotification($to_user, 'CoolDreamy', 'Someone liked your photo', $user->avatar_url);
 //                    usleep(400);
