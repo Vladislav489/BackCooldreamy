@@ -238,9 +238,18 @@ class AceCronLogic extends AceLogic  {
              $secondUser = User::find($item['send_user']);
              if(!is_null($user->onesignal_token)){
                  $log->info('to: ' . $item['id'] . ' from ' . $item['send_user']);
-                 $to_user = $user->onesignal_token;
-                 $log->info('pre-push 2: ' . $user->id);
-                 $res = OneSignalService::sendNotification($to_user, 'CoolDreamy', "{$user->name} sent you a message", $secondUser->avatar_url);
+//                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","Someone visited your page", $user->avatar_url);
+//                usleep(400);
+//                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","Someone liked your photo", $user->avatar_url);
+//                usleep(400);
+//                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","{$user->name} sent you a message", $user->avatar_url);
+                    $to_user = $user->onesignal_token;
+                    $res = OneSignalService::sendNotification($to_user, 'CoolDreamy', 'Someone visited your page', $secondUser->avatar_url);
+                    sleep(13);
+//                    OneSignalService::sendNotification($to_user, 'CoolDreamy', 'Someone liked your photo', $user->avatar_url);
+//                    usleep(400);
+                 $log->info('pre-push: ' . $user->id . '||' . $to_user);
+                 $res = OneSignalService::sendNotification($to_user, 'CoolDreamy', "{$secondUser->name} sent you a message", $secondUser->avatar_url);
                  $log->info('res '. $res);
                 }
             // SympathyEvent::dispatch($item['send_user'], AnketProbabilityService::LIKE, $item['id']);
