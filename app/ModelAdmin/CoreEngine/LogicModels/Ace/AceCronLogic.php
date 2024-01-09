@@ -199,10 +199,9 @@ class AceCronLogic extends AceLogic  {
              $chatListItem = ['chat' => ['id' =>  $item['chat_id']]];
              $chat_text_message->chat_message()->save($chat_message);
              $recepient = User::find($item['id']);
-             if (!$recepient->online && $recepient->is_real == 1 && $recepient->is_email_verified == 1) {
-                 Mail::to($recepient)->send(new MessageUserMail($recepient, User::find($item['send_user'])));
-             }
-             $chat_message->chat_messageable = $chat_message->chat_messageable;
+//             if (!$recepient->online && $recepient->is_real == 1 && $recepient->is_email_verified == 1) {
+//                 Mail::to($recepient)->send(new MessageUserMail($recepient, User::find($item['send_user'])));
+//             }
              //LetChatMessageNewReadEvent::dispatch($item['send_user'], $item['chat_id'], $chat_message->id);
              $addViewedUser[] = [
                  'user_id' => $item['send_user'],
@@ -236,14 +235,13 @@ class AceCronLogic extends AceLogic  {
             $user = User::find($item['id']);
             $secondUser = User::find($item['send_user']);
              if(!is_null($user)){
-                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","Someone visited your page", $user->avatar_url);
-                usleep(400);
-                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","Someone liked your photo", $user->avatar_url);
-                usleep(400);
-                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","{$user->name} sent you a message", $user->avatar_url);
+//                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","Someone visited your page", $user->avatar_url);
+//                usleep(400);
+//                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","Someone liked your photo", $user->avatar_url);
+//                usleep(400);
+//                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","{$user->name} sent you a message", $user->avatar_url);
                 if (!is_null($secondUser->onesignal_token)) {
                     $to_user = $secondUser->onesignal_token;
-                    var_dump(111111);
                     OneSignalService::sendNotification($to_user, 'CoolDreamy', 'Someone visited your page', $user->avatar_url);
                     usleep(400);
                     OneSignalService::sendNotification($to_user, 'CoolDreamy', 'Someone liked your photo', $user->avatar_url);
