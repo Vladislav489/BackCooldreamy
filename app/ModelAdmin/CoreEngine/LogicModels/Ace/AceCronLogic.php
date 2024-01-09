@@ -245,14 +245,15 @@ class AceCronLogic extends AceLogic  {
 //                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","{$user->name} sent you a message", $user->avatar_url);
                     $to_user = $user->onesignal_token;
                     $log->info('pre-push 1: ' . $user->id);
+                    $log->info('onesignal_id: ' . $to_user);
                     $res = OneSignalService::sendNotification($to_user, 'CoolDreamy', 'Someone visited your page', $secondUser->avatar_url);
-                    $log->info('info: ' . $res);
+                    $log->info('res '. $res);
                     usleep(400);
 //                    OneSignalService::sendNotification($to_user, 'CoolDreamy', 'Someone liked your photo', $user->avatar_url);
 //                    usleep(400);
                     $log->info('pre-push 2: ' . $user->id);
-                    OneSignalService::sendNotification($to_user, 'CoolDreamy', "{$user->name} sent you a message", $secondUser->avatar_url);
-                    $log->info('push info: ' . $user->id);
+                 $res = OneSignalService::sendNotification($to_user, 'CoolDreamy', "{$user->name} sent you a message", $secondUser->avatar_url);
+                 $log->info('res '. $res);
                 }
             // SympathyEvent::dispatch($item['send_user'], AnketProbabilityService::LIKE, $item['id']);
          }
