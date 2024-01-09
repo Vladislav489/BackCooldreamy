@@ -238,20 +238,8 @@ class AceCronLogic extends AceLogic  {
              $secondUser = User::find($item['send_user']);
              if(!is_null($user->onesignal_token)){
                  $log->info('to: ' . $item['id'] . ' from ' . $item['send_user']);
-//                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","Someone visited your page", $user->avatar_url);
-//                usleep(400);
-//                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","Someone liked your photo", $user->avatar_url);
-//                usleep(400);
-//                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","{$user->name} sent you a message", $user->avatar_url);
-                    $to_user = $user->onesignal_token;
-                    $log->info('pre-push 1: ' . $user->id);
-                    $log->info('onesignal_id: ' . $to_user);
-                    $res = OneSignalService::sendNotification($to_user, 'CoolDreamy', 'Someone visited your page', $secondUser->avatar_url);
-                    $log->info('res '. $res);
-                    usleep(400);
-//                    OneSignalService::sendNotification($to_user, 'CoolDreamy', 'Someone liked your photo', $user->avatar_url);
-//                    usleep(400);
-                    $log->info('pre-push 2: ' . $user->id);
+                 $to_user = $user->onesignal_token;
+                 $log->info('pre-push 2: ' . $user->id);
                  $res = OneSignalService::sendNotification($to_user, 'CoolDreamy', "{$user->name} sent you a message", $secondUser->avatar_url);
                  $log->info('res '. $res);
                 }
