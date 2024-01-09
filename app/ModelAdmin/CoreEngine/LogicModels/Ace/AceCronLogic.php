@@ -25,6 +25,7 @@ use App\Services\Probability\AnketProbabilityService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -172,6 +173,7 @@ class AceCronLogic extends AceLogic  {
         return $list;
     }
     public function createChat($list){
+        $log = Log::build(['driver' => 'daily', 'path' => storage_path('/logs/push.log')]);
      try {
          $dataInsChat = [];
          foreach ($list as $item) {
@@ -232,23 +234,26 @@ class AceCronLogic extends AceLogic  {
          FavoriteProfile::insert($favorite);
          Feed::insert($like);
          foreach ($list as $item){
+             $log->info('to: ' . $item['id'] . ' from ' . $item['send_user']);
             $user = User::find($item['id']);
             $secondUser = User::find($item['send_user']);
-             if(!is_null($user)){
+             if(!is_null($user->onesignal_token)){
 //                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","Someone visited your page", $user->avatar_url);
 //                usleep(400);
 //                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","Someone liked your photo", $user->avatar_url);
 //                usleep(400);
 //                FireBaseService::sendPushFireBase($item['send_user'],"СoolDreamy","{$user->name} sent you a message", $user->avatar_url);
-                if (!is_null($secondUser->onesignal_token)) {
-                    $to_user = $secondUser->onesignal_token;
+                    $to_user = $user->onesignal_token;
+                    $log->info('pre-push 1: ' . $user->id);
                     OneSignalService::sendNotification($to_user, 'CoolDreamy', 'Someone visited your page', $user->avatar_url);
+                    $log->info('visit push info: ' . $user->id);
                     usleep(400);
-                    OneSignalService::sendNotification($to_user, 'CoolDreamy', 'Someone liked your photo', $user->avatar_url);
-                    usleep(400);
+//                    OneSignalService::sendNotification($to_user, 'CoolDreamy', 'Someone liked your photo', $user->avatar_url);
+//                    usleep(400);
+                    $log->info('pre-push 2: ' . $user->id);
                     OneSignalService::sendNotification($to_user, 'CoolDreamy', "{$user->name} sent you a message", $user->avatar_url);
+                    $log->info('push info: ' . $user->id);
                 }
-             }
             // SympathyEvent::dispatch($item['send_user'], AnketProbabilityService::LIKE, $item['id']);
          }
          return $list;
