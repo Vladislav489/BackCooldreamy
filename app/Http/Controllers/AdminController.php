@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SendMail;
+use App\Mail\Test;
+use App\Mail\TestMail;
+use App\Mail\VerificationMail;
+use App\ModelAdmin\CoreEngine\LogicModels\Ace\AceCronLogic;
 use App\ModelAdmin\CoreEngine\LogicModels\Chat\ChatMessageLogic;
 use App\ModelAdmin\CoreEngine\LogicModels\Operator\OperatorLinksUserLogic;
 use App\ModelAdmin\CoreEngine\LogicModels\Statistic\RoutingLogic;
@@ -20,22 +25,47 @@ use App\Models\StatisticSite\UserWatch;
 use App\Models\OperatorLinkUsers;
 use App\Models\State;
 use App\Models\User;
+use App\Services\Mail\VerifyEmail;
+use App\Services\OneSignal\OneSignalService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Models\Operator;
 use App\Models\Administrator;
 use App\Models\Ace;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\DataTables;
 use Hash;
 use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
+    public function test()
+    {
+        $email = 'dreamy.guy1111@gmail.com';
+        $user = User::find(127706);
+//        $verifyEmail = new VerifyEmail();
+//        $verification = $verifyEmail->check($email);
+//        if (!$verification) {
+//            return response()->json(['message: verification error'], 500);
+//        }
+//        return response()->json(['message' => 'ok',], 202);
+//        dd(new VerificationMail($user->token, $user));
+        try {
+            Mail::to($user)->send(new VerificationMail($user->token, $user));
+            return response(['ok',]);
+        } catch (\Throwable $e) {
+            dd($e->getMessage(), $e->getTrace());
+            return response(['error' => $e->getMessage()]);
+        }
+//        Mail::to($user)->send(new TestMail());
+    }
+
     public function  dashbord(Request $request){
      $data = json_decode($this->getCountStatistic($request)->content(),true);
      $data['country'] = Country::all()->toArray();
      $data['state'] = State::all()->toArray();
+     $data['utm_source'] = User\UserCooperation::whereNotNull('utm_source')->groupBy('utm_source')->pluck('utm_source')->toArray();
 
      return view("admin.dashbord.index",$data);
     }

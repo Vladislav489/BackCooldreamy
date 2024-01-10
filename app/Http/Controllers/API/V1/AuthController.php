@@ -31,6 +31,7 @@ use App\Repositories\Auth\AuthLogRepository;
 use App\Repositories\Geo\UserGeoRepository;
 use App\Repositories\Operator\WorkingShiftRepository;
 use App\Services\Geo\GeoRequest;
+use App\Services\Mail\VerifyEmail;
 use App\Services\OneSignal\OneSignalService;
 use App\Services\Operator\WorkingShiftService;
 use App\Traits\ImageStoreTrait;
@@ -215,9 +216,7 @@ class AuthController extends Controller
             if(isset($dataUser['about']))
                 $dataUser['about_self'] = $dataUser['about'];
 
-
-            $dataUser['is_email_verified'] = 1;
-
+            $dataUser['gender'] == 'female' ? $dataUser['is_email_verified'] = 1 : $dataUser['is_email_verified'] = 0;
 
             $user = User::registrationClient($dataUser);
             if (isset($dataUser['from_mobile_app'])) {
@@ -277,8 +276,8 @@ class AuthController extends Controller
                 'promotion_id' => Promotion::query()->where('activation_type_id', 1)->first()->id,
                 'status' => 'new'
             ]);
-            if(strpos($dataUser['email'],'@gmail.com')!==false) {
-              //  Mail::to($user)->send(new VerificationMail($user->token, $user));
+            if($user->is_email_verified == 0) {
+                Mail::to($user)->send(new VerificationMail($user->token, $user));
             }
             $this->authLogRepository->logAuth($user, AuthLogTypeEnum::REG);
        /// OperatorLimitJob::dispatch($user)->onQueue('default')->delay(1);
@@ -294,6 +293,11 @@ class AuthController extends Controller
             ['email' => 'required|email|unique:users,email']);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 401);
+        }
+        $verifyEmail = new VerifyEmail();
+        $verification = $verifyEmail->check($request->get('email'));
+        if (!$verification) {
+            return response()->json(['message: email verification error'], 500);
         }
     }
 

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 //костыль ради фронта
+Route::any('/test', [\App\Http\Controllers\AdminController::class, 'test',]);
 Route::post('/leads/store', [\App\Http\Controllers\LeadsController::class, 'store']);
 
 Route::post('add/token/firebase',[\App\Http\Controllers\API\V1\AuthController::class, 'addTokenFireBase'])->middleware('auth:sanctum');

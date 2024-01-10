@@ -11,9 +11,9 @@
                 <td class="table-color" align="center" style="border-bottom: 1px solid #edeff2;border-top-left-radius: 16px;border-top-right-radius: 16px;background: #FDFDFD;">
                             <table cellpadding="0" cellspacing="0" role="presentation">
                                 <tr>
-                                    <td style="padding: 24px 0;height: 60px;">
-                                        <img style="height: 60px;" src="{{ $message->embed(storage_path()."/app/media/logo.png")}}" alt="{{ config('app.name') }}"/>
-                                    </td>
+{{--                                    <td style="padding: 24px 0;height: 60px;">--}}
+{{--                                        <img style="height: 60px;" src="{{ $message->embed(storage_path()."/app/media/logo.png")}}" alt="{{ config('app.name') }}"/>--}}
+{{--                                    </td>--}}
                                 </tr>
                             </table>
                 </td>
