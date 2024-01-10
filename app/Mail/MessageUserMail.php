@@ -11,9 +11,9 @@ use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Queue\SerializesModels;
 use Intervention\Image\Facades\Image;
 
-class MessageUserMail extends Mailable
+class MessageUserMail extends Mailable implements ShouldQueue
 {
-    use /*Queueable, */SerializesModels, ImageStoreTrait; // TODO: uncomment when we have a queue
+    use Queueable, SerializesModels, ImageStoreTrait;
 
     /** @var User */
     public User $user;

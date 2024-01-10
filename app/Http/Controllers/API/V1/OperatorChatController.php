@@ -330,7 +330,7 @@ class OperatorChatController extends Controller
         if ($recepient->is_real == 1 && !is_null($recepient->onesignal_token)) {
             OneSignalService::sendNotification($recepient->onesignal_token, 'CoolDreamy', "{$sender->name} sent you a message.", $sender->avatar_url);
         }
-        if (!$recepient->online && $recepient->is_real == 1 &&  $recepient->is_email_verified == 1) {
+        if (!$recepient->online && $recepient->is_real == 1 &&  $recepient->is_email_verified == 1  && $recepient->gender == 'male') {
             try {
                 Mail::to($recepient)->send(new MessageUserMail($recepient, $sender));
             }catch (\Throwable $e){

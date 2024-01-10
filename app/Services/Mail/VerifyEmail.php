@@ -19,7 +19,7 @@ class VerifyEmail {
      * Email address for request
      * @var string
      */
-    protected $from = 'itcyberdynesystems@gmail.com';
+    protected $from = 'info@cooldreamy-info.com';
 
     /**
      * The connection timeout, in seconds.
@@ -304,7 +304,6 @@ class VerifyEmail {
         fclose($this->stream);
 
         $code = !empty($code2)?$code2:$code;
-        var_dump($code);
         switch ($code) {
             case '250':
                 /**

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\verifyEmailException;
+use App\Mail\MessageUserMail;
 use App\Mail\SendMail;
 use App\Mail\Test;
 use App\Mail\TestMail;
@@ -42,22 +44,14 @@ class AdminController extends Controller
 {
     public function test()
     {
-        $email = 'dreamy.guy1111@gmail.com';
+        $email = 'dimnbertyas@mail.ru';
         $user = User::find(127706);
-//        $verifyEmail = new VerifyEmail();
-//        $verification = $verifyEmail->check($email);
-//        if (!$verification) {
-//            return response()->json(['message: verification error'], 500);
-//        }
-//        return response()->json(['message' => 'ok',], 202);
-//        dd(new VerificationMail($user->token, $user));
-        try {
-            $res = Mail::to($user)->send(new VerificationMail($user->token, $user));
-            return response(['message' => $res,]);
-        } catch (\Throwable $e) {
-            return response(['error' => $e->getMessage(), 'trace' => $e->getTrace()]);
-        }
-//        Mail::to($user)->send(new TestMail());
+//        $o = new VerifyEmail();
+//        var_dump($o->check("yakuithemaid"));
+//        var_dump($o->check("lidici7544@undewp.com"));
+//        var_dump($o->check("Tundepaul@yahoo.com"));
+//        var_dump($o->check("jamiehughesm7@outlook.com"));
+        Mail::to($user)->send(new MessageUserMail($user, User::find(4)));
     }
 
     public function  dashbord(Request $request){
