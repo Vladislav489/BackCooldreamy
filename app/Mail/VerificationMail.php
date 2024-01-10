@@ -9,9 +9,9 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Queue\SerializesModels;
 
-class VerificationMail extends Mailable
+class VerificationMail extends Mailable implements ShouldQueue
 {
-    use /*Queueable, */SerializesModels; // TODO: uncomment when we have a queue
+    use Queueable, SerializesModels;
 
     /** @var string */
     public string $token;

@@ -52,11 +52,10 @@ class AdminController extends Controller
 //        return response()->json(['message' => 'ok',], 202);
 //        dd(new VerificationMail($user->token, $user));
         try {
-            Mail::to($user)->send(new VerificationMail($user->token, $user));
-            return response(['ok',]);
+            $res = Mail::to($user)->send(new VerificationMail($user->token, $user));
+            return response(['message' => $res,]);
         } catch (\Throwable $e) {
-            dd($e->getMessage(), $e->getTrace());
-            return response(['error' => $e->getMessage()]);
+            return response(['error' => $e->getMessage(), 'trace' => $e->getTrace()]);
         }
 //        Mail::to($user)->send(new TestMail());
     }
