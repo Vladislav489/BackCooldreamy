@@ -170,6 +170,11 @@ class UserLogic extends CoreEngine
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string', "action" => '<=', "concat" => 'AND'
             ],
+            ["field" =>"UserCooperation.utm_source", "params" => 'utm_source',
+                "validate" => ["string" => true, "empty" => true],
+                "type" => 'string', "action" => '=', "concat" => 'AND',
+                'relatedModel' => 'UserCooperation'
+            ],
 
         ];
         $this->filter = array_merge($this->filter,parent::getFilter());
@@ -217,8 +222,8 @@ class UserLogic extends CoreEngine
                     "entity" => (new UserWatch())->getTable()." asUserWatch",
                     "relationship" => ['user_id','id'],
                 ],
-                "UserCooperation"=>[
-                    "entity" => (new User\UserCooperation())->getTable()." as UserCooperation",
+                "UserCoop"=>[
+                    "entity" => (new User\UserCooperation())->getTable()." as UserCoop",
                     "relationship" => ['user_id','id'],
                     "type" => "inner"
                 ],

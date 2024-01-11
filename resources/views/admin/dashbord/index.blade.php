@@ -31,6 +31,15 @@
                 </select>
             </div>
             <div class="col-md-2">
+                <label style="margin-right:15px">Откуда пришел:</label>
+                <select style="width: 150px;height:30px"  name="utm_source">
+                    <option value="">Все</option>
+                    @foreach($utm_source as $item)
+                        <option value="{{$item}}">{{$item}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2">
                 <label style="margin-right:15px">Страна:</label>
                 <select  style="width: 150px;height:30px" name="country">
                     <option value="">Все</option>
