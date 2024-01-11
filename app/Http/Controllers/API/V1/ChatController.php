@@ -482,7 +482,7 @@ class ChatController extends Controller
         // Send email notification when $recepient offline
         $sender = User::find($sender_user_id);
         $recepient = User::find($recepient_user_id);
-        if (!$recepient->online && $recepient->is_real == 1 && $recepient->is_email_verified == 1 && $recepient->gender == 'male') {
+        if (!$recepient->online && $recepient->is_real == 1 && $recepient->email_verified_at != null && $recepient->gender == 'male') {
             try {
                 Mail::to(User::find($recepient))->send(new MessageUserMail($recepient, $sender));
             }catch (\Throwable $e){

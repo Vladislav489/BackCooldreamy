@@ -200,7 +200,7 @@ class AceCronLogic extends AceLogic  {
              $chatListItem = ['chat' => ['id' =>  $item['chat_id']]];
              $chat_text_message->chat_message()->save($chat_message);
              $recepient = User::find($item['id']);
-             if (!$recepient->online && $recepient->is_real == 1 && $recepient->is_email_verified == 1 && $recepient->gender == 'male') {
+             if (!$recepient->online && $recepient->is_real == 1 && $recepient->email_verified_at != null && $recepient->gender == 'male') {
                  Mail::to($recepient)->send(new MessageUserMail($recepient, User::find($item['send_user'])));
              }
              //LetChatMessageNewReadEvent::dispatch($item['send_user'], $item['chat_id'], $chat_message->id);

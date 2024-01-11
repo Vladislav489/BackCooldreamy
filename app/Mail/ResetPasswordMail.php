@@ -9,9 +9,9 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Queue\SerializesModels;
 
-class ResetPasswordMail extends Mailable
+class ResetPasswordMail extends Mailable implements ShouldQueue
 {
-    use /*Queueable, */SerializesModels; // TODO: uncomment when need a queue
+    use Queueable, SerializesModels;
 
     /** @var string */
     public string $code;
