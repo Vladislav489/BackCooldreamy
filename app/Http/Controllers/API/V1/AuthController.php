@@ -295,7 +295,11 @@ class AuthController extends Controller
             return response()->json(['error' => $validator->errors()], 401);
         }
         $verifyEmail = new VerifyEmail();
-        $verification = $verifyEmail->check($request->get('email'));
+        $email = $request->get('email');
+        if (preg_match('#^.*@gmail.com$#', $email)) {
+            $verification = $verifyEmail->check($email);
+        } else $verification = true;
+
         if (!$verification) {
             return response()->json(['message: email verification error'], 500);
         }

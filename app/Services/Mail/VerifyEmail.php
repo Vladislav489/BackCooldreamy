@@ -19,7 +19,7 @@ class VerifyEmail {
      * Email address for request
      * @var string
      */
-    protected $from = 'info@cooldreamy-info.com';
+    protected $from = 'itcyberdynesystems@gmail.com';
 
     /**
      * The connection timeout, in seconds.
