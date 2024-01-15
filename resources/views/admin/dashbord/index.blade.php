@@ -48,8 +48,10 @@
                     @endforeach
                 </select>
             </div>
+        </div>
+        <div class="row mb-lg-1 mt-2">
             <div class="col-md-2">
-                <label style="margin-right:15px">utm_source:</label>
+                <label style="margin-right:15px" >utm_source:</label>
                 <select style="width: 150px;height:30px"  name="utm_source">
                     <option value="">Все</option>
                     @foreach($utm_source as $item)
@@ -77,7 +79,7 @@
             </div>
             <div class="col-md-2">
                 <label style="margin-right:15px">utm_term:</label>
-                <select style="width: 150px;height:30px"  name="utm_term">
+                <select style="width: 150px;height:30px"  name="utm_term" class="d-flex">
                     <option value="">Все</option>
                     @foreach($utm_term as $item)
                         <option value="{{$item}}">{{$item}}</option>
@@ -93,6 +95,8 @@
                     @endforeach
                 </select>
             </div>
+        </div>
+        <div class="row mb-lg-1 mt-3">
             <div class="col-md-1 " >
                 <button class="btn btn-success" id="submitFilter" type="button">Применить</button>
             </div>

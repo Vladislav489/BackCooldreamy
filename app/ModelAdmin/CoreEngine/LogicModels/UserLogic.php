@@ -52,7 +52,7 @@ class UserLogic extends CoreEngine
 
     public function getAVGMessage(){
         $sub = new UserLogic(array_merge($this->params, ['gender' => 'male']));
-        $sub->select = [DB::raw("COUNT(chat_messages.id) / COUNT(DISTINCT(chat_messages.sender_user_id)) as avg_message ")];
+        $sub->select = [DB::raw("COUNT(chat_messages.id) / COUNT(users.id) as avg_message ")];
         return $sub->setLimit(false)->setJoin(["ChatMessageSend", 'UserCooperationAll'])->getOne()['avg_message'] ?? '0';
     }
 
