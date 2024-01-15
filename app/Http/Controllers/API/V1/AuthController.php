@@ -216,7 +216,12 @@ class AuthController extends Controller
             if(isset($dataUser['about']))
                 $dataUser['about_self'] = $dataUser['about'];
 
-            $dataUser['gender'] == 'female' ? $dataUser['is_email_verified'] = 1 : $dataUser['is_email_verified'] = 0;
+            $isGmail = $this->checkGmail($dataUser['email']);
+            if ($dataUser['gender'] == 'female' || !$isGmail) {
+                $dataUser['is_email_verified'] = 1;
+            } else {
+                $dataUser['is_email_verified'] = 0;
+            }
 
             $user = User::registrationClient($dataUser);
             if (isset($dataUser['from_mobile_app'])) {
@@ -296,9 +301,8 @@ class AuthController extends Controller
         }
         $verifyEmail = new VerifyEmail();
         $email = $request->get('email');
-        if (preg_match('#^.*@gmail.com$#', $email)) {
-            $verification = $verifyEmail->check($email);
-        } else $verification = true;
+        $isGmail = $this->checkGmail($email);
+        $isGmail ? $verification = $verifyEmail->check($email) : $verification = true;
 
         if (!$verification) {
             return response()->json(['message: email verification error'], 500);
@@ -637,5 +641,10 @@ class AuthController extends Controller
         }
         $response = $this->oneSignalService->addToken($request->token);
         return response()->json(['message' => $response]);
+    }
+
+    public function checkGmail($email)
+    {
+        return preg_match('#^.*@gmail.com$#', $email);
     }
 }
