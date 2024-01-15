@@ -52,7 +52,7 @@
         <div class="row mb-lg-1 mt-2">
             <div class="col-md-2">
                 <label style="margin-right:15px" >utm_source:</label>
-                <select style="width: 150px;height:30px"  name="utm_source">
+                <select style="width: 150px;height:30px"  name="utm_source" class="d-flex">
                     <option value="">Все</option>
                     @foreach($utm_source as $item)
                         <option value="{{$item}}">{{$item}}</option>
