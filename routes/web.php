@@ -46,7 +46,7 @@ Route::group(['prefix' => 'mail', 'middleware' => 'throttle:3,1'], function (){
 
         return match ($type) {
             'verification' => new App\Mail\VerificationMail($user->token, $user, true),
-            'verified' => new App\Mail\UserVerifiedMail($user, true),
+//            'verified' => new App\Mail\UserVerifiedMail($user, true),
             // 'message' => new App\Mail\ResetPasswordMail($user->token, $user), //TODO: Can be implemented stub
             // 'liked' => new App\Mail\LikeUserMail($user), //TODO: Can be implemented stub
             default => abort(404),

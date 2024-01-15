@@ -66,7 +66,7 @@ Route::post('send/url/statistiс', [\App\Http\Controllers\API\V1\AuthController:
 Route::post('logout', [\App\Http\Controllers\API\V1\AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::post('user/set/info', [\App\Http\Controllers\API\V1\AuthController::class, 'setInfo'])->middleware('auth:sanctum');
 
-Route::post('send_mail', [\App\Http\Controllers\MailController::class, 'send']);
+//Route::post('send_mail', [\App\Http\Controllers\MailController::class, 'send']);
 
 Route::resource('prompt_target', "\App\Http\Controllers\API\V1\PromptTargetController", ['except' => ['create', 'edit']])->middleware('auth:sanctum');
 

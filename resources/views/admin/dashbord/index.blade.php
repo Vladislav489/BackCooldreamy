@@ -31,15 +31,6 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <label style="margin-right:15px">Откуда пришел:</label>
-                <select style="width: 150px;height:30px"  name="utm_source">
-                    <option value="">Все</option>
-                    @foreach($utm_source as $item)
-                        <option value="{{$item}}">{{$item}}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-2">
                 <label style="margin-right:15px">Страна:</label>
                 <select  style="width: 150px;height:30px" name="country">
                     <option value="">Все</option>
@@ -54,6 +45,51 @@
                     <option value="">Все</option>
                     @foreach($state as $item)
                         <option value="{{$item['title']}}">{{$item['title']}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label style="margin-right:15px">utm_source:</label>
+                <select style="width: 150px;height:30px"  name="utm_source">
+                    <option value="">Все</option>
+                    @foreach($utm_source as $item)
+                        <option value="{{$item}}">{{$item}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label style="margin-right:15px">utm_medium:</label>
+                <select style="width: 150px;height:30px"  name="utm_medium">
+                    <option value="">Все</option>
+                    @foreach($utm_medium as $item)
+                        <option value="{{$item}}">{{$item}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label style="margin-right:15px">utm_campaign:</label>
+                <select style="width: 150px;height:30px"  name="utm_campaign">
+                    <option value="">Все</option>
+                    @foreach($utm_campaign as $item)
+                        <option value="{{$item}}">{{$item}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label style="margin-right:15px">utm_term:</label>
+                <select style="width: 150px;height:30px"  name="utm_term">
+                    <option value="">Все</option>
+                    @foreach($utm_term as $item)
+                        <option value="{{$item}}">{{$item}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label style="margin-right:15px">utm_advertiser:</label>
+                <select style="width: 150px;height:30px"  name="utm_advertiser">
+                    <option value="">Все</option>
+                    @foreach($utm_advertiser as $item)
+                        <option value="{{$item}}">{{$item}}</option>
                     @endforeach
                 </select>
             </div>
@@ -112,18 +148,17 @@
                     <table class="table table-bordered" id="users-table">
                         <thead>
                         <tr>
+                            <th>utm_source</th>
+                            <th>utm_medium</th>
+                            <th>utm_campaign</th>
+                            <th>utm_term</th>
+                            <th>utm_advertiser</th>
                             <th>ID</th>
                             <th>Почта</th>
                             <th>Имя</th>
                             <th>Платформа</th>
                             <th>Sub_id</th>
                             <th>App</th>
-                            <th>UTM
-                                source
-                                medium
-                                campaign
-                                term
-                                advertiser</th>
                             <th>Страна</th>
                             <th>Город</th>
                             <th>Возраст</th>
@@ -176,13 +211,17 @@
                                 ['10 строк', '100 строк', '500 строк', 'Все']
                             ],
                             columns: [
+                                {data: 'utm_source', name: 'utm_source'},
+                                {data: 'utm_medium', name: 'utm_medium'},
+                                {data: 'utm_campaign', name: 'utm_campaign'},
+                                {data: 'utm_term', name: 'utm_term'},
+                                {data: 'utm_advertiser', name: 'utm_advertiser'},
                                 {data: 'id', name: 'id'},
                                 {data: 'email', name: 'email'},
                                 {data: 'name', name: 'name'},
                                 {data: 'platform', name: 'platform'},
                                 {data: 'subid', name: 'subid'},
                                 {data: 'app_name', name: 'app_name'},
-                                {data: 'UTM', name: 'UTM'},
                                 {data: 'country', name: 'country'},
                                 {data: 'state', name: 'state'},
                                 {data: 'age', name: 'age'},

@@ -3,6 +3,7 @@ namespace App\ModelAdmin\CoreEngine\LogicModels;
 use App\ModelAdmin\CoreEngine\Core\CoreEngine;
 use App\Models\ChatMessage;
 use App\Models\Feed;
+use App\Models\StatisticSite\UserInputs;
 use App\Models\StatisticSite\UserWatch;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -24,9 +25,15 @@ class UserLogic extends CoreEngine
         return $this->default;
     }
 
+    public function getCountUsers()
+    {
+        $sub = new UserLogic($this->params);
+        return $sub->setLimit(false)->offPagination()->setJoin(['UserCooperationAll'])->getTotal();
+    }
+
     public function getPayUser(){
         $this->select = [DB::raw("SUM(UserPayment.price) as pay")];
-        return $this->setLimit('')->setJoin(["UserPayment"])->getOne()['pay'];
+        return $this->setLimit('')->setJoin(["UserPayment", 'UserCooperationAll'])->getOne()['pay'] ?? '0';
     }
 
     public function getCountUser(){
@@ -44,10 +51,9 @@ class UserLogic extends CoreEngine
     }
 
     public function getAVGMessage(){
-        $sub = new UserLogic($this->params,[DB::raw("COUNT(*)")]);
-        $sub->setLimit(false)->offPagination();
-        $this->select = [DB::raw("COUNT(*) / (".$sub->getSqlToStr().") as avg_message ")];
-        return $this->setLimit('')->setJoin(["ChatMessageSend"])->getOne()['avg_message'];
+        $sub = new UserLogic(array_merge($this->params, ['gender' => 'male']));
+        $sub->select = [DB::raw("COUNT(chat_messages.id) / COUNT(DISTINCT(chat_messages.sender_user_id)) as avg_message ")];
+        return $sub->setLimit(false)->setJoin(["ChatMessageSend", 'UserCooperationAll'])->getOne()['avg_message'] ?? '0';
     }
 
     public function getFakeAncetId(){
@@ -57,6 +63,12 @@ class UserLogic extends CoreEngine
              ->setLimit('false')
              ->executeFilter()
              ->pluck('user_id')->toArray();
+    }
+
+    public function getCountSession()
+    {
+        $sub = new UserLogic($this->params, [DB::raw('COUNT(UserInputs.id) as user_input')]);
+        return $sub->setLimit(false)->setJoin(['UserInputs', 'UserCooperationAll'])->getOne()['user_input'] ?? '0';
     }
 
 
@@ -175,6 +187,26 @@ class UserLogic extends CoreEngine
                 "type" => 'string', "action" => '=', "concat" => 'AND',
                 'relatedModel' => 'UserCooperation'
             ],
+            ["field" =>"UserCooperation.utm_medium", "params" => 'utm_medium',
+                "validate" => ["string" => true, "empty" => true],
+                "type" => 'string', "action" => '=', "concat" => 'AND',
+                'relatedModel' => 'UserCooperation'
+            ],
+            ["field" =>"UserCooperation.utm_campaign", "params" => 'utm_campaign',
+                "validate" => ["string" => true, "empty" => true],
+                "type" => 'string', "action" => '=', "concat" => 'AND',
+                'relatedModel' => 'UserCooperation'
+            ],
+            ["field" =>"UserCooperation.utm_term", "params" => 'utm_term',
+                "validate" => ["string" => true, "empty" => true],
+                "type" => 'string', "action" => '=', "concat" => 'AND',
+                'relatedModel' => 'UserCooperation'
+            ],
+            ["field" =>"UserCooperation.utm_advertiser", "params" => 'utm_advertiser',
+                "validate" => ["string" => true, "empty" => true],
+                "type" => 'string', "action" => '=', "concat" => 'AND',
+                'relatedModel' => 'UserCooperation'
+            ],
 
         ];
         $this->filter = array_merge($this->filter,parent::getFilter());
@@ -230,7 +262,11 @@ class UserLogic extends CoreEngine
                 "UserCooperationAll"=>[
                     "entity" => (new User\UserCooperation())->getTable()." as UserCooperation",
                     "relationship" => ['user_id','id'],
-                ]
+                ],
+                "UserInputs"=>[
+                    "entity" => (new UserInputs())->getTable()." as UserInputs",
+                    "relationship" => ['user_id','id'],
+                ],
             ]
         ];
         return $this->group_params;

@@ -42,23 +42,16 @@ use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
-    public function test()
-    {
-        $email = 'dimnbertyas@mail.ru';
-        $user = User::find(127706);
-//        $o = new VerifyEmail();
-//        var_dump($o->check("yakuithemaid"));
-//        var_dump($o->check("lidici7544@undewp.com"));
-//        var_dump($o->check("Tundepaul@yahoo.com"));
-//        var_dump($o->check("jamiehughesm7@outlook.com"));
-        Mail::to($user)->send(new MessageUserMail($user, User::find(4)));
-    }
 
-    public function  dashbord(Request $request){
+    public function dashbord(Request $request){
      $data = json_decode($this->getCountStatistic($request)->content(),true);
      $data['country'] = Country::all()->toArray();
      $data['state'] = State::all()->toArray();
      $data['utm_source'] = User\UserCooperation::whereNotNull('utm_source')->groupBy('utm_source')->pluck('utm_source')->toArray();
+     $data['utm_campaign'] = User\UserCooperation::whereNotNull('utm_campaign')->groupBy('utm_campaign')->pluck('utm_campaign')->toArray();
+     $data['utm_medium'] = User\UserCooperation::whereNotNull('utm_medium')->groupBy('utm_medium')->pluck('utm_medium')->toArray();
+     $data['utm_term'] = User\UserCooperation::whereNotNull('utm_term')->groupBy('utm_term')->pluck('utm_term')->toArray();
+     $data['utm_advertiser'] = User\UserCooperation::whereNotNull('utm_advertiser')->groupBy('utm_advertiser')->pluck('utm_advertiser')->toArray();
 
      return view("admin.dashbord.index",$data);
     }
@@ -68,16 +61,16 @@ class AdminController extends Controller
         if(!empty($request->all())){
             $params = array_merge($params,$request->all());
         }
-        $count_message_male = new UserLogic( $params);
-        $pay_onsit = new  UserLogic(array_merge(['payment_status'=>'success'],$params));
+        $count_message_male = new UserLogic($params);
+        $pay_onsit = new UserLogic(array_merge(['payment_status'=>'success'],$params));
         $count_user = new UserLogic($params);
 
-        $count_session = new UserInputsLogic( $params);
+        $count_session = new UserLogic($params);
         $count_link = new RoutingLogic($params);
         $data =[
             'count_link' => $count_link->getTotal(),
-            'count_session' =>$count_session->getTotal(),
-            'count_user' => $count_user->getTotal(),
+            'count_session' =>$count_session->getCountSession(),
+            'count_user' => $count_user->getCountUsers(),
             'count_message_male'=> $count_message_male->getAVGMessage(),
             'pay_onsite' => $pay_onsit->getPayUser()
         ];
@@ -89,6 +82,11 @@ class AdminController extends Controller
         if(!empty($request->all()))
             $params = array_merge($params,$request->all());
         $users = new UserLogic($params,[
+            DB::raw('UserCooperation.utm_source AS utm_source'),
+            DB::raw('UserCooperation.utm_medium AS utm_medium'),
+            DB::raw('UserCooperation.utm_campaign AS utm_campaign'),
+            DB::raw('UserCooperation.utm_term AS utm_term'),
+            DB::raw('UserCooperation.utm_advertiser AS utm_advertiser'),
             'id', 'email', 'name',DB::raw("UserCooperation.subid as subid"),DB::raw("UserCooperation.app_name as app_name"), 'state','country','birthday','birthday','about_self',
             DB::raw(" DATE_FORMAT(users.created_at,\"%Y-%m-%d %H:%i:%s\") as created_at"),
             DB::raw("CASE WHEN from_mobile_app = 0 THEN 'web' WHEN from_mobile_app = 1 THEN 'mobile' END as platform"),
@@ -105,7 +103,6 @@ class AdminController extends Controller
             DB::raw("IFNULL((SELECT SUM(credits) FROM ".(new CreditLog())->getTable()." WHERE user_id = users.id AND credits IS NOT NULL ),0) as credits"),
             DB::raw("IFNULL((SELECT SUM(real_credits) FROM ".(new CreditLog())->getTable()." WHERE user_id = users.id AND real_credits IS NOT NULL),0) as real_credits"),
             DB::raw("IFNULL((SELECT SUM(price) FROM ".(new User\Payment())->getTable()." WHERE user_id = users.id AND status ='success'),0) as pay") ,
-            DB::raw("CONCAT('-',COALESCE(UserCooperation.utm_source, ''),'-', COALESCE(UserCooperation.utm_medium, ''),'-', COALESCE(UserCooperation.utm_campaign, ''),'-', COALESCE(UserCooperation.utm_term, ''),'-', COALESCE(UserCooperation.utm_advertiser, '')) as UTM") ,
         ]);
         $users->setLimit(false)->setJoin(['UserCooperationAll'])->order('desc','created_at');
         return response()->json($users->getList()['result']);
