@@ -321,11 +321,11 @@ class OperatorChatController extends Controller
             return response()->json(['error' => $validator->errors()], 500);
         }
         $chat = $this->chatRepository->findForAnket($user, $id);
-        if (!OperatorLimitController::spendLimitsByOperator($chat->recepient_id, $chat->user_id, $chat->id)) {
+        if (!OperatorLimitController::spendLimitsByOperator($chat->user_id, $chat->recepient_id, $chat->id)) {
             return response()->json(['error' => 'NO_LIMIT'], 500);
         }
-        $sender = User::find($chat->recepient_id);
-        $recepient =  User::find($chat->user_id);
+        $sender = User::find($chat->user_id);
+        $recepient =  User::find($chat->recepient_id);
         $chatMessage = $this->chatRepository->saveChatMessage($chat, $request->text);
         if ($recepient->is_real == 1 && !is_null($recepient->onesignal_token)) {
             OneSignalService::sendNotification($recepient->onesignal_token, 'CoolDreamy', "{$sender->name} sent you a message.", $sender->avatar_url);
