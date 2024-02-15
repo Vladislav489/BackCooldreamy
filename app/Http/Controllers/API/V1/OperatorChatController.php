@@ -321,8 +321,7 @@ class OperatorChatController extends Controller
             return response()->json(['error' => $validator->errors()], 500);
         }
         $chat = $this->chatRepository->findForAnket($user, $id);
-        dd($chat);
-        if (!OperatorLimitController::spendLimitsByOperator($chat->user_id, $chat->recepient_id, $chat->id)) {
+        if (!OperatorLimitController::spendLimitsByOperator($chat->recepient_id, $chat->user_id, $chat->id)) {
             return response()->json(['error' => 'NO_LIMIT'], 500);
         }
         $sender = User::find($chat->user_id);
