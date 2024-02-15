@@ -30,7 +30,7 @@ class AssignAnketsToTestOperator extends Command
         foreach (User::query()->where('is_real', false)->where('gender', 'female')->get() as $user) {
             $operators = [124519, 124518];
             OperatorLinkUsers::create([
-                'operator_id' => array_rand($operators),
+                'operator_id' => $operators[array_rand($operators)],
                 'user_id' => $user->id,
                 'operator_work' => true,
                 'admin_work' => false,
