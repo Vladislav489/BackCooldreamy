@@ -62,6 +62,7 @@ class OperatorLimitController extends Controller
             $limit->where('chat_id','=', $chatId);
         }
         $limits = $limit->get();
+        dd($limits);
         foreach ($limits as $limit) {
             if ($chatId) {
                 $limit->chat_id = $chatId;
