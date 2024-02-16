@@ -114,7 +114,7 @@ trait ImageStoreTrait
 
 
     public static function store_image_content_base_64(User $user,$contentBase64, $category_id, $gender = null){
-        dump('store_image_content_base_64');
+//        dump('store_image_content_base_64');
         try {
             $links = new \stdClass();
             $image_parts = explode(";base64,", $contentBase64);
@@ -135,10 +135,12 @@ trait ImageStoreTrait
             $ApiStoreg->createFolder("/media/". $urlGender . $user->id. '/'.$categoryList[$category_id]);
             $ApiStoreg->upoadFile($dir,$image_base64,$filenametostore,$image_type);
             $links->image_url = env('IMG_URL') . $urlGender . $user->id . '/'.$categoryList[$category_id].'/' . $filenametostore;
+            dump($links->image_url);
 
             $image = new \App\Models\Image();
             $image->user_id = $user->id;
             $image->image_url = 'https://media.cooldreamy.com/' . $links->image_url;
+            dump($image->image_url);
             $image->thumbnail_url = 'https://media.cooldreamy.com/' . $links->image_url;
             $image->big_thumbnail_url = 'https://media.cooldreamy.com/' . $links->image_url;
             $image->blur_thumbnail_url = 'https://media.cooldreamy.com/' . $links->image_url;

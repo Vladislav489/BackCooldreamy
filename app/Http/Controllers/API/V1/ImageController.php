@@ -43,7 +43,6 @@ class ImageController extends Controller
 
     public function store(Request $request)
     {
-        dump($request->all());
         $validator = Validator::make($request->all(), [
             'image' => ['required'],
             'category_id' => ['required', Rule::exists('image_categories', 'id'),]
@@ -53,7 +52,6 @@ class ImageController extends Controller
         }
         try {
             $user = Auth::user();
-            dump('store image before base64 save');
             return self::store_image_content_base_64($user, $request->image, $request->category_id, $user ? $user->gender : null);
         } catch (\Throwable $e) {
             return response()->json(['error' => $e->getMessage()], 500);
