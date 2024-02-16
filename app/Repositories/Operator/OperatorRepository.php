@@ -185,11 +185,11 @@ class OperatorRepository
         $results = $combinedBuilder->paginate($pageSize);
         dump('step3');
         $results->getCollection()->each(function ($item) {
-            dump(['chat_id' => $item->id]);
+            dump(['chat_id' => $item->id, 'first_user' => $item->first_user_id, 'second_user' => $item->second_user_id]);
             $firstUser = User::query()->setEagerLoads([])->findOrFail($item->first_user_id);
-            dump(['step4'=> $firstUser]);
+            dump(['step4'=> $firstUser->id]);
             $secondUser = User::query()->setEagerLoads([])->findOrFail($item->second_user_id);
-            dump(['step5' => $secondUser]);
+            dump(['step5' => $secondUser->id]);
             $item->self_user = $secondUser->is_real ? $firstUser : $secondUser;
             $item->other_user = $secondUser->is_real ? $secondUser : $firstUser;
             dump($item->self_user, $item->other_user);
