@@ -165,6 +165,7 @@ class OperatorRepository
     public function getOperatorLastMessages(User $operator, $page,$pageSize, array $requestData = [])
     {
         dump('getOperatorLastMessages');
+        dump($requestData);
         $params = [
             'search_message' => Arr::get($requestData, 'search'),
             'is_query' => true,
@@ -180,15 +181,15 @@ class OperatorRepository
                 ->where('deleted_by_second_user','=', '0')
                 ->where('is_answered_by_operator','=', '0')
                 ->selectRaw("'chat' as type_of_model");
-
+        dump('OperatoRRepository');
         $combinedBuilder = $chats->where('is_answered_by_operator','=', '0')->orderBy('updated_at', 'desc');
         $results = $combinedBuilder->paginate($pageSize);
-
+        dump('step3');
         $results->getCollection()->each(function ($item) {
             $firstUser = User::query()->setEagerLoads([])->findOrFail($item->first_user_id);
-//            dump($firstUser);
+            dump('step4');
             $secondUser = User::query()->setEagerLoads([])->findOrFail($item->second_user_id);
-//            dump($secondUser);
+            dump('step5');
             $item->self_user = $secondUser->is_real ? $firstUser : $secondUser;
             $item->other_user = $secondUser->is_real ? $secondUser : $firstUser;
             if ($item->type_of_model == 'chat') {
