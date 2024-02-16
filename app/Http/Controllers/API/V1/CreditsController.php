@@ -73,6 +73,7 @@ class CreditsController extends Controller
         //получаем сервис
         $result = false;
         $servicePrice = ServicePrices::where('id', $service_id)->get()->first();
+        dump(['service_price' => $servicePrice->price]);
         if($servicePrice) {
             // получаем данные пользоваетля
             $user = Auth::user();
@@ -102,7 +103,9 @@ class CreditsController extends Controller
 //            }
 
             //оплата только лоя мужчин
+            dump('before paymentcheck');
             $result = $user->check_payment_man($servicePrice->price,$service_id,$action,$second_user_id);
+            dump('after paymentcheck');
             // если не false знасит все прошло успешно
             if ($result) {
                 return $result;
