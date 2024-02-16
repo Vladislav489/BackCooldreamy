@@ -114,6 +114,7 @@ trait ImageStoreTrait
 
 
     public static function store_image_content_base_64(User $user,$contentBase64, $category_id, $gender = null){
+        dump('store_image_content_base_64');
         try {
             $links = new \stdClass();
             $image_parts = explode(";base64,", $contentBase64);
