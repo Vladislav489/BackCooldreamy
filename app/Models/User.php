@@ -377,6 +377,7 @@ class User extends Authenticatable
     }
     //Оплата в чистом виде
     private function pay($cost,$service_id = null,$action = null ,$second_user_id = 0){
+        dump('pay');
        /*
         * если у юзера есть подписка то собщения бесплатные и есть лимиты на отправку фото видео
         *
@@ -391,6 +392,7 @@ class User extends Authenticatable
         $resultSubscriptions =  Subscriptions::getValidPeriodAndLimit($this->id,$action);
         // получаем баланс пользователя для проверки (платные кредиты)
         $creaditsReals = User\CreditsReals::getUserCreditsById($this->id);
+        dump(['credits_reals' => $creaditsReals,]);
         // получаем баланс пользователя для проверки (бесплатные кредиты)
         if($resultSubscriptions) {
             $repository->logPayment($this, 0, $second_user_id, $service_id,$action);
@@ -409,7 +411,7 @@ class User extends Authenticatable
              $this->update(["credits" => $newCredits]);
             return true;
         }
-        if( $creaditsReals->credits >= $cost && $action != ActionEnum::SEND_MESSAGE) { //если из реальных кредитов достаточно средст делаем оплату
+        if( $creaditsReals->credits >= $cost && $action == ActionEnum::SEND_MESSAGE) { //если из реальных кредитов достаточно средст делаем оплату
                     $newCredits = $creaditsReals->credits - $cost;//вычитаем цену за сервис
                     $repository->logPayment($this, $cost, $second_user_id, $service_id,$action);//остаток записывем  на реальные кредиты
                     $creaditsReals->update(["credits" => $newCredits]);//остаток записывем  на реальные кредиты
