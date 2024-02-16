@@ -185,9 +185,9 @@ class OperatorRepository
 
         $results->getCollection()->each(function ($item) {
             $firstUser = User::query()->setEagerLoads([])->findOrFail($item->first_user_id);
-            dump($firstUser);
+//            dump($firstUser);
             $secondUser = User::query()->setEagerLoads([])->findOrFail($item->second_user_id);
-            dump($secondUser);
+//            dump($secondUser);
             $item->self_user = $secondUser->is_real ? $firstUser : $secondUser;
             $item->other_user = $secondUser->is_real ? $secondUser : $firstUser;
             if ($item->type_of_model == 'chat') {
@@ -197,6 +197,7 @@ class OperatorRepository
             }
             return $item;
         });
+        dump('result');
         return $results;
     }
 
