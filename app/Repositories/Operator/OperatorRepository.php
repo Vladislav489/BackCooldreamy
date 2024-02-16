@@ -164,7 +164,7 @@ class OperatorRepository
 
     public function getOperatorLastMessages(User $operator, $page,$pageSize, array $requestData = [])
     {
-        dump('getOperatorLastMessages');
+//        dump('getOperatorLastMessages');
         $params = [
             'search_message' => Arr::get($requestData, 'search'),
             'is_query' => true,
@@ -180,32 +180,33 @@ class OperatorRepository
                 ->where('deleted_by_second_user','=', '0')
                 ->where('is_answered_by_operator','=', '0')
                 ->selectRaw("'chat' as type_of_model");
-        dump('OperatoRRepository');
+//        dump('OperatoRRepository');
         $combinedBuilder = $chats->where('is_answered_by_operator','=', '0')->orderBy('updated_at', 'desc');
         $results = $combinedBuilder->paginate($pageSize);
-        dump('step3');
+//        dump('step3');
         $results->getCollection()->each(function ($item) {
-            dump(['chat_id' => $item->id, 'first_user' => $item->first_user_id, 'second_user' => $item->second_user_id]);
+//            dump(['chat_id' => $item->id, 'first_user' => $item->first_user_id, 'second_user' => $item->second_user_id]);
             $firstUser = User::query()->setEagerLoads([])->findOrFail($item->first_user_id);
-            dump(['step4'=> $firstUser->id]);
+//            dump(['step4'=> $firstUser->id]);
             $secondUser = User::query()->setEagerLoads([])->findOrFail($item->second_user_id);
-            dump(['step5' => $secondUser->id]);
+//            dump(['step5' => $secondUser->id]);
             $item->self_user = $secondUser->is_real ? $firstUser : $secondUser;
+            var_dump($item->self_user->id);
             $item->other_user = $secondUser->is_real ? $secondUser : $firstUser;
-            dump($item->self_user, $item->other_user);
-            dump('step6');
+            var_dump($item->other_user);
+//            dump('step6');
             if ($item->type_of_model == 'chat') {
-                dump('step6.5');
+//                dump('step6.5');
                 $item->last_message = ChatMessage::setEagerLoads([])->with('chat_messageable')->where('chat_id', $item->id)->latest()->first();
-                dump('step7');
+//                dump('step7');
             } else {
-                dump('step7.5');
+//                dump('step7.5');
                 $item->last_message = LetterMessage::setEagerLoads([])->with('letter_messageable')->where('letter_id', $item->id)->latest()->first();
-                dump('step8');
+//                dump('step8');
             }
             return $item;
         });
-        dump('result');
+//        dump('result');
         return $results;
     }
 
