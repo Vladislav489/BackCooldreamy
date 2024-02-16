@@ -183,12 +183,12 @@ class OperatorRepository
         dump('OperatoRRepository');
         $combinedBuilder = $chats->where('is_answered_by_operator','=', '0')->orderBy('updated_at', 'desc');
         $results = $combinedBuilder->paginate($pageSize);
-        dump('step3');
+        dump('step3', $results);
         $results->each(function ($item) {
             $firstUser = User::query()->setEagerLoads([])->findOrFail($item->first_user_id);
-            dump('step4');
+            dump('step4', $firstUser->id);
             $secondUser = User::query()->setEagerLoads([])->findOrFail($item->second_user_id);
-            dump('step5');
+            dump('step5', $secondUser->id);
             $item->self_user = $secondUser->is_real ? $firstUser : $secondUser;
             $item->other_user = $secondUser->is_real ? $secondUser : $firstUser;
             dump($item->self_user, $item->other_user);
