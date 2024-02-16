@@ -164,6 +164,7 @@ class OperatorRepository
 
     public function getOperatorLastMessages(User $operator, $page,$pageSize, array $requestData = [])
     {
+        dump('getOperatorLastMessages');
         $params = [
             'search_message' => Arr::get($requestData, 'search'),
             'is_query' => true,
