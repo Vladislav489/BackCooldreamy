@@ -196,7 +196,7 @@ class OperatorRepository
             dump($item->other_user->id);
             dump('step6');
             if ($item->type_of_model == 'chat') {
-                dump('step6.5');
+                dump('step6.5', $item->id, $item->self_user->id, $item->other_user->id);
                 $item->last_message = ChatMessage::setEagerLoads([])->with('chat_messageable')->where('chat_id', $item->id)->latest()->first();
                 dump('step7');
             } else {
