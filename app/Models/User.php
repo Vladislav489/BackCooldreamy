@@ -346,8 +346,10 @@ class User extends Authenticatable
     }
     //списание средст юзера мужчины женщина бесплатно
     public function check_payment_man($cost,$service_id = null,$action = null ,$second_user_id = 0){
+        dump('check_payment_man');
         // получаем данные пользоваетля
         if($this->is_real && $this->gender == 'male') {
+            dump('check_payment_man if-statement');
             return $this->pay($cost,$service_id,$action ,$second_user_id);
         } else {
             return true;
