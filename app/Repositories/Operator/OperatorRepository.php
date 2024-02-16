@@ -186,9 +186,9 @@ class OperatorRepository
         dump('step3');
         $results->getCollection()->each(function ($item) {
             $firstUser = User::query()->setEagerLoads([])->findOrFail($item->first_user_id);
-            dump('step4', $firstUser->id);
+            dump(['step4'=> $firstUser]);
             $secondUser = User::query()->setEagerLoads([])->findOrFail($item->second_user_id);
-            dump('step5', $secondUser->id);
+            dump(['step5' => $secondUser]);
             $item->self_user = $secondUser->is_real ? $firstUser : $secondUser;
             $item->other_user = $secondUser->is_real ? $secondUser : $firstUser;
             dump($item->self_user, $item->other_user);
