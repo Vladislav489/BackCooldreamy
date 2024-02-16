@@ -76,30 +76,30 @@ class CreditsController extends Controller
         if($servicePrice) {
             // получаем данные пользоваетля
             $user = Auth::user();
-            $subscriptionService = resolve(SubscriptionService::class);
-            $subscrip = $subscriptionService->getUserCurrentSubscription($user);
-            if ($subscrip) {
-                switch ($action){
-                    case ActionEnum::VIEWING_PHOTO_IN_CHAT:
-                        if($subscrip->count_watch_or_send_photos > 0) {
-                            Subscriptions::query()->where('id','=',$subscrip->id)
-                                ->update(['count_watch_or_send_photos'=> $subscrip->count_watch_or_send_photos-=1]);
-                            $result = true;
-                        }else{
-                            $result = false;
-                        }
-                    break;
-                    default:
-                        $result = true;
-                    break;
-                }
-
-                if ($result) {
-                    return $result;
-                } else {
-                    return response()->json(['error' => "Цена покупки превышает сумму на счету пользоваетля!", "acquiring" => 1], 500);
-                }
-            }
+//            $subscriptionService = resolve(SubscriptionService::class);
+//            $subscrip = $subscriptionService->getUserCurrentSubscription($user);
+//            if ($subscrip) {
+//                switch ($action){
+//                    case ActionEnum::VIEWING_PHOTO_IN_CHAT:
+//                        if($subscrip->count_watch_or_send_photos > 0) {
+//                            Subscriptions::query()->where('id','=',$subscrip->id)
+//                                ->update(['count_watch_or_send_photos'=> $subscrip->count_watch_or_send_photos-=1]);
+//                            $result = true;
+//                        }else{
+//                            $result = false;
+//                        }
+//                    break;
+//                    default:
+//                        $result = true;
+//                    break;
+//                }
+//
+//                if ($result) {
+//                    return $result;
+//                } else {
+//                    return response()->json(['error' => "Цена покупки превышает сумму на счету пользоваетля!", "acquiring" => 1], 500);
+//                }
+//            }
 
             //оплата только лоя мужчин
             $result = $user->check_payment_man($servicePrice->price,$service_id,$action,$second_user_id);

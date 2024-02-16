@@ -400,7 +400,9 @@ class User extends Authenticatable
         if ($myCredits >= $cost && $action == ActionEnum::SEND_MESSAGE ) {
             // если да, рассчитываем сколько останется на счету
             $newCredits = $myCredits - $cost;
+            dump('111');
             $repository->logPayment($this, $cost, $second_user_id, $service_id,$action);
+            dump('222');
             // запускаем метод на списание указанного количества средств со счёта
              $this->update(["credits" => $newCredits]);
             return true;
