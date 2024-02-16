@@ -191,9 +191,9 @@ class OperatorRepository
             $secondUser = User::query()->setEagerLoads([])->findOrFail($item->second_user_id);
 //            dump(['step5' => $secondUser->id]);
             $item->self_user = $secondUser->is_real ? $firstUser : $secondUser;
-            var_dump($item->self_user->id);
+            dump($item->self_user->id);
             $item->other_user = $secondUser->is_real ? $secondUser : $firstUser;
-            var_dump($item->other_user);
+            dump($item->other_user->id);
 //            dump('step6');
             if ($item->type_of_model == 'chat') {
 //                dump('step6.5');
