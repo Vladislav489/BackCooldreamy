@@ -185,6 +185,7 @@ class OperatorRepository
         $results = $combinedBuilder->paginate($pageSize);
         dump('step3');
         $results->getCollection()->each(function ($item) {
+            dump(['chat_id' => $item->id]);
             $firstUser = User::query()->setEagerLoads([])->findOrFail($item->first_user_id);
             dump(['step4'=> $firstUser]);
             $secondUser = User::query()->setEagerLoads([])->findOrFail($item->second_user_id);
