@@ -192,10 +192,13 @@ class OperatorRepository
             dump('step5');
             $item->self_user = $secondUser->is_real ? $firstUser : $secondUser;
             $item->other_user = $secondUser->is_real ? $secondUser : $firstUser;
+            dump('step6');
             if ($item->type_of_model == 'chat') {
                 $item->last_message = ChatMessage::setEagerLoads([])->with('chat_messageable')->where('chat_id', $item->id)->latest()->first();
+                dump('step7');
             } else {
                 $item->last_message = LetterMessage::setEagerLoads([])->with('letter_messageable')->where('letter_id', $item->id)->latest()->first();
+                dump('step8');
             }
             return $item;
         });
