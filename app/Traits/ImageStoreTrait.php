@@ -150,7 +150,6 @@ trait ImageStoreTrait
                 $user->avatar_url_big_thumbnail =  'https://media.cooldreamy.com/'  . str_replace('https://media.cooldreamy.com/', '',  $links->image_url);
                 $user->save();
             }
-            dd($image);
             return response($image);
         } catch (\Exception $e) {
             var_dump(['message' => $e->getMessage(),'l'=>$e->getLine(),'f'=>$e->getFile()]);
