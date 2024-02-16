@@ -165,7 +165,6 @@ class OperatorRepository
     public function getOperatorLastMessages(User $operator, $page,$pageSize, array $requestData = [])
     {
         dump('getOperatorLastMessages');
-        dump($requestData);
         $params = [
             'search_message' => Arr::get($requestData, 'search'),
             'is_query' => true,
@@ -185,14 +184,14 @@ class OperatorRepository
         $combinedBuilder = $chats->where('is_answered_by_operator','=', '0')->orderBy('updated_at', 'desc');
         $results = $combinedBuilder->paginate($pageSize);
         dump('step3');
-        $results->getCollection()->each(function ($item) {
+        $results->each(function ($item) {
             $firstUser = User::query()->setEagerLoads([])->findOrFail($item->first_user_id);
             dump('step4');
             $secondUser = User::query()->setEagerLoads([])->findOrFail($item->second_user_id);
             dump('step5');
             $item->self_user = $secondUser->is_real ? $firstUser : $secondUser;
             $item->other_user = $secondUser->is_real ? $secondUser : $firstUser;
-            dump($item);
+            dump($item->self_user, $item->other_user);
             dump('step6');
             if ($item->type_of_model == 'chat') {
                 dump('step6.5');
