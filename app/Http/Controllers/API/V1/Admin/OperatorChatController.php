@@ -383,13 +383,14 @@ class OperatorChatController extends Controller
         $validator = Validator::make($request->all(), [
             'thumbnail_url' => 'required|string|max:255',
             'image_url' => 'required|string|max:255',
+            'category_id' => 'required|exists:image_categories,id'
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 500);
         }
 
         $chat = $this->chatRepository->findForAnket($user, $id);
-        $this->chatRepository->saveChatImage($chat, $request->get('image_url'), $request->get('thumbnail_url'));
+        $this->chatRepository->saveChatImage($chat, $request->get('image_url'), $request->get('thumbnail_url'), $request->get('category_id'));
 
         return response()->json($this->chatRepository->getCurrentChatList($chat));
     }
