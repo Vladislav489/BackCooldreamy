@@ -1152,4 +1152,51 @@ class ChatController extends Controller
             })->paginate(5)
         );
     }
+
+    public function payToView(Request $request)
+    {
+        $request->validate([
+            'chat_id' => 'required|integer|exists:chats,id',
+            'message_id' => 'required',
+            'chat_messageable_type' => 'required'
+        ]);
+        $chat = Chat::find($request->get('chat_id'));
+        if ($chat) {
+            $user = Auth::user();
+            $action = 0;
+            if ($request->get('chat_messageable_type') == 'App\Models\ChatImageMessage') {
+                $action = ActionEnum::PAY_IMAGE_18;
+            }
+            if ($request->get('chat_messageable_type') == 'App\Models\ChatVideoMessage') {
+                $action = ActionEnum::PAY_VIDEO_18;
+            }
+
+            if ($chat->first_user_id !== $user->id && $chat->second_user_id !== $user->id) {
+                return response()->json(['error' => 'You are not authorized to post in this chat.'], 401);
+            }
+
+            if ($chat->first_user_id == $user->id) {
+                if ($chat->deleted_by_first_user) {
+                    return response()->json(['error' => 'chat is deleted'], 404);
+                }
+            } else {
+                if ($chat->deleted_by_second_user) {
+                    return response()->json(['error' => 'chat is deleted'], 404);
+                }
+            }
+
+            $credits = new CreditsController();
+            $resultCheckPayment = $credits->check_payment($action, $action, $chat->second_user_id == $user->id ? $chat->first_user_id : $chat->second_user_id);
+            if ($resultCheckPayment) {
+                $message = ChatMessage::find($request->get('message_id'));
+                if ($message) {
+                    $message->is_payed = 1;
+                    $message->save();
+                }
+                return (self::get_current_chat_list_item($request->chat_id, $user));
+            }
+            return response()->json(['error' => 'payment doesnt executed'], 500);
+        }
+        return response()->json(['error' => 'no chat with this ID'], 500);
+    }
 }

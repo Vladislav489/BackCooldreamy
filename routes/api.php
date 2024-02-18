@@ -70,8 +70,6 @@ Route::post('user/set/info', [\App\Http\Controllers\API\V1\AuthController::class
 
 Route::resource('prompt_target', "\App\Http\Controllers\API\V1\PromptTargetController", ['except' => ['create', 'edit']])->middleware('auth:sanctum');
 
-
-
 Route::post('image_store', [\App\Http\Controllers\API\V1\ImageController::class, 'store'])->middleware('auth:sanctum');
 Route::post('file_store', [\App\Http\Controllers\API\V1\FileController::class, 'store'])->middleware('auth:sanctum');
 Route::post('video_store', [\App\Http\Controllers\API\V1\FileController::class, 'store_video'])->middleware('auth:sanctum');
@@ -111,6 +109,7 @@ Route::get('chats/get_chat_with_user', [\App\Http\Controllers\API\V1\ChatControl
 
 Route::get('chats/get_current_chat1', [\App\Http\Controllers\API\V1\ChatController::class, 'get_current_chat1'])->middleware('auth:sanctum');
 
+Route::post('chats/pay_to_view', [\App\Http\Controllers\API\V1\ChatController::class, 'payToView'])->middleware('auth:sanctum');
 
 Route::get('chats/get_current_chat', [\App\Http\Controllers\API\V1\ChatController::class, 'get_current_chat'])->middleware('auth:sanctum');
 Route::get('chats/search_chat_message', [\App\Http\Controllers\API\V1\ChatController::class, 'searchChatMessage'])->middleware('auth:sanctum');

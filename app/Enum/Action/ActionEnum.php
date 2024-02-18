@@ -21,7 +21,7 @@ class ActionEnum
  const	SEND_GIFT_IN_CHAT = 13;
  const	SEND_STICKER_IN_LETTER  = 15;
  const	PAY_IMAGE_18 = 16;
- const	PAY_IMAGE_TOP = 17;
+ const	PAY_VIDEO_18 = 17;
 
     public function getActions()
     {
