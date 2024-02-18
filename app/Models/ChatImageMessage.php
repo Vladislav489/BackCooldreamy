@@ -9,7 +9,7 @@ class ChatImageMessage extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['image_url', 'thumbnail_url'];
+    protected $fillable = ['image_url', 'thumbnail_url', 'is_payed'];
 
     public function chat_message()
     {

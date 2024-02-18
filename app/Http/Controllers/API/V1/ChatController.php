@@ -633,7 +633,7 @@ class ChatController extends Controller
         $chat_image_message = ChatImageMessage::create([
             'image_url' => $request->image_url,
             'thumbnail_url' => $request->thumbnail_url,
-            'is_payed' => 1
+            'is_payed' => true
         ]);
         $countImages = ChatMessage::query()->where('chat_id', $chat->id)->where('chat_messageable_type', ChatImageMessage::class)->count();
         if ($user->gender == 'female' && $countImages >= Chat::COUNT_FREE_IMAGES) {
