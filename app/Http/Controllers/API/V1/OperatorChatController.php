@@ -626,7 +626,6 @@ class OperatorChatController extends Controller
         $validator = Validator::make($request->all(), [
             'thumbnail_url' => 'required|string|max:255',
             'image_url' => 'required|string|max:255',
-            'category_id' => 'required|exists:image_categories,id'
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 500);
@@ -636,7 +635,7 @@ class OperatorChatController extends Controller
         if (!OperatorLimitController::spendLimitsByOperator($chat->user_id, $chat->recepient_id, $chat->id)) {
             return response()->json(['error' => 'NO_LIMIT'], 500);
         }
-        $chatMessage = $this->chatRepository->saveChatImage($chat, $request->get('image_url'), $request->get('thumbnail_url'), $request->get('category_id'));
+        $chatMessage = $this->chatRepository->saveChatImage($chat, $request->get('image_url'), $request->get('thumbnail_url'));
         $request = \request();
         if($request->get('new_message')){
             $this->workingShiftService->operatorSendAnsver($user->id,$chat->user_id,$chat->recepient_id,$chat->id,$chatMessage->id,1);

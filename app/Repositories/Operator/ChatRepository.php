@@ -409,13 +409,12 @@ class ChatRepository
     private function saveMessage(Chat $chat, $chatMessageObj): ChatMessage
     {
         if ($chatMessageObj instanceof ChatImageMessage) {
-//            $countImages = ChatMessage::query()->where('chat_id', $chat->id)->where('chat_messageable_type', ChatImageMessage::class)->count();
-//            if ($countImages >= Chat::COUNT_FREE_IMAGES) {
-//                $isPayed = false;
-//            } else {
-//                $isPayed = true;
-//            }
-            $isPayed = $chatMessageObj->is_payed;
+            $countImages = ChatMessage::query()->where('chat_id', $chat->id)->where('chat_messageable_type', ChatImageMessage::class)->count();
+            if ($countImages >= Chat::COUNT_FREE_IMAGES) {
+                $isPayed = false;
+            } else {
+                $isPayed = true;
+            }
         } else {
             $isPayed = true;
         }
@@ -485,13 +484,11 @@ class ChatRepository
      * @param $thumbnailUrl
      * @return ChatMessage
      */
-    public function saveChatImage(Chat $chat, $imageUrl, $thumbnailUrl, $categoryId): ChatMessage
+    public function saveChatImage(Chat $chat, $imageUrl, $thumbnailUrl): ChatMessage
     {
-        $categoryId == 4 ? $isPayed = 0 : $isPayed = 1;
         $chatImageMessage = ChatImageMessage::create([
             'image_url' => $imageUrl,
             'thumbnail_url' => $thumbnailUrl,
-            'is_payed' => $isPayed
         ]);
 
         return $this->saveMessage($chat, $chatImageMessage);
