@@ -71,8 +71,8 @@ Route::post('user/set/info', [\App\Http\Controllers\API\V1\AuthController::class
 Route::resource('prompt_target', "\App\Http\Controllers\API\V1\PromptTargetController", ['except' => ['create', 'edit']])->middleware('auth:sanctum');
 
 Route::post('image_store', [\App\Http\Controllers\API\V1\ImageController::class, 'store'])->middleware('auth:sanctum');
-Route::post('file_store', [\App\Http\Controllers\API\V1\FileController::class, 'store'])->middleware('auth:sanctum');
-Route::post('video_store', [\App\Http\Controllers\API\V1\FileController::class, 'store_video'])->middleware('auth:sanctum');
+//Route::post('file_store', [\App\Http\Controllers\API\V1\FileController::class, 'store'])->middleware('auth:sanctum');
+Route::post('video_store', [\App\Http\Controllers\API\V1\FileController::class, 'store'])->middleware('auth:sanctum');
 
 Route::get('feeds', [\App\Http\Controllers\API\V1\FeedController::class, 'index'])->middleware('auth:sanctum');
 Route::post('feed/set_like', [\App\Http\Controllers\API\V1\FeedController::class, 'set_feed_liked'])->middleware('auth:sanctum');
@@ -117,7 +117,7 @@ Route::post('chats/send_chat_text_message', [\App\Http\Controllers\API\V1\ChatCo
 Route::post('chats/send_chat_sticker_message', [\App\Http\Controllers\API\V1\ChatController::class, 'send_chat_sticker_message'])->middleware('auth:sanctum');
 Route::post('chats/send_chat_gift_message', [\App\Http\Controllers\API\V1\ChatController::class, 'send_chat_gift_message'])->middleware('auth:sanctum');
 Route::post('chats/send_chat_image_message', [\App\Http\Controllers\API\V1\ChatController::class, 'send_chat_image_message'])->middleware('auth:sanctum');
-Route::post('chats/send_chat_image_video', [\App\Http\Controllers\API\V1\ChatController::class, 'send_chat_image_video'])->middleware('auth:sanctum');
+Route::post('chats/send_chat_video_message', [\App\Http\Controllers\API\V1\ChatController::class, 'send_chat_video_message'])->middleware('auth:sanctum');
 
 Route::post('chats/set_chat_message_is_read', [\App\Http\Controllers\API\V1\ChatController::class, 'set_chat_message_is_read'])->middleware('auth:sanctum');
 
@@ -293,6 +293,8 @@ Route::group(['prefix' => 'operators/', 'middleware' => ['auth:sanctum', 'role:o
         Route::post('/{id}/send/message', [\App\Http\Controllers\API\V1\OperatorChatController::class, 'sendMessage']);
         // Отправка изображений
         Route::post('/{id}/send/image', [\App\Http\Controllers\API\V1\OperatorChatController::class, 'sendImage']);
+        // Отправка видео
+        Route::post('/{id}/send/video', [\App\Http\Controllers\API\V1\OperatorChatController::class, 'sendVideo']);
         // Чтение сообщения
         Route::post('/{id}/read/{message}', [\App\Http\Controllers\API\V1\OperatorChatController::class, 'read']);
         // Получение всех медиафайлов

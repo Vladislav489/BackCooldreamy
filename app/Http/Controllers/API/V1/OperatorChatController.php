@@ -648,6 +648,34 @@ class OperatorChatController extends Controller
         return response()->json($this->chatRepository->getCurrentChatList($chat));
     }
 
+    public function sendVideo(Request $request, $id): JsonResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $validator = Validator::make($request->all(), [
+            'video_url' => 'required|string|max:255',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 500);
+        }
+
+        $chat = $this->chatRepository->findForAnket($user, $id);
+        if (!OperatorLimitController::spendLimitsByOperator($chat->user_id, $chat->recepient_id, $chat->id)) {
+            return response()->json(['error' => 'NO_LIMIT'], 500);
+        }
+        $chatMessage = $this->chatRepository->saveChatVideo($chat, $request->get('video_url'));
+        $request = \request();
+        if($request->get('new_message')){
+            $this->workingShiftService->operatorSendAnsver($user->id,$chat->user_id,$chat->recepient_id,$chat->id,$chatMessage->id,1);
+        }else{
+            $this->workingShiftService->operatorSendAnsver($user->id,$chat->user_id,$chat->recepient_id,$chat->id,$chatMessage->id);
+        }
+        $this->updateChatSelfUser($chat);
+
+        return response()->json($this->chatRepository->getCurrentChatList($chat));
+    }
+
     /**
      * @param $id
      * @return JsonResponse

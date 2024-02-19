@@ -59,8 +59,29 @@ class NextCloud {
                 case "webp":
                      $type =  'image/webp';
                      break;
+                case "mp4":
+                     $type =  'video/mp4';
+                     break;
+                case "webm":
+                     $type =  'video/webm';
+                     break;
+                case "mpeg":
+                     $type =  'video/mpeg';
+                     break;
+                case "wmv":
+                     $type =  'video/x-ms-wmv';
+                     break;
+                case "avi":
+                     $type =  'video/x-msvideo';
+                     break;
+                case "m3u8":
+                     $type =  'application/x-mpegURL';
+                     break;
+                case "ts":
+                     $type =  'video/MP2T';
+                     break;
             }
-            array_unshift($header,"Content-Type: {$type}");
+            array_unshift($header,"Content-Type: $type");
         }
         logger($this->requestUrl);
         $paramsCurl = array(

@@ -526,7 +526,7 @@ class ChatController extends Controller
         $chat->save();
     }
 
-    public function send_chat_image_video(Request$request)
+    public function send_chat_video_message(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'chat_id' => [
@@ -540,54 +540,47 @@ class ChatController extends Controller
             return response()->json(['error' => $validator->errors()], 500);
         }
 
-        if ($chat->first_user_id == Auth::user()->id) {
-            if ($chat->deleted_by_first_user) {
-                return response()->json(['error' => 'chat is deleted'], 404);
+        $chat = Chat::find($request->get('chat_id'));
+        if ($chat) {
+            if ($chat->first_user_id == Auth::user()->id) {
+                if ($chat->deleted_by_first_user) {
+                    return response()->json(['error' => 'chat is deleted'], 404);
+                }
+            } else {
+                if ($chat->deleted_by_second_user) {
+                    return response()->json(['error' => 'chat is deleted'], 404);
+                }
             }
-        } else {
-            if ($chat->deleted_by_second_user) {
-                return response()->json(['error' => 'chat is deleted'], 404);
+            $user = Auth::user();
+
+            $user_id = $user->id;
+            if ($chat->first_user_id !== $user_id && $chat->second_user_id !== $user_id) {
+                return response()->json(['error' => 'You are not authorized to post in this chat.'], 401);
             }
+
+            $credits = new CreditsController();
+            $resultCheckPayment = $credits->check_payment(4, ActionEnum::SEND_VIDEO_IN_CHAT, $chat->second_user_id == $user->id ? $chat->first_user_id : $chat->second_user_id);
+
+            if (is_object($resultCheckPayment)) {
+                return $resultCheckPayment;
+            }
+
+            [$sender_user_id, $recepient_user_id] = $this->extracted($chat, $user_id);
+            $chat_video_message = ChatVideoMessage::create(['video_url' => $request->video_url, 'is_payed' => true]);
+            $isPayed = true;
+            $operator = ChatRepository::findHowWorkAnket($recepient_user_id);
+            $chat_message = new ChatMessage(['chat_id' => $chat->id, 'sender_user_id' => $sender_user_id, 'recepient_user_id' => $recepient_user_id, 'is_payed' => $isPayed, 'operator_get_ansver' => $operator]);
+            $chat_video_message->chat_message()->save($chat_message);
+
+            $chat_message->chat_messageable = $chat_message->chat_messageable;
+            $chatListItem = self::get_current_chat_list_item($request->chat_id, $user, true);
+            //ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
+            $this->setChatAnswered($chat);
+            $this->sendOperatorEvent($recepient_user_id, $chat_message, $chatListItem['chat']);
+
+            return (self::get_current_chat_list_item($request->chat_id, $user));
         }
-        $user = Auth::user();
-
-        $user_id = $user->id;
-        $chat = Chat::findorfail($request->chat_id);
-        if ($chat->first_user_id !== $user_id && $chat->second_user_id !== $user_id) {
-            return response()->json(['error' => 'You are not authorized to post in this chat.'], 401);
-        }
-
-        $credits = new CreditsController();
-        $resultCheckPayment = $credits->check_payment(4,ActionEnum::SEND_PHOTO_IN_CHAT,$chat->second_user_id == $user->id ? $chat->first_user_id: $chat->second_user_id);
-
-        if(is_object($resultCheckPayment)) {
-            return $resultCheckPayment;
-        }
-
-        [$sender_user_id, $recepient_user_id] = $this->extracted($chat, $user_id);
-        $chat_video_message = ChatVideoMessage::create([
-            'image_url' => $request->image_url,
-            'thumbnail_url' => $request->thumbnail_url,
-        ]);
-        $countImages = ChatMessage::query()->where('chat_id', $chat->id)->where('chat_messageable_type', ChatVideoMessage::class)->count();
-        $isPayed =  ($user->gender == 'female' && $countImages >= Chat::COUNT_FREE_IMAGES)?false:true;
-        $operator = ChatRepository::findHowWorkAnket($recepient_user_id);
-        $chat_message = new ChatMessage([
-            'chat_id' => $chat->id,
-            'sender_user_id' => $sender_user_id,
-            'recepient_user_id' => $recepient_user_id,
-            'is_payed' => $isPayed,
-            'operator_get_ansver' => $operator
-        ]);
-        $chat_video_message->chat_message()->save($chat_message);
-
-        $chat_message->chat_messageable = $chat_message->chat_messageable;
-        $chatListItem = self::get_current_chat_list_item($request->chat_id,$user, true);
-        //ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
-        $this->setChatAnswered($chat);
-        $this->sendOperatorEvent($recepient_user_id, $chat_message, $chatListItem['chat']);
-
-        return (self::get_current_chat_list_item($request->chat_id,$user));
+        return response()->json(['error' => 'chat not found'], 404);
     }
 
     public function send_chat_image_message(Request $request)
@@ -1170,7 +1163,6 @@ class ChatController extends Controller
             if ($request->get('chat_messageable_type') == 'App\Models\ChatVideoMessage') {
                 $action = ActionEnum::PAY_VIDEO_18;
             }
-
             if ($chat->first_user_id !== $user->id && $chat->second_user_id !== $user->id) {
                 return response()->json(['error' => 'You are not authorized to post in this chat.'], 401);
             }

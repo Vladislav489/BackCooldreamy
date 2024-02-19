@@ -9,7 +9,7 @@ class ChatVideoMessage extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['video_url'];
+    protected $fillable = ['video_url', 'is_payed'];
 
     public function chat_message()
     {

@@ -15,6 +15,7 @@ use App\Models\ChatImageMessage;
 use App\Models\ChatMessage;
 use App\Models\ChatStickerMessage;
 use App\Models\ChatTextMessage;
+use App\Models\ChatVideoMessage;
 use App\Models\Gift;
 use App\Models\OperatorLinkUsers;
 use App\Models\Sticker;
@@ -408,7 +409,7 @@ class ChatRepository
      */
     private function saveMessage(Chat $chat, $chatMessageObj): ChatMessage
     {
-        if ($chatMessageObj instanceof ChatImageMessage) {
+        if ($chatMessageObj instanceof ChatImageMessage || $chatMessageObj instanceof ChatVideoMessage) {
 //            $countImages = ChatMessage::query()->where('chat_id', $chat->id)->where('chat_messageable_type', ChatImageMessage::class)->count();
 //            if ($countImages >= Chat::COUNT_FREE_IMAGES) {
 //                $isPayed = false;
@@ -495,5 +496,14 @@ class ChatRepository
         ]);
 
         return $this->saveMessage($chat, $chatImageMessage);
+    }
+    public function saveChatVideo(Chat $chat, $videoUrl): ChatMessage
+    {
+        $chatVideoMessage = ChatVideoMessage::create([
+            'video_url' => $videoUrl,
+            'is_payed' => false
+        ]);
+
+        return $this->saveMessage($chat, $chatVideoMessage);
     }
 }
