@@ -491,12 +491,20 @@ class ChatController extends Controller
             }
         }
         if ($recepient->is_real == 0 || $sender->credits <= 0) {
-            UserPayedMessagesToOperators::create([
-                'user_id' => $sender->id,
-                'ancet_id' => $recepient->id,
-                'operator_id' => $operator,
-                'message_type' => 1,
-            ]);
+//            UserPayedMessagesToOperators::create([
+//                'user_id' => $sender->id,
+//                'ancet_id' => $recepient->id,
+//                'operator_id' => $operator,
+//                'message_type' => 1,
+//            ]);
+            $message = new UserPayedMessagesToOperators();
+            dump($message, $sender->id, $recepient->id, $operator);
+            $message->user_id = $sender->id;
+            $message->ancet_id = $recepient->id;
+            $message->operator_id = $operator;
+            $message->message_type = 1;
+            $message->save();
+            dump($message);
         }
 
         $chat_text_message->chat_message()->save($chat_message);
