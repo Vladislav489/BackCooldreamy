@@ -9,5 +9,7 @@ class UserPayedMessagesToOperators extends Model
 {
     use HasFactory;
 
+    protected $table = 'users_payed_messages_to_operators ';
+
     protected $guarded = false;
 }
