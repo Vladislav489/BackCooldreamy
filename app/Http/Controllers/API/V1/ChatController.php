@@ -497,14 +497,20 @@ class ChatController extends Controller
 //                'operator_id' => $operator,
 //                'message_type' => 1,
 //            ]);
-            $message = new UserPayedMessagesToOperators();
-            dump($message, $sender->id, $recepient->id, $operator);
-            $message->user_id = $sender->id;
-            $message->ancet_id = $recepient->id;
-            $message->operator_id = $operator;
-            $message->message_type = 1;
-            $message->save();
-            dump($message);
+//            $message = new UserPayedMessagesToOperators();
+//            dump($message, $sender->id, $recepient->id, $operator);
+//            $message->user_id = $sender->id;
+//            $message->ancet_id = $recepient->id;
+//            $message->operator_id = $operator;
+//            $message->message_type = 1;
+//            $message->save();
+//            dump($message);
+            DB::table('users_payed_messages_to_operators')->insert([
+                'user_id' => $sender->id,
+//              'ancet_id' => $recepient->id,
+//              'operator_id' => $operator,
+//              'message_type' => 1
+            ]);
         }
 
         $chat_text_message->chat_message()->save($chat_message);
