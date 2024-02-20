@@ -338,10 +338,13 @@ class OperatorChatController extends Controller
             }
         }
 
-        if($request->get('new_message')){
-            $this->workingShiftService->operatorSendAnsver($user->id,$chat->user_id,$chat->recepient_id,$chat->id,$chatMessage->id,1);
-        }else{
-            $this->workingShiftService->operatorSendAnsver($user->id,$chat->user_id,$chat->recepient_id,$chat->id,$chatMessage->id);
+        dd(User::find($recepient->id)->credits, User::where('id', $recepient->id)->first('credits'));
+        if (User::find($recepient->id)->credits <= 0) {
+            if ($request->get('new_message')) {
+                $this->workingShiftService->operatorSendAnsver($user->id, $chat->user_id, $chat->recepient_id, $chat->id, $chatMessage->id, 1);
+            } else {
+                $this->workingShiftService->operatorSendAnsver($user->id, $chat->user_id, $chat->recepient_id, $chat->id, $chatMessage->id);
+            }
         }
 
         FireBaseService::sendPushFireBase($chat->recepient_id,"СoolDreamy","{$sender->name}, sent you a message.",$sender->avatar_url ?? null);
