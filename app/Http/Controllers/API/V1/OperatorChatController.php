@@ -338,7 +338,6 @@ class OperatorChatController extends Controller
             }
         }
 
-        dd(User::find($recepient->id)->credits, User::where('id', $recepient->id)->first('credits'));
         if (User::find($recepient->id)->credits <= 0) {
             if ($request->get('new_message')) {
                 $this->workingShiftService->operatorSendAnsver($user->id, $chat->user_id, $chat->recepient_id, $chat->id, $chatMessage->id, 1);
