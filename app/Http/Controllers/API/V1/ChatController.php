@@ -498,6 +498,8 @@ class ChatController extends Controller
                 'ancet_id' => $recepient->id,
                 'operator_id' => $operator,
                 'message_type' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             dump('in2');
         }
