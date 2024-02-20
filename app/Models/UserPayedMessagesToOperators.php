@@ -9,7 +9,7 @@ class UserPayedMessagesToOperators extends Model
 {
     use HasFactory;
 
-    protected $table = 'users_payed_messages_to_operators ';
+    protected $table = 'users_payed_messages_to_operators';
 
     protected $fillable = ['user_id', 'ancet_id', 'operator_id', 'message_type',];
 }
