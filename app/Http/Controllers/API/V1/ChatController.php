@@ -507,9 +507,9 @@ class ChatController extends Controller
 //            dump($message);
             DB::table('users_payed_messages_to_operators')->insert([
                 'user_id' => $sender->id,
-//              'ancet_id' => $recepient->id,
-//              'operator_id' => $operator,
-//              'message_type' => 1
+                'ancet_id' => $recepient->id,
+                'operator_id' => $operator,
+                'message_type' => 1
             ]);
         }
 
