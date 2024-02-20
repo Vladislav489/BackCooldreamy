@@ -490,17 +490,17 @@ class ChatController extends Controller
 
             }
         }
-        dump('before');
-        if ($recepient->is_real == 0 || $sender->credits <= 0) {
-            dump('in1');
-            UserPayedMessagesToOperators::create([
-                'user_id' => $sender->id,
-                'ancet_id' => $recepient->id,
-                'operator_id' => $operator,
-                'message_type' => 1,
-            ]);
-            dump('in2');
-        }
+//        dump('before');
+//        if ($recepient->is_real == 0 || $sender->credits <= 0) {
+//            dump('in1');
+//            UserPayedMessagesToOperators::create([
+//                'user_id' => $sender->id,
+//                'ancet_id' => $recepient->id,
+//                'operator_id' => $operator,
+//                'message_type' => 1,
+//            ]);
+//            dump('in2');
+//        }
 
         $chat_text_message->chat_message()->save($chat_message);
         //You have received 1 new message on the site
