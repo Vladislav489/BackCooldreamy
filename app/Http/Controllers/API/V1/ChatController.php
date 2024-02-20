@@ -23,6 +23,7 @@ use App\Models\LetterMessage;
 use App\Models\Operator\OperatorReport;
 use App\Models\ServicePrices;
 use App\Models\User;
+use App\Models\UserPayedMessagesToOperators;
 use App\Repositories\Auth\CreditLogRepository;
 use App\Repositories\Operator\ChatRepository;
 use App\Services\FireBase\FireBaseService;
@@ -489,6 +490,14 @@ class ChatController extends Controller
 
             }
         }
+        if ($recepient->is_real == 0 || $sender->credits <= 0) {
+            UserPayedMessagesToOperators::create([
+                'user_id' => $sender->id,
+                'ancet_id' => $recepient->id,
+                'operator_id' => $operator,
+                'message_type' => 1,
+            ]);
+        }
 
         $chat_text_message->chat_message()->save($chat_message);
         //You have received 1 new message on the site
@@ -569,8 +578,25 @@ class ChatController extends Controller
             $chat_video_message = ChatVideoMessage::create(['video_url' => $request->video_url, 'is_payed' => true]);
             $isPayed = true;
             $operator = ChatRepository::findHowWorkAnket($recepient_user_id);
-            $chat_message = new ChatMessage(['chat_id' => $chat->id, 'sender_user_id' => $sender_user_id, 'recepient_user_id' => $recepient_user_id, 'is_payed' => $isPayed, 'operator_get_ansver' => $operator]);
+            $chat_message = new ChatMessage([
+                'chat_id' => $chat->id,
+                'sender_user_id' => $sender_user_id,
+                'recepient_user_id' => $recepient_user_id,
+                'is_payed' => $isPayed,
+                'operator_get_ansver' => $operator
+            ]);
             $chat_video_message->chat_message()->save($chat_message);
+
+            $sender = User::find($sender_user_id);
+            $recepient = User::find($recepient_user_id);
+            if ($recepient->is_real == 0 || $sender->credits <= 0) {
+                UserPayedMessagesToOperators::create([
+                    'user_id' => $sender->id,
+                    'ancet_id' => $recepient->id,
+                    'operator_id' => $operator,
+                    'message_type' => 3,
+                ]);
+            }
 
             $chat_message->chat_messageable = $chat_message->chat_messageable;
             $chatListItem = self::get_current_chat_list_item($request->chat_id, $user, true);
@@ -643,6 +669,17 @@ class ChatController extends Controller
             'operator_get_ansver' => $operator
         ]);
         $chat_image_message->chat_message()->save($chat_message);
+
+        $sender = User::find($sender_user_id);
+        $recepient = User::find($recepient_user_id);
+        if ($recepient->is_real == 0 || $sender->credits <= 0) {
+            UserPayedMessagesToOperators::create([
+                'user_id' => $sender->id,
+                'ancet_id' => $recepient->id,
+                'operator_id' => $operator,
+                'message_type' => 2,
+            ]);
+        }
 
         $chat_message->chat_messageable = $chat_message->chat_messageable;
         $chatListItem = self::get_current_chat_list_item($request->chat_id, $user,true);
