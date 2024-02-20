@@ -490,7 +490,7 @@ class ChatController extends Controller
 
             }
         }
-        if ($recepient->is_real == 0 || $sender->credits <= 0) {
+        if ($recepient->is_real == 0 && $sender->credits <= 0) {
             UserPayedMessagesToOperators::create([
                 'user_id' => $sender->id,
                 'ancet_id' => $recepient->id,
@@ -589,7 +589,7 @@ class ChatController extends Controller
 
             $sender = User::find($sender_user_id);
             $recepient = User::find($recepient_user_id);
-            if ($recepient->is_real == 0 || $sender->credits <= 0) {
+            if ($recepient->is_real == 0) {
                 UserPayedMessagesToOperators::create([
                     'user_id' => $sender->id,
                     'ancet_id' => $recepient->id,
@@ -672,7 +672,7 @@ class ChatController extends Controller
 
         $sender = User::find($sender_user_id);
         $recepient = User::find($recepient_user_id);
-        if ($recepient->is_real == 0 || $sender->credits <= 0) {
+        if ($recepient->is_real == 0) {
             UserPayedMessagesToOperators::create([
                 'user_id' => $sender->id,
                 'ancet_id' => $recepient->id,
