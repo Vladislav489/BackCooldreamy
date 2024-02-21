@@ -33,7 +33,7 @@ class VideosForAnketsFromNextcloud extends Command
         foreach ($ankets as $anket) {
             $storage->getFolder('/media/' . $anket->id . '/video/');
             $results = $storage->getResponse();
-            if (strpos($results, '<s:exception>')) {
+            if (is_string($results) && strpos($results, '<s:exception>')) {
                 continue;
             }
             if (!empty($results)) {
