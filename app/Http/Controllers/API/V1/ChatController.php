@@ -29,6 +29,7 @@ use App\Repositories\Operator\ChatRepository;
 use App\Services\FireBase\FireBaseService;
 use App\Services\Rating\RatingService;
 use App\Traits\UserSubscriptionTrait;
+use App\Traits\VideoStoreTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -39,9 +40,11 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\File;
 
 class ChatController extends Controller
 {
+    use VideoStoreTrait;
     /** @var RatingService */
     private RatingService $ratingService;
 
@@ -537,12 +540,16 @@ class ChatController extends Controller
 
     public function send_chat_video_message(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
+            'video' => [
+                'required',
+                File::types(['mp4', 'wmv', 'avi', 'webm'])->max(20 * 1024)
+            ],
             'chat_id' => [
                 'required', 'integer',
                 Rule::exists('chats', 'id'),
-            ],
-            'video_url' => 'required|string|max:255',
+            ]
         ]);
 
         if ($validator->fails()) {
@@ -574,8 +581,17 @@ class ChatController extends Controller
                 return $resultCheckPayment;
             }
 
+            $video = self::store_video_content($user, $request->video, $user->gender);
+            if (!$video) {
+                $userCredits = User\CreditsReals::where('user_id', $user_id)->first();
+                $serviceCost = ServicePrices::where('id', 4)->first()->price;
+                $userCredits->credits += $serviceCost;
+                $userCredits->save();
+                return response()->json(['error' => 'unable to save video'], 500);
+            }
+
             [$sender_user_id, $recepient_user_id] = $this->extracted($chat, $user_id);
-            $chat_video_message = ChatVideoMessage::create(['video_url' => $request->video_url, 'is_payed' => true]);
+            $chat_video_message = ChatVideoMessage::create(['video_url' => $video->video_url, 'is_payed' => true]);
             $isPayed = true;
             $operator = ChatRepository::findHowWorkAnket($recepient_user_id);
             $chat_message = new ChatMessage([

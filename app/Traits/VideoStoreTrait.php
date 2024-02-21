@@ -109,7 +109,7 @@ trait VideoStoreTrait
             $video->video_url = 'https://media.cooldreamy.com/' . $links->video_url;
             $video->save();
 
-            return response($video);
+            return $video;
         } catch (\Exception $e) {
             var_dump(['message' => $e->getMessage(),'l'=>$e->getLine(),'f'=>$e->getFile()]);
             return response()->json((['message' => $e->getMessage(),'l'=>$e->getLine(),'f'=>$e->getFile()]), 500);

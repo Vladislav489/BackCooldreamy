@@ -21,6 +21,7 @@ use App\Models\ChatMessage;
 use App\Models\Country;
 use App\Models\Feed;
 use App\Models\Import\CronImportUser;
+use App\Models\ServicePrices;
 use App\Models\StatisticSite\RoutingUser;
 use App\Models\StatisticSite\UserInputs;
 use App\Models\StatisticSite\UserWatch;
@@ -42,6 +43,10 @@ use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
+    public function test()
+    {
+        return ServicePrices::where('id', 4)->first()->price;
+    }
 
     public function dashbord(Request $request){
      $data = json_decode($this->getCountStatistic($request)->content(),true);
