@@ -33,6 +33,9 @@ class VideosForAnketsFromNextcloud extends Command
         foreach ($ankets as $anket) {
             $storage->getFolder('/media/' . $anket->id . '/video/');
             $results = $storage->getResponse();
+            if (strpos($results, '<s:exception>')) {
+                continue;
+            }
             if (!empty($results)) {
                 if (!is_array($results)) {
                     $results = array($results);
