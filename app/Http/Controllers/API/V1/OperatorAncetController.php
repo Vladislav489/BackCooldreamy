@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Image;
 use App\Models\OperatorChatLimit;
 use App\Models\User;
+use App\Models\Video;
 use App\Repositories\Operator\AnketRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -39,12 +40,15 @@ class OperatorAncetController extends Controller
      */
     public function media(Request $request, $id){
         $user = User::find($id);
-        $profilePhotos = Image::where('user_id', $user->id);
+        $result = Image::where('user_id', $user->id);
         if ($request->get('category_id')) {
-            $profilePhotos->where('category_id', $request->get('category_id'));
+            $result->where('category_id', $request->get('category_id'));
         }
-        $profilePhotos = $profilePhotos->paginate(5);
-        return response()->json($profilePhotos);
+        if ($request->get('category_id') == 'video') {
+            $result = Video::where('user_id', $user->id);
+        }
+        $result = $result->paginate(5);
+        return response()->json($result);
     }
 
     public function manInfo(Request $request, $id)
