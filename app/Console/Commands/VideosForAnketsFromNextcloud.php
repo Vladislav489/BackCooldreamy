@@ -34,6 +34,9 @@ class VideosForAnketsFromNextcloud extends Command
             $storage->getFolder('/media/' . $anket->id . '/video/');
             $results = $storage->getResponse();
             if (!empty($results)) {
+                if (!is_array($results)) {
+                    $results = array($results);
+                }
                 foreach ($results as $result) {
                     Video::create(['user_id' => $anket->id, 'video_url' => 'https://media.cooldreamy.com/' . str_replace('/media/', '', $result)]);
                 }
