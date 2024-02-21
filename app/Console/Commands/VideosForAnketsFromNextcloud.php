@@ -33,11 +33,10 @@ class VideosForAnketsFromNextcloud extends Command
         foreach ($ankets as $anket) {
             $storage->getFolder('/media/' . $anket->id . '/video/');
             $results = $storage->getResponse();
-            foreach ($results as $result) {
-                Video::create([
-                    'user_id' => $anket->id,
-                    'video_url' => 'https://media.cooldreamy.com/' . str_replace('/media/', '', $result)
-                ]);
+            if (!empty($result)) {
+                foreach ($results as $result) {
+                    Video::create(['user_id' => $anket->id, 'video_url' => 'https://media.cooldreamy.com/' . str_replace('/media/', '', $result)]);
+                }
             }
         }
     }
