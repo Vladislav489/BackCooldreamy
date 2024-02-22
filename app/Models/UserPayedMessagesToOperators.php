@@ -11,5 +11,5 @@ class UserPayedMessagesToOperators extends Model
 
     protected $table = 'users_payed_messages_to_operators';
 
-    protected $fillable = ['user_id', 'ancet_id', 'operator_id', 'message_type',];
+    protected $fillable = ['user_id', 'ancet_id', 'operator_id', 'credits',];
 }
