@@ -429,6 +429,11 @@ class ChatController extends Controller
         return response(json_encode($resp));
     }
 
+    public function getServicePrice($serviceId)
+    {
+        return ServicePrices::where('id', $serviceId)->first()->price;
+    }
+
     public function send_chat_text_message(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -472,7 +477,6 @@ class ChatController extends Controller
 
         [$sender_user_id, $recepient_user_id] = $this->extracted($chat, $user->id);
 
-
         $chat_text_message = ChatTextMessage::create(['text' => $request->text]);
 
         $operator = ChatRepository::findHowWorkAnket($recepient_user_id);
@@ -498,7 +502,7 @@ class ChatController extends Controller
                 'user_id' => $sender->id,
                 'ancet_id' => $recepient->id,
                 'operator_id' => $operator,
-                'message_type' => 1,
+                'credits' => $this->getServicePrice(1),
             ]);
         }
 
@@ -584,7 +588,7 @@ class ChatController extends Controller
             $video = self::store_video_content($user, $request->video, $user->gender);
             if (!$video) {
                 $userCredits = User\CreditsReals::where('user_id', $user_id)->first();
-                $serviceCost = ServicePrices::where('id', 4)->first()->price;
+                $serviceCost = $this->getServicePrice(4);
                 $userCredits->credits += $serviceCost;
                 $userCredits->save();
                 return response()->json(['error' => 'unable to save video'], 500);
@@ -610,7 +614,7 @@ class ChatController extends Controller
                     'user_id' => $sender->id,
                     'ancet_id' => $recepient->id,
                     'operator_id' => $operator,
-                    'message_type' => 3,
+                    'credits' => $this->getServicePrice(4),
                 ]);
             }
 
@@ -693,7 +697,7 @@ class ChatController extends Controller
                 'user_id' => $sender->id,
                 'ancet_id' => $recepient->id,
                 'operator_id' => $operator,
-                'message_type' => 2,
+                'credits' => $this->getServicePrice(3),
             ]);
         }
 
@@ -778,6 +782,18 @@ class ChatController extends Controller
             'operator_get_ansver' => $operator
         ]);
         $chat_sticker_message->chat_message()->save($chat_message);
+
+        $sender = User::find($sender_user_id);
+        $recepient = User::find($recepient_user_id);
+        if ($recepient->is_real == 0) {
+            UserPayedMessagesToOperators::create([
+                'user_id' => $sender->id,
+                'ancet_id' => $recepient->id,
+                'operator_id' => $operator,
+                'credits' => $this->getServicePrice(7),
+            ]);
+        }
+
         $chat_message->chat_messageable->sticker = $chat_message->chat_messageable->sticker;
         $chatListItem = self::get_current_chat_list_item($request->chat_id,$user, true);
         //ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
@@ -898,8 +914,21 @@ class ChatController extends Controller
             'operator_get_ansver' => $operator
         ]);
         $chat_gift_message->chat_message()->save($chat_message);
+
+        $sender = User::find($sender_user_id);
+        $recepient = User::find($recepient_user_id);
+        if ($recepient->is_real == 0) {
+            UserPayedMessagesToOperators::create([
+                'user_id' => $sender->id,
+                'ancet_id' => $recepient->id,
+                'operator_id' => $operator,
+                'credits' => $allCredits,
+            ]);
+        }
+
         $chat_message->chat_messageable->gifts = $chat_message->chat_messageable->gifts;
         $chatListItem = self::get_current_chat_list_item($chat->id,$user, true);
+
 
 
         //ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
@@ -1238,9 +1267,22 @@ class ChatController extends Controller
                     $message->is_payed = 1;
                     $message->save();
                 }
+                [$sender_user_id, $recepient_user_id] = $this->extracted($chat, $user->id);
+
+                $operator = ChatRepository::findHowWorkAnket($recepient_user_id);
+                $sender = User::find($sender_user_id);
+                $recepient = User::find($recepient_user_id);
+                if ($recepient->is_real == 0) {
+                    UserPayedMessagesToOperators::create([
+                        'user_id' => $sender->id,
+                        'ancet_id' => $recepient->id,
+                        'operator_id' => $operator,
+                        'credits' => $this->getServicePrice($action),
+                    ]);
+                }
                 return (self::get_current_chat_list_item($request->chat_id, $user));
             }
-            return response()->json(['error' => 'payment doesnt executed'], 500);
+            return response()->json(['error' => 'payment hasnt been executed'], 500);
         }
         return response()->json(['error' => 'no chat with this ID'], 500);
     }

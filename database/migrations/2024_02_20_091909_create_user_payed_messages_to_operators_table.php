@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('users_payed_messages_to_operators', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users', 'id')->cascadeOnDelete();
-            $table->unsignedInteger('ancet_id');
-            $table->unsignedInteger('operator_id');
-            $table->unsignedTinyInteger('message_type')->comment('1 - text, 2 - image, 3 - video');
+            $table->unsignedBigInteger('ancet_id');
+            $table->unsignedBigInteger('operator_id');
+            $table->unsignedInteger('credits')->comment('Кол-во списанных за операцию кредитов');
             $table->timestamps();
         });
     }
