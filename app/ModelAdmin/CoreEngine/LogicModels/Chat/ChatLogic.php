@@ -149,6 +149,10 @@ class ChatLogic extends CoreEngine {
                 "validate" => ["string" => true, "empty" => true],
                 "type" => 'string|array', "action" => 'RAW', "concat" => 'AND',
             ],
+            [
+                "field" =>'('.$tab.'.is_anket_favorite_by_first_user = 1 OR ' . $tab .'.is_anket_favorite_by_second_user = ?)', "params" => 'favorite',"validate" =>$validate ,
+                "type" => 'string|array', "action" => 'RAW', "concat" => 'AND'
+            ],
 
         ];
     }

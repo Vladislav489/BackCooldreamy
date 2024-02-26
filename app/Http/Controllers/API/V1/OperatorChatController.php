@@ -157,7 +157,8 @@ class OperatorChatController extends Controller
                     break;
                 case "premium":
                     $params['real'] = '1';
-                    $params['premium_more'] ='1';
+                    $params['payed_more'] ='1';
+//                    $params['premium_more'] ='1';
                     break;
                 case "subscription":
                     $params['real'] = '1';
@@ -165,7 +166,8 @@ class OperatorChatController extends Controller
                     break;
                 case "payed":
                     $params['real'] = '1';
-                    $params['payed_more'] ='1';
+//                    $params['payed_more'] ='1';
+                    $params['favorite'] = '1';
                     break;
             }
         }
