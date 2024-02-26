@@ -167,7 +167,7 @@ class OperatorChatController extends Controller
                 case "payed":
                     $params['real'] = '1';
 //                    $params['payed_more'] ='1';
-//                    $params['favorite'] = '1';
+                    $params['favorite'] = '1';
                     break;
             }
         }
@@ -187,23 +187,19 @@ class OperatorChatController extends Controller
         $select[] = DB::raw(" ChatLimit.limits as 'limit'");
         $select[] = DB::raw(" CEIL(ChatLimit.limits) as 'available_limit'");
 
-        dump(1);
         $select[] = DB::raw("(SELECT SUM(credits) FROM credit_logs
         WHERE credit_type = '".CreditLogTypeEnum::OUTCOME."' AND ((user_id = first_user_id AND other_user_id = second_user_id) || (user_id = second_user_id AND other_user_id = first_user_id) )) as max_limit");
         $chat = new ChatLogic($params,$select);
         $chat->setModel((new Chat()))->offPagination()->order('desc','updated_at')->setJoin(['OperatorWork'])->setGroupBy($group);
         dump(2);
         if($operator->getRoleNames()->toArray()[0] == 'admin'){
-            dump(3);
             $chat->getQueryLink()->groupBy(['chats.id', 'ChatLimit.limits']);
         }
-        if ($params['filter_type'] == 'payed') {
-            dump('ins');
-            $favUsers = DB::table('favorite_profiles')->where([['user_id', Auth::id()], ['disabled', 0]])->pluck('favorite_user_id')->toArray();
-            $o = implode(', ', $favUsers);
-            $chat->getQueryLink()->whereRaw("first_user_id IN ($o) OR second_user_id IN ($o)");
-        }
-        dump(2222);
+//        if ($params['filter_type'] == 'payed') {
+//            $favUsers = DB::table('favorite_profiles')->where([['user_id', Auth::id()], ['disabled', 0]])->pluck('favorite_user_id')->toArray();
+//            $o = implode(', ', $favUsers);
+//            $chat->getQueryLink()->whereRaw("first_user_id IN ($o) OR second_user_id IN ($o)");
+//        }
         $chat->getQueryLink()->with($join);
         $chats = $chat->getList();
         return response()->json(['data'=>$chats['result']]);
