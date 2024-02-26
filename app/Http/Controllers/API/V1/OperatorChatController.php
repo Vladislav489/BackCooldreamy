@@ -191,7 +191,6 @@ class OperatorChatController extends Controller
         WHERE credit_type = '".CreditLogTypeEnum::OUTCOME."' AND ((user_id = first_user_id AND other_user_id = second_user_id) || (user_id = second_user_id AND other_user_id = first_user_id) )) as max_limit");
         $chat = new ChatLogic($params,$select);
         $chat->setModel((new Chat()))->offPagination()->order('desc','updated_at')->setJoin(['OperatorWork'])->setGroupBy($group);
-        dump(2);
         if($operator->getRoleNames()->toArray()[0] == 'admin'){
             $chat->getQueryLink()->groupBy(['chats.id', 'ChatLimit.limits']);
         }
