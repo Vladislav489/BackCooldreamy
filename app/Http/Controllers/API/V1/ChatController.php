@@ -503,6 +503,7 @@ class ChatController extends Controller
                 'ancet_id' => $recepient->id,
                 'operator_id' => $operator,
                 'credits' => $this->getServicePrice(1),
+                'message_type' => 1
             ]);
         }
 
@@ -615,6 +616,7 @@ class ChatController extends Controller
                     'ancet_id' => $recepient->id,
                     'operator_id' => $operator,
                     'credits' => $this->getServicePrice(4),
+                    'message_type' => 3
                 ]);
             }
 
@@ -698,6 +700,7 @@ class ChatController extends Controller
                 'ancet_id' => $recepient->id,
                 'operator_id' => $operator,
                 'credits' => $this->getServicePrice(3),
+                'message_type' => 2
             ]);
         }
 
@@ -791,6 +794,7 @@ class ChatController extends Controller
                 'ancet_id' => $recepient->id,
                 'operator_id' => $operator,
                 'credits' => $this->getServicePrice(7),
+                'message_type' => 4
             ]);
         }
 
@@ -923,6 +927,7 @@ class ChatController extends Controller
                 'ancet_id' => $recepient->id,
                 'operator_id' => $operator,
                 'credits' => $allCredits,
+                'message_type' => 5
             ]);
         }
 
