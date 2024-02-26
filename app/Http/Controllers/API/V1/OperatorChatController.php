@@ -167,7 +167,7 @@ class OperatorChatController extends Controller
                 case "payed":
                     $params['real'] = '1';
 //                    $params['payed_more'] ='1';
-                    $params['favorite'] = '1';
+//                    $params['favorite'] = '1';
                     break;
             }
         }
@@ -195,14 +195,18 @@ class OperatorChatController extends Controller
         if($operator->getRoleNames()->toArray()[0] == 'admin'){
             $chat->getQueryLink()->groupBy(['chats.id', 'ChatLimit.limits']);
         }
+        if ($params['filter_type'] == 'payed') {
+            $favUsers = DB::table('favorite_profiles')->where([['user_id', Auth::id()], ['disabled', 0]])->pluck('favorite_user_id')->toArray();
+            $o = implode(', ', $favUsers);
+            $chat->getQueryLink()->whereRaw("first_user_id IN ($o) OR second_user_id IN ($o)");
+        }
         $chat->getQueryLink()->with($join);
         $chats = $chat->getList();
         return response()->json(['data'=>$chats['result']]);
     }
 
 
-
-    public function index1(Request $request){
+   public function index1(Request $request){
          $operator = Auth::user();
            $filter = [
                 'per_page' => $request->get('per_page'),
@@ -406,6 +410,37 @@ class OperatorChatController extends Controller
             Chat::query()->where('id', $chat->id)->update(['is_anket_favorite_by_second_user' => !$chat->is_anket_favorite_by_second_user]);
         }
         $this->updateChatSelfUser($chat);
+
+        return response()->json(['message' => 'success']);
+    }
+
+    public function addUserToFavoritesForOperator($id)
+    {
+        try {
+            $user = Auth::user();
+            $chat = $this->chatRepository->findForAnket($user, $id);
+
+            if ($chat->first_user_id == $chat->user_id) {
+                $profile = FavoriteProfile::where([['user_id', $user->id], ['favorite_user_id', $chat->second_user_id]])->first();
+                if ($profile) {
+                    $profile->disabled = !$profile->disabled;
+                    $profile->save();
+                } else {
+                    FavoriteProfile::create(['user_id' => $user->id, 'favorite_user_id' => $chat->second_user_id]);
+                }
+            } else {
+                $profile = FavoriteProfile::where([['user_id', $user->id], ['favorite_user_id', $chat->first_user_id]])->first();
+                if ($profile) {
+                    $profile->disabled = !$profile->disabled;
+                    $profile->save();
+                } else {
+                    FavoriteProfile::create(['user_id' => $user->id, 'favorite_user_id' => $chat->first_user_id]);
+                }
+            }
+            $this->updateChatSelfUser($chat);
+        } catch (\Throwable $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
 
         return response()->json(['message' => 'success']);
     }
