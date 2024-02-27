@@ -545,7 +545,7 @@ class ChatController extends Controller
 
     public function send_chat_video_message(Request $request)
     {
-
+        dump('scvm1');
         $validator = Validator::make($request->all(), [
             'video' => [
                 'required',
@@ -560,7 +560,7 @@ class ChatController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 500);
         }
-
+        dump('scvm2');
         $chat = Chat::find($request->get('chat_id'));
         if ($chat) {
             if ($chat->first_user_id == Auth::user()->id) {
@@ -578,27 +578,29 @@ class ChatController extends Controller
             if ($chat->first_user_id !== $user_id && $chat->second_user_id !== $user_id) {
                 return response()->json(['error' => 'You are not authorized to post in this chat.'], 401);
             }
-
+            dump('scvm3');
             $credits = new CreditsController();
             $resultCheckPayment = $credits->check_payment(4, ActionEnum::SEND_VIDEO_IN_CHAT, $chat->second_user_id == $user->id ? $chat->first_user_id : $chat->second_user_id);
-
+            dump('scvm4');
             if (is_object($resultCheckPayment)) {
                 return $resultCheckPayment;
             }
-
+            dump('scvm5');
             $video = self::store_video_content($user, $request->video, $user->gender);
             if (!$video) {
+                dump('scvm - error saving video');
                 $userCredits = User\CreditsReals::where('user_id', $user_id)->first();
                 $serviceCost = $this->getServicePrice(4);
                 $userCredits->credits += $serviceCost;
                 $userCredits->save();
                 return response()->json(['error' => 'unable to save video'], 500);
             }
-
+            dump('scvm6');
             [$sender_user_id, $recepient_user_id] = $this->extracted($chat, $user_id);
             $chat_video_message = ChatVideoMessage::create(['video_url' => $video->video_url, 'is_payed' => true]);
             $isPayed = true;
             $operator = ChatRepository::findHowWorkAnket($recepient_user_id);
+            dump('scvm7');
             $chat_message = new ChatMessage([
                 'chat_id' => $chat->id,
                 'sender_user_id' => $sender_user_id,
@@ -606,8 +608,9 @@ class ChatController extends Controller
                 'is_payed' => $isPayed,
                 'operator_get_ansver' => $operator
             ]);
+            dump('scvm8');
             $chat_video_message->chat_message()->save($chat_message);
-
+            dump('scvm9');
             $sender = User::find($sender_user_id);
             $recepient = User::find($recepient_user_id);
             if ($recepient->is_real == 0) {
@@ -619,7 +622,7 @@ class ChatController extends Controller
                     'message_type' => 3
                 ]);
             }
-
+            dump('scvm10');
             $chat_message->chat_messageable = $chat_message->chat_messageable;
             $chatListItem = self::get_current_chat_list_item($request->chat_id, $user, true);
             //ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
