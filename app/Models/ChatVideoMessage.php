@@ -11,7 +11,7 @@ class ChatVideoMessage extends Model
 
     protected $fillable = ['video_url', 'is_payed'];
 
-    public function chat_message()
+    public function video()
     {
         return $this->morphOne(ChatMessage::class, 'chat_messageable');
     }
