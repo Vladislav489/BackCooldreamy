@@ -80,6 +80,9 @@ class NextCloud {
                 case "ts":
                      $type =  'video/MP2T';
                      break;
+                case "mov":
+                     $type =  'video/quicktime';
+                     break;
             }
             array_unshift($header,"Content-Type: $type");
         }

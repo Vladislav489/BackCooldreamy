@@ -549,7 +549,7 @@ class ChatController extends Controller
         $validator = Validator::make($request->all(), [
             'video' => [
                 'required',
-                File::types(['mp4', 'wmv', 'avi', 'webm'])->max(20 * 1024)
+                File::types(['mp4', 'wmv', 'avi', 'webm', 'mov'])->max(20 * 1024)
             ],
             'chat_id' => [
                 'required', 'integer',
