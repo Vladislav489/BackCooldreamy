@@ -97,25 +97,25 @@ class ChatController extends Controller
 
     public static function get_current_chat_list_item($chat_id,$user = null, $its_event = false, $its_ace = false, $girl = null)
     {
-        dump('gccli1');
+//        dump('gccli1');
         $chat = Chat::findOrFail($chat_id);
-        dump('gccli2');
+//        dump('gccli2');
         if(is_null($user)){$user = Auth::user();}
-        dump('gccli3');
+//        dump('gccli3');
         $last_message = ChatMessage::where('chat_id', $chat_id)->latest()->first();
-        dump('gccli4');
+//        dump('gccli4');
         $chat->last_message = $last_message;
-        dump('gccli5');
+//        dump('gccli5');
         $chat->last_message->chat_messageable = $last_message->chat_messageable;
-        dump('gccli6');
+//        dump('gccli6');
         if (!$its_ace) {
             if ($its_event) {
                 $chat->another_user = $user;
-                dump('gccli7');
+//                dump('gccli7');
                 $recepient_id = ($chat->first_user_id == $user->id)?$chat->second_user_id: $chat->first_user_id;
-                dump('gccli8');
+//                dump('gccli8');
                 $favorite_users = FavoriteProfile::where('user_id', $recepient_id)->where('disabled', false)->pluck('favorite_user_id');
-                dump('gccli9');
+//                dump('gccli9');
             } else {
                 $chat->another_user = $chat->another_user;
                 $favorite_users = FavoriteProfile::where('user_id', $user->id)->where('disabled', false)->pluck('favorite_user_id');
@@ -127,13 +127,13 @@ class ChatController extends Controller
                 ->where('disabled', false)
                 ->pluck('favorite_user_id');
         }
-        dump('gccli10');
+//        dump('gccli10');
         $chat->favorite = ($favorite_users->contains($chat->first_user_id) || $favorite_users->contains($chat->second_user_id)) ? 1 : 0;
-        dump('gccli11');
+//        dump('gccli11');
         $item = [];
         $chat->updated_at = now();
         $item['chat'] = $chat;
-        dump('gccli12');
+//        dump('gccli12');
         return $item;
     }
 
@@ -555,7 +555,7 @@ class ChatController extends Controller
 
     public function send_chat_video_message(Request $request)
     {
-        dump('scvm1');
+//        dump('scvm1');
         $validator = Validator::make($request->all(), [
             'video' => [
                 'required',
@@ -570,7 +570,7 @@ class ChatController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 500);
         }
-        dump('scvm2');
+//        dump('scvm2');
         $chat = Chat::find($request->get('chat_id'));
         if ($chat) {
             if ($chat->first_user_id == Auth::user()->id) {
@@ -588,29 +588,29 @@ class ChatController extends Controller
             if ($chat->first_user_id !== $user_id && $chat->second_user_id !== $user_id) {
                 return response()->json(['error' => 'You are not authorized to post in this chat.'], 401);
             }
-            dump('scvm3');
+//            dump('scvm3');
             $credits = new CreditsController();
             $resultCheckPayment = $credits->check_payment(4, ActionEnum::SEND_VIDEO_IN_CHAT, $chat->second_user_id == $user->id ? $chat->first_user_id : $chat->second_user_id);
-            dump('scvm4');
+//            dump('scvm4');
             if (is_object($resultCheckPayment)) {
                 return $resultCheckPayment;
             }
-            dump('scvm5');
+//            dump('scvm5');
             $video = self::store_video_content($user, $request->video, $user->gender);
             if (!$video) {
-                dump('scvm - error saving video');
+//                dump('scvm - error saving video');
                 $userCredits = User\CreditsReals::where('user_id', $user_id)->first();
                 $serviceCost = $this->getServicePrice(4);
                 $userCredits->credits += $serviceCost;
                 $userCredits->save();
                 return response()->json(['error' => 'unable to save video'], 500);
             }
-            dump('scvm6');
+//            dump('scvm6');
             [$sender_user_id, $recepient_user_id] = $this->extracted($chat, $user_id);
             $chat_video_message = ChatVideoMessage::create(['video_url' => $video->video_url, 'is_payed' => true]);
             $isPayed = true;
             $operator = ChatRepository::findHowWorkAnket($recepient_user_id);
-            dump('scvm7');
+//            dump('scvm7');
             $chat_message = new ChatMessage([
                 'chat_id' => $chat->id,
                 'sender_user_id' => $sender_user_id,
@@ -618,9 +618,9 @@ class ChatController extends Controller
                 'is_payed' => $isPayed,
                 'operator_get_ansver' => $operator
             ]);
-            dump('scvm8');
+//            dump('scvm8');
             $chat_video_message->chat_message()->save($chat_message);
-            dump('scvm9');
+//            dump('scvm9');
             $sender = User::find($sender_user_id);
             $recepient = User::find($recepient_user_id);
             if ($recepient->is_real == 0) {
@@ -632,16 +632,16 @@ class ChatController extends Controller
                     'message_type' => 3
                 ]);
             }
-            dump('scvm10');
+//            dump('scvm10');
             $chat_message->chat_messageable = $chat_message->chat_messageable;
-            dump('scvm11');
+//            dump('scvm11');
             $chatListItem = self::get_current_chat_list_item($request->chat_id, $user, true);
-            dump('scvm12');
+//            dump('scvm12');
             //ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
             $this->setChatAnswered($chat);
-            dump('scvm13');
+//            dump('scvm13');
             $this->sendOperatorEvent($recepient_user_id, $chat_message, $chatListItem['chat']);
-            dump('scvm14');
+//            dump('scvm14');
 
             return (self::get_current_chat_list_item($request->chat_id, $user));
         }
