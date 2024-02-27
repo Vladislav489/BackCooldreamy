@@ -117,6 +117,7 @@ class StatisticService
     {
         $params = $request->all();
         $sum = new OperatorCreditsLogic($params, [DB::raw('IFNULL(SUM(credits), 0) as balance')]);
+        $sum->getFullQuery()->whereRaw("operator_id IN (SELECT model_has_roles.model_id FROM model_has_roles WHERE role_id = 2)");
         return $sum->offPagination()->setLimit(false)->getList();
     }
 
