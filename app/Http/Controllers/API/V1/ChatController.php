@@ -102,7 +102,7 @@ class ChatController extends Controller
 //        dump('gccli2');
         if(is_null($user)){$user = Auth::user();}
 //        dump('gccli3');
-        $last_message = ChatMessage::where('chat_id', $chat_id)->latest()->first();
+        $last_message = ChatMessage::with('chat.messageable')->where('chat_id', $chat_id)->latest()->first();
 //        dump('gccli4');
         $chat->last_message = $last_message;
 //        dump('gccli5');
