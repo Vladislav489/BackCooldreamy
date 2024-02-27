@@ -16,6 +16,7 @@ use App\ModelAdmin\CoreEngine\LogicModels\Payment\PaymentLogic;
 use App\Models\Operator\WorkingShiftLog;
 use App\Models\OperatorLinkUsers;
 use App\Models\User;
+use App\Models\UserPayedMessagesToOperators;
 use App\Repositories\Operator\AnketRepository;
 use App\Repositories\Operator\ChatRepository;
 use App\Repositories\Operator\DelayRepository;
@@ -112,6 +113,13 @@ class StatisticService
       return  $paySum->offPagination()->setLimit(false)->getList();
     }
 
+    public function getCreditsBalance(Request $request)
+    {
+        $params = $request->all();
+        $sum = new OperatorCreditsLogic($params, [DB::raw('IFNULL(SUM(credits), 0) as balance')]);
+        return $sum->offPagination()->setLimit(false)->getList();
+    }
+
     public function getOperatorListStatisticAdmin(Request $request){
         $params = $request->all();
         $operatorLiks = new OperatorLinksUserLogic([], [DB::raw("COUNT(id)")]);
@@ -156,7 +164,7 @@ class StatisticService
             ->whereRaw("user_id = model_has_roles.model_id",[],'AND'));
 
 
-        $workingShitMessageOperator = new OperatorWorkingAnswerLogic($params,[DB::raw("COUNT(*)  as count_message_operator")]);
+        $workingShitMessageOperator = new OperatorWorkingAnswerLogic($params,[DB::raw("IFNULL(COUNT(*), 0)  as count_message_operator")]);
         $workingShitMessageOperator->setQuery($workingShitMessageOperator->offPagination()->setLimit(false)
             ->getFullQuery()->whereRaw("working_shift_anser_operators.operator_id = model_has_roles.model_id",[],'AND'));
 
@@ -226,7 +234,7 @@ class StatisticService
             ->getFullQuery()
             ->whereRaw("chat_messages.recepient_user_id IN (SELECT id FROM `users` WHERE is_real = 0 AND gender = 'female')"))->getOne();
 
-        $operatorCredits = new OperatorCreditsLogic($params, [DB::raw('SUM(credits)')]);
+        $operatorCredits = new OperatorCreditsLogic($params, [DB::raw('IFNULL(SUM(credits), 0)')]);
         $operatorCredits->setQuery($operatorCredits->offPagination()->getFullQuery()->whereRaw("operator_id = model_has_roles.model_id"));
 
 

@@ -71,7 +71,7 @@ class OperatorStatisticController extends Controller
     }
 
     public function getSaleBalance(Request  $request){
-        return response()->json($this->statisticService->getBalanceStripe( $request));
+        return response()->json($this->statisticService->getCreditsBalance($request));
     }
 
 
