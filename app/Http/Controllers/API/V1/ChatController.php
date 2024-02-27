@@ -624,10 +624,14 @@ class ChatController extends Controller
             }
             dump('scvm10');
             $chat_message->chat_messageable = $chat_message->chat_messageable;
+            dump('scvm11');
             $chatListItem = self::get_current_chat_list_item($request->chat_id, $user, true);
+            dump('scvm12');
             //ObjectNewChatEvent::dispatch($recepient_user_id, $chat_message, $chatListItem['chat']);
             $this->setChatAnswered($chat);
+            dump('scvm13');
             $this->sendOperatorEvent($recepient_user_id, $chat_message, $chatListItem['chat']);
+            dump('scvm14');
 
             return (self::get_current_chat_list_item($request->chat_id, $user));
         }
