@@ -6,6 +6,7 @@ use App\Enum\Operator\WorkingShiftStatusEnum;
 use App\ModelAdmin\CoreEngine\LogicModels\Chat\ChatLogic;
 use App\ModelAdmin\CoreEngine\LogicModels\Chat\ChatMessageLogic;
 use App\ModelAdmin\CoreEngine\LogicModels\Limit\OperatorChatLimitLogic;
+use App\ModelAdmin\CoreEngine\LogicModels\Operator\OperatorCreditsLogic;
 use App\ModelAdmin\CoreEngine\LogicModels\Operator\OperatorForfeitsLogic;
 use App\ModelAdmin\CoreEngine\LogicModels\Operator\OperatorLinksUserLogic;
 use App\ModelAdmin\CoreEngine\LogicModels\Operator\OperatorLogic;
@@ -225,6 +226,8 @@ class StatisticService
             ->getFullQuery()
             ->whereRaw("chat_messages.recepient_user_id IN (SELECT id FROM `users` WHERE is_real = 0 AND gender = 'female')"))->getOne();
 
+        $operatorCredits = new OperatorCreditsLogic($params, [DB::raw('SUM(credits)')]);
+        $operatorCredits->setQuery($operatorCredits->offPagination()->getFullQuery()->whereRaw("operator_id = model_has_roles.model_id"));
 
         $operator = new OperatorLogic(['role' =>'2'],
             [
@@ -233,17 +236,17 @@ class StatisticService
              DB::raw("users.created_at as created_at"),
              DB::raw("(".$workingStatus->getSqlToStrFromQuery()." )as status_work"),
              DB::raw("(".$operatorLiks->getSqlToStrFromQuery()." )as count_ancet"),
-             DB::raw("(".$workingShit->getSqlToStrFromQuery()." )as count_inactive"),
-             DB::raw("(".$workingShitDayWork->getSqlToStrFromQuery()." )as day_work"),
-             DB::raw("(".$workingShitTimeWork->getSqlToStrFromQuery()." )as time_work"),
-             DB::raw("(".$workingShitTimePused->getSqlToStrFromQuery()." )as time_paused"),
-             DB::raw(" '0' as  avg_time"),
-             DB::raw("'0' as count_message"),
-             DB::raw(" (".$limitOperator->getSqlToStrFromQuery().") as man_whith_limit"),
-             DB::raw(" (".$operatorAnsverMan->getSqlToStrFromQuery().") as ancet_without_message"),
-             DB::raw(" (".$workingShitMessageOperator->getSqlToStrFromQuery().") as ansver_operator_message"),
-             DB::raw(" (".$countMenAswer->getSqlToStrFromQuery().") as count_answer_men"),
-             DB::raw(" (".$workingShitForfeitsOperator->getSqlToStrFromQuery().") as operator_forfeits"),
+//             DB::raw("(".$workingShit->getSqlToStrFromQuery()." )as count_inactive"),
+//             DB::raw("(".$workingShitDayWork->getSqlToStrFromQuery()." )as day_work"),
+//             DB::raw("(".$workingShitTimeWork->getSqlToStrFromQuery()." )as time_work"),
+//             DB::raw("(".$workingShitTimePused->getSqlToStrFromQuery()." )as time_paused"),
+//             DB::raw(" '0' as  avg_time"),
+             DB::raw("(".$operatorCredits->getSqlToStrFromQuery().") as count_message"),
+//             DB::raw(" (".$limitOperator->getSqlToStrFromQuery().") as man_whith_limit"),
+//             DB::raw(" (".$operatorAnsverMan->getSqlToStrFromQuery().") as ancet_without_message"),
+//             DB::raw(" (".$workingShitMessageOperator->getSqlToStrFromQuery().") as ansver_operator_message"),
+//             DB::raw(" (".$countMenAswer->getSqlToStrFromQuery().") as count_answer_men"),
+//             DB::raw(" (".$workingShitForfeitsOperator->getSqlToStrFromQuery().") as operator_forfeits"),
             ]);
         $result =  $operator->setJoin(['User'])->getList();
 
