@@ -97,17 +97,26 @@ class ChatController extends Controller
 
     public static function get_current_chat_list_item($chat_id,$user = null, $its_event = false, $its_ace = false, $girl = null)
     {
+        dump('gccli1');
         $chat = Chat::findOrFail($chat_id);
+        dump('gccli2');
         if(is_null($user)){$user = Auth::user();}
+        dump('gccli3');
         $last_message = ChatMessage::with('chat_messageable.gifts', 'chat_messageable.sticker')
             ->where('chat_id', $chat_id)->latest()->first();
+        dump('gccli4');
         $chat->last_message = $last_message;
+        dump('gccli5');
         $chat->last_message->chat_messageable = $last_message->chat_messageable;
+        dump('gccli6');
         if (!$its_ace) {
             if ($its_event) {
                 $chat->another_user = $user;
+                dump('gccli7');
                 $recepient_id = ($chat->first_user_id == $user->id)?$chat->second_user_id: $chat->first_user_id;
+                dump('gccli8');
                 $favorite_users = FavoriteProfile::where('user_id', $recepient_id)->where('disabled', false)->pluck('favorite_user_id');
+                dump('gccli9');
             } else {
                 $chat->another_user = $chat->another_user;
                 $favorite_users = FavoriteProfile::where('user_id', $user->id)->where('disabled', false)->pluck('favorite_user_id');
@@ -119,11 +128,13 @@ class ChatController extends Controller
                 ->where('disabled', false)
                 ->pluck('favorite_user_id');
         }
-
+        dump('gccli10');
         $chat->favorite = ($favorite_users->contains($chat->first_user_id) || $favorite_users->contains($chat->second_user_id)) ? 1 : 0;
+        dump('gccli11');
         $item = [];
         $chat->updated_at = now();
         $item['chat'] = $chat;
+        dump('gccli12');
         return $item;
     }
 
