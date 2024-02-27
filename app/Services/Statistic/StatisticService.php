@@ -251,7 +251,7 @@ class StatisticService
 //             DB::raw(" (".$countMenAswer->getSqlToStrFromQuery().") as count_answer_men"),
 //             DB::raw(" (".$workingShitForfeitsOperator->getSqlToStrFromQuery().") as operator_forfeits"),
             ]);
-        $result =  $operator->setJoin(['User'])->OnDebug()->getList();
+        $result =  $operator->setJoin(['User'])->getList();
 
         for ($i = 0; $i < count($result['result']); $i++) {
             $result['result'][$i]['count_messages_men'] = $chatMessageMen['message_count'];
