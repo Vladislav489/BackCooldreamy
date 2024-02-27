@@ -229,6 +229,8 @@ class StatisticService
         $operatorCredits = new OperatorCreditsLogic($params, [DB::raw('SUM(credits)')]);
         $operatorCredits->setQuery($operatorCredits->offPagination()->getFullQuery()->whereRaw("operator_id = model_has_roles.model_id"));
 
+
+
         $operator = new OperatorLogic(['role' =>'2'],
             [
              DB::raw("users.id as id"),
@@ -241,14 +243,15 @@ class StatisticService
 //             DB::raw("(".$workingShitTimeWork->getSqlToStrFromQuery()." )as time_work"),
 //             DB::raw("(".$workingShitTimePused->getSqlToStrFromQuery()." )as time_paused"),
 //             DB::raw(" '0' as  avg_time"),
-             DB::raw("(".$operatorCredits->getSqlToStrFromQuery().") as count_message"),
+//             DB::raw("(".$operatorCredits->getSqlToStrFromQuery().") as count_message"),
+             DB::raw("(".$operatorCredits->getSqlToStrFromQuery().") as credits_sum"),
 //             DB::raw(" (".$limitOperator->getSqlToStrFromQuery().") as man_whith_limit"),
 //             DB::raw(" (".$operatorAnsverMan->getSqlToStrFromQuery().") as ancet_without_message"),
-//             DB::raw(" (".$workingShitMessageOperator->getSqlToStrFromQuery().") as ansver_operator_message"),
+             DB::raw(" (".$workingShitMessageOperator->getSqlToStrFromQuery().") as ansver_operator_message"),
 //             DB::raw(" (".$countMenAswer->getSqlToStrFromQuery().") as count_answer_men"),
 //             DB::raw(" (".$workingShitForfeitsOperator->getSqlToStrFromQuery().") as operator_forfeits"),
             ]);
-        $result =  $operator->setJoin(['User'])->getList();
+        $result =  $operator->setJoin(['User'])->OnDebug()->getList();
 
         for ($i = 0; $i < count($result['result']); $i++) {
             $result['result'][$i]['count_messages_men'] = $chatMessageMen['message_count'];
