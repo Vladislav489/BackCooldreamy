@@ -146,6 +146,29 @@ class OperatorMessageController extends Controller
         $params['operator'] = (string)Auth::id();
         $operatorPayments = new OperatorCreditsLogic($params, [DB::raw('SUM(credits) as credits, message_type')]);
         $operatorPayments->offPagination()->getFullQuery()->groupBy('message_type');
-        return $operatorPayments->getList();
+        $result = $operatorPayments->getList();
+        foreach ($result as $item) {
+            if (is_null($item['message_type'])) {
+                unset($item);
+            }
+            switch ($item['message_type']){
+                case 1:
+                    $item['message_type'] = 'text';
+                    break;
+                case 2:
+                    $item['message_type'] = 'image';
+                    break;
+                case 3:
+                    $item['message_type'] = 'video';
+                    break;
+                case 4:
+                    $item['message_type'] = 'sticker';
+                    break;
+                case 5:
+                    $item['message_type'] = 'gift';
+                    break;
+            }
+        }
+        return $result;
     }
 }
