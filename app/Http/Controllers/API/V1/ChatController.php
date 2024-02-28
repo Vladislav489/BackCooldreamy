@@ -1007,7 +1007,7 @@ class ChatController extends Controller
         $chat_messages = $chat->chat_messages()
             ->with(['sender_user' => function ($query) {
                 $query->select('id', 'name', 'avatar_url_thumbnail');
-            }, 'chat_messageable'])
+            }, 'chat_messageable', 'chat_messageable.gifts', 'chat_messageable.sticker'])
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
         return $chat_messages;
