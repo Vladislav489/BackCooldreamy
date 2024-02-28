@@ -186,7 +186,7 @@ class ChatRepository
         return $chat->chat_messages()
             ->with(['sender_user' => function ($query) {
                 $query->select('id', 'name', 'avatar_url_thumbnail', 'avatar_url');
-            }, 'chat_messageable.sticker', 'chat_messageable.gifts'])
+            }, 'chat_messageable'])
             ->orderBy('created_at', 'desc')
             ->paginate((is_null($per_page))?self::PER_PAGE:$per_page);
     }
