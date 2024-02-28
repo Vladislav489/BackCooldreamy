@@ -147,27 +147,26 @@ class OperatorMessageController extends Controller
         $operatorPayments = new OperatorCreditsLogic($params, [DB::raw('SUM(credits) as credits, message_type')]);
         $operatorPayments->offPagination()->getFullQuery()->groupBy('message_type');
         $result = $operatorPayments->getList();
-        foreach ($result['result'] as $item) {
-            dump($item);
-            if (is_null($item['message_type'])) {
+        for ($i = 0; $i < count($result['result']); $i++) {
+            if (is_null($result[$i]['message_type'])) {
                 unset($item);
                 continue;
             }
-            switch ($item['message_type']){
+            switch ($result[$i]['message_type']){
                 case 1:
-                    $item['message_type'] = 'text';
+                    $result[$i]['message_type'] = 'text';
                     break;
                 case 2:
-                    $item['message_type'] = 'image';
+                    $result[$i]['message_type'] = 'image';
                     break;
                 case 3:
-                    $item['message_type'] = 'video';
+                    $result[$i]['message_type'] = 'video';
                     break;
                 case 4:
-                    $item['message_type'] = 'sticker';
+                    $result[$i]['message_type'] = 'sticker';
                     break;
                 case 5:
-                    $item['message_type'] = 'gift';
+                    $result[$i]['message_type'] = 'gift';
                     break;
             }
         }
