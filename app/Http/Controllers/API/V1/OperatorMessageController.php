@@ -148,25 +148,25 @@ class OperatorMessageController extends Controller
         $operatorPayments->offPagination()->getFullQuery()->groupBy('message_type');
         $result = $operatorPayments->getList();
         for ($i = 0; $i < count($result['result']); $i++) {
-            if (is_null($result[$i]['message_type'])) {
-                unset($result[$i]);
+            if (is_null($result['result'][$i]['message_type'])) {
+                unset($result['result'][$i]);
                 continue;
             }
-            switch ($result[$i]['message_type']){
+            switch ($result['result'][$i]['message_type']){
                 case 1:
-                    $result[$i]['message_type'] = 'text';
+                    $result['result'][$i]['message_type'] = 'text';
                     break;
                 case 2:
-                    $result[$i]['message_type'] = 'image';
+                    $result['result'][$i]['message_type'] = 'image';
                     break;
                 case 3:
-                    $result[$i]['message_type'] = 'video';
+                    $result['result'][$i]['message_type'] = 'video';
                     break;
                 case 4:
-                    $result[$i]['message_type'] = 'sticker';
+                    $result['result'][$i]['message_type'] = 'sticker';
                     break;
                 case 5:
-                    $result[$i]['message_type'] = 'gift';
+                    $result['result'][$i]['message_type'] = 'gift';
                     break;
             }
         }
