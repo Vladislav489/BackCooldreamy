@@ -148,6 +148,7 @@ class OperatorMessageController extends Controller
         $operatorPayments->offPagination()->getFullQuery()->groupBy('message_type');
         $result = $operatorPayments->getList();
         foreach ($result['result'] as $item) {
+            dump($item);
             if (is_null($item['message_type'])) {
                 unset($item);
                 continue;
