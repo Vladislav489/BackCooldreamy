@@ -148,10 +148,6 @@ class OperatorMessageController extends Controller
         $operatorPayments->offPagination()->getFullQuery()->groupBy('message_type');
         $result = $operatorPayments->getList();
         foreach ($result['result'] as $item) {
-            dd($item);
-            if (is_null($item['message_type'])) {
-                unset($item);
-            }
             switch ($item['message_type']){
                 case 1:
                     $item['message_type'] = 'text';
@@ -168,6 +164,9 @@ class OperatorMessageController extends Controller
                 case 5:
                     $item['message_type'] = 'gift';
                     break;
+            }
+            if (is_null($item['message_type'])) {
+                unset($item);
             }
         }
         return $result;
