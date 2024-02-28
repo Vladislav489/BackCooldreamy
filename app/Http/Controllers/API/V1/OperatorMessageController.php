@@ -149,7 +149,7 @@ class OperatorMessageController extends Controller
         $result = $operatorPayments->getList();
         for ($i = 0; $i < count($result['result']); $i++) {
             if (is_null($result[$i]['message_type'])) {
-                unset($item);
+                unset($result[$i]);
                 continue;
             }
             switch ($result[$i]['message_type']){
