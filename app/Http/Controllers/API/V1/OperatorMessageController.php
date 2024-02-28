@@ -31,20 +31,19 @@ class OperatorMessageController extends Controller
     }
 
     public function statistics()
-    {    $ankets = null;
+    {
+        $ankets = null;
 
         $operator = Auth::user();
         if ($operator->getRoleNames()->toArray()[0] == 'admin') {
             $ankets = OperatorLinkUsers::all()->pluck('user_id');
-        }else{
+        } else {
             $ankets = $operator->ancets()->with([])->pluck('user_id');
         }
 
-        $chats = OperatorChatLimit::query()->whereIn('girl_id', $ankets)
-            ->where(function ($query) {
+        $chats = OperatorChatLimit::query()->whereIn('girl_id', $ankets)->where(function ($query) {
                 $query->where('chat_id', null);
-            })->where('limits', ">=", 1)
-            ->selectRaw("*, 'chat' as type_of_model");
+            })->where('limits', ">=", 1)->selectRaw("*, 'chat' as type_of_model");
 
 //        $letters = OperatorLetterLimit::query()->whereIn('girl_id', $ankets)
 //            ->where(function ($query) {
@@ -63,13 +62,7 @@ class OperatorMessageController extends Controller
 
         $countLimits = $chats->orderByDesc('updated_at')->count();
 
-        $chats = resolve(ChatRepository::class)
-            ->index(['anket_ids' => $ankets, 'is_query' => true])
-            ->with([])
-            ->where('deleted_by_first_user', false)
-            ->where('deleted_by_second_user', false)
-            ->where('is_answered_by_operator', false)
-            ->selectRaw("*, 'chat' as type_of_model");
+        $chats = resolve(ChatRepository::class)->index(['anket_ids' => $ankets, 'is_query' => true])->with([])->where('deleted_by_first_user', false)->where('deleted_by_second_user', false)->where('is_answered_by_operator', false)->selectRaw("*, 'chat' as type_of_model");
 
 //        $letters = resolve(LetterRepository::class)
 //            ->index(['anket_ids' => $ankets, 'search_message' => Arr::get($requestData, 'search'), 'is_query' => true])
@@ -81,14 +74,12 @@ class OperatorMessageController extends Controller
 
         $countMessages = $combinedBuilder->count();
 
-        return response()->json([
-            'count_messages' => $countMessages,
-            'count_limits' => $countLimits
-        ]);
+        return response()->json(['count_messages' => $countMessages, 'count_limits' => $countLimits]);
     }
 
     /**
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
@@ -97,7 +88,7 @@ class OperatorMessageController extends Controller
         $user = Auth::user();
         $page = $request->get('page');
         $per_page = $request->get('per_page');
-        $messages = $this->operatorRepository->getOperatorLastMessages($user, $page,$per_page, $request->all());
+        $messages = $this->operatorRepository->getOperatorLastMessages($user, $page, $per_page, $request->all());
         return response()->json($messages);
     }
 
@@ -107,24 +98,20 @@ class OperatorMessageController extends Controller
         $user = Auth::user();
         $page = $request->get('page');
         $per_page = $request->get('per_page');
-        $messages = $this->operatorRepository->getOperatorLetterLimits()($user, $page,$per_page, $request->all());
+        $messages = $this->operatorRepository->getOperatorLetterLimits()($user, $page, $per_page, $request->all());
         return response()->json($messages);
     }
 
 
-
-    public function forfeitsMessage(Request $request){
-        $validator = Validator::make($request->all(), [
-            'operator_id' => ['required'],
-            'message_id' => ['required'],
-            'chat_id' => ['required'],
-        ]);
+    public function forfeitsMessage(Request $request)
+    {
+        $validator = Validator::make($request->all(), ['operator_id' => ['required'], 'message_id' => ['required'], 'chat_id' => ['required'],]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 500);
         }
         try {
             OperatorForfeitsLogic::add($request->operator_id, $request->message_id, $request->chat_id);
-        }catch (\Throwable $e){
+        } catch (\Throwable $e) {
             return response()->json(['error' => "server error"], 500);
         }
         return response()->json(['success' => 'success'], 200);
@@ -136,7 +123,7 @@ class OperatorMessageController extends Controller
         $user = Auth::user();
         $page = $request->get('page');
         $per_page = $request->get('per_page');
-        $messages = $this->operatorRepository->getOperatorLimits($user, $page,$per_page, $request->all());
+        $messages = $this->operatorRepository->getOperatorLimits($user, $page, $per_page, $request->all());
         return response()->json($messages);
     }
 
@@ -147,28 +134,27 @@ class OperatorMessageController extends Controller
         $operatorPayments = new OperatorCreditsLogic($params, [DB::raw('SUM(credits) as credits, message_type')]);
         $operatorPayments->offPagination()->getFullQuery()->groupBy('message_type');
         $result = $operatorPayments->getList();
-        dd($result);
-        for ($i = 0; $i < count($result['result']); $i++) {
-            if (is_null($result['result'][$i]['message_type'])) {
-                unset($result['result'][$i]);
-                continue;
-            }
-            switch ($result['result'][$i]['message_type']){
+
+        foreach ($result['result'] as $key=>$value) {
+            switch ($value['message_type']) {
                 case 1:
-                    $result['result'][$i]['message_type'] = 'text';
+                    $result['result'][$key]['message_type'] = 'text';
                     break;
                 case 2:
-                    $result['result'][$i]['message_type'] = 'image';
+                    $result['result'][$key]['message_type'] = 'image';
                     break;
                 case 3:
-                    $result['result'][$i]['message_type'] = 'video';
+                    $result['result'][$key]['message_type'] = 'video';
                     break;
                 case 4:
-                    $result['result'][$i]['message_type'] = 'sticker';
+                    $result['result'][$key]['message_type'] = 'sticker';
                     break;
                 case 5:
-                    $result['result'][$i]['message_type'] = 'gift';
+                    $result['result'][$key]['message_type'] = 'gift';
                     break;
+            }
+            if (is_null($value['message_type'])) {
+                unset($result['result'][$key]);
             }
         }
         return $result;
