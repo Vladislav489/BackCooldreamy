@@ -15,4 +15,12 @@ class ChatVideoMessage extends Model
     {
         return $this->morphOne(ChatMessage::class, 'chat_messageable');
     }
+
+    public function sticker() {
+        return $this->belongsTo(Sticker::class);
+    }
+
+    public function gifts() {
+        return $this->belongsToMany(Gift::class, 'gifts_in_chat_gift_messages', 'chat_gift_message_id', 'gift_id');
+    }
 }
