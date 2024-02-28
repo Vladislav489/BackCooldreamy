@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\ModelAdmin\CoreEngine\LogicModels\Operator\OperatorCreditsLogic;
 use App\ModelAdmin\CoreEngine\LogicModels\Operator\OperatorForfeitsLogic;
 use App\Models\Operator\OperatorForfeit;
 use App\Models\OperatorChatLimit;
@@ -137,5 +138,14 @@ class OperatorMessageController extends Controller
         $per_page = $request->get('per_page');
         $messages = $this->operatorRepository->getOperatorLimits($user, $page,$per_page, $request->all());
         return response()->json($messages);
+    }
+
+    public function getOperatorPayment(Request $request)
+    {
+        $params = $request->all();
+        $params['operator'] = (string)Auth::id();
+        $operatorPayments = new OperatorCreditsLogic($params, [DB::raw('SUM(credits) as credits, message_type')]);
+        $operatorPayments->offPagination()->getFullQuery()->groupBy('message_type');
+        return $operatorPayments->getList();
     }
 }
