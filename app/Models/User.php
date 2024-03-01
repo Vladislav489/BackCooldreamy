@@ -387,14 +387,14 @@ class User extends Authenticatable
         */
 
         $repository = new CreditLogRepository();
-        $resultSubscriptions =  Subscriptions::getValidPeriodAndLimit($this->id,$action);
+//        $resultSubscriptions =  Subscriptions::getValidPeriodAndLimit($this->id,$action);
         // получаем баланс пользователя для проверки (платные кредиты)
         $creaditsReals = User\CreditsReals::getUserCreditsById($this->id);
         // получаем баланс пользователя для проверки (бесплатные кредиты)
-        if($resultSubscriptions) {
-            $repository->logPayment($this, 0, $second_user_id, $service_id,$action);
-            return true;
-        }
+//        if($resultSubscriptions) {
+//            $repository->logPayment($this, 0, $second_user_id, $service_id,$action);
+//            return true;
+//        }
 
         $myCredits = $this->credits;
         // средств на счету пользователя больше чем сумма услуги?
