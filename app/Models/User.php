@@ -375,7 +375,7 @@ class User extends Authenticatable
     }
     //Оплата в чистом виде
     private function pay($cost,$service_id = null,$action = null ,$second_user_id = 0){
-//        dump('pay');
+        dump('pay');
        /*
         * если у юзера есть подписка то собщения бесплатные и есть лимиты на отправку фото видео
         *
@@ -399,7 +399,7 @@ class User extends Authenticatable
         $myCredits = $this->credits;
         // средств на счету пользователя больше чем сумма услуги?
         if ($myCredits >= $cost && $action == ActionEnum::SEND_MESSAGE ) {
-            dump('lol');
+//            dump('lol');
             // если да, рассчитываем сколько останется на счету
             $newCredits = $myCredits - $cost;
             $repository->logPayment($this, $cost, $second_user_id, $service_id,$action);
