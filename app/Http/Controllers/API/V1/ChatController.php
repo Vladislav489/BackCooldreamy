@@ -1010,6 +1010,17 @@ class ChatController extends Controller
             }, 'chat_messageable.gifts', 'chat_messageable.sticker'])
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
+        foreach ($chat_messages as $k => $v) {
+           if ($v['is_payed'] == 0) {
+               if ($v['chat_messageable_type'] == 'App\Models\ChatVideoMessage') {
+                   $chat_messages[$k]['chat_messageable']['video_url'] = 'https://api2.cooldreamy.com/adult_content.jpg';
+               }
+               if ($v['chat_messageable_type'] == 'App\Models\ChatImageMessage') {
+                   $chat_messages[$k]['chat_messageable']['thumbnail_url'] = 'https://api2.cooldreamy.com/adult_content.jpg';
+                   $chat_messages[$k]['chat_messageable']['image_url'] = 'https://api2.cooldreamy.com/adult_content.jpg';
+               }
+           }
+        }
         return $chat_messages;
     }
 
