@@ -1294,8 +1294,8 @@ class ChatController extends Controller
 
             $credits = new CreditsController();
             $resultCheckPayment = $credits->check_payment($action, $action, $chat->second_user_id == $user->id ? $chat->first_user_id : $chat->second_user_id);
-            dd($resultCheckPayment);
-            if ($resultCheckPayment) {
+            dd($resultCheckPayment instanceof JsonResponse);
+            if ($resultCheckPayment instanceof JsonResponse) {
                 $message = ChatMessage::find($request->get('message_id'));
                 if ($message) {
                     $message->is_payed = 1;
