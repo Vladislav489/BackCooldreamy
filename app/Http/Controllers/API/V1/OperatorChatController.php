@@ -393,15 +393,20 @@ class OperatorChatController extends Controller
     public function favorite($id)
     {
         $user = Auth::user();
+        dump(111);
         $chat = $this->chatRepository->findForAnket($user, $id);
+        dump(222);
 
         if (!$chat instanceof Chat) {
             return $chat;
         }
+        dump(333);
 
         if ($chat->first_user_id == $chat->user_id) {
+            dump(444);
             Chat::query()->where('id', $chat->id)->update(['is_anket_favorite_by_first_user' => !$chat->is_anket_favorite_by_first_user]);
         } else {
+            dump(555);
             Chat::query()->where('id', $chat->id)->update(['is_anket_favorite_by_second_user' => !$chat->is_anket_favorite_by_second_user]);
         }
         $this->updateChatSelfUser($chat);
