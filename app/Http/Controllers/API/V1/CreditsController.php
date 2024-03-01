@@ -103,7 +103,7 @@ class CreditsController extends Controller
 
             //оплата только лоя мужчин
             $result = $user->check_payment_man($servicePrice->price,$service_id,$action,$second_user_id);
-//            dd($result);
+            dd($result);
             // если не false знасит все прошло успешно
             if ($result) {
                 return $result;
