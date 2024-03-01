@@ -131,7 +131,7 @@ class OperatorMessageController extends Controller
     {
         $params = $request->all();
         $params['operator'] = (string)Auth::id();
-        $operatorPayments = new OperatorCreditsLogic($params, [DB::raw('SUM(credits) as credits, message_type')]);
+        $operatorPayments = new OperatorCreditsLogic($params, [DB::raw('SUM(credits) * 0.4 as credits, message_type')]);
         $operatorPayments->offPagination()->getFullQuery()->groupBy('message_type');
         $result = $operatorPayments->getList();
 
