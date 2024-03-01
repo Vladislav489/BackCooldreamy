@@ -48,16 +48,16 @@ use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
-    public function test()
-    {
-        $user = User::where('id', 124518)->first();
-        $user->tokens()->delete();
-        $user->online = false;
-        $user->save();
-//        $this->authLogRepository->logAuth($user, AuthLogTypeEnum::LOGOUT);
-
-        return response()->json(['message' => 'success']);
-    }
+//    public function test()
+//    {
+//        $user = User::where('id', 124518)->first();
+//        $user->tokens()->delete();
+//        $user->online = false;
+//        $user->save();
+////        $this->authLogRepository->logAuth($user, AuthLogTypeEnum::LOGOUT);
+//
+//        return response()->json(['message' => 'success']);
+//    }
 
     public function dashbord(Request $request){
      $data = json_decode($this->getCountStatistic($request)->content(),true);

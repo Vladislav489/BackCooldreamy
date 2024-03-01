@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 //костыль ради фронта
 
-Route::any('/test', [\App\Http\Controllers\AdminController::class, 'test']);
+//Route::any('/test', [\App\Http\Controllers\AdminController::class, 'test']);
 
 Route::post('/leads/store', [\App\Http\Controllers\LeadsController::class, 'store']);
 
@@ -209,7 +209,7 @@ Route::group(['prefix' => 'operators/', 'middleware' => ['auth:sanctum', 'role:o
     Route::post('store/images/add', [\App\Http\Controllers\API\V1\ImageController::class, 'storeImages'])->middleware('auth:sanctum');
     Route::post('store/image/delete', [\App\Http\Controllers\API\V1\ImageController::class, 'deleteImage'])->middleware('auth:sanctum');
 
-    Route::get('/get-my-payments', [\App\Http\Controllers\API\V1\OperatorMessageController::class, 'getOperatorPayment'])->middleware('auth:sanctum');
+    Route::post('/get-my-payments', [\App\Http\Controllers\API\V1\OperatorMessageController::class, 'getOperatorPayment'])->middleware('auth:sanctum');
 
     Route::post('/forfeits/messages', [\App\Http\Controllers\API\V1\OperatorMessageController::class, 'forfeitsMessage']);
 
