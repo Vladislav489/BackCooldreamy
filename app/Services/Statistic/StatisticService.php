@@ -262,10 +262,10 @@ class StatisticService
             ]);
         $result =  $operator->setJoin(['User'])->getList();
 
-        for ($i = 0; $i < count($result['result']); $i++) {
-            $result['result'][$i]['count_messages_men'] = $chatMessageMen['message_count'];
-            $result['result'][$i]['count_men'] = $chatMessageMen['men_texted_count'];
-        }
+//        for ($i = 0; $i < count($result['result']); $i++) {
+//            $result['result'][$i]['count_messages_men'] = $chatMessageMen['message_count'];
+//            $result['result'][$i]['count_men'] = $chatMessageMen['men_texted_count'];
+//        }
 
         return  $result;
 
