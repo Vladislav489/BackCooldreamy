@@ -27,16 +27,20 @@ class AssignAnketsToTestOperator extends Command
      */
     public function handle()
     {
+        $operators = [124519, 124518];
         foreach (User::query()->where('is_real', false)->where('gender', 'female')->get() as $user) {
-            $operators = [124519, 124518];
-            OperatorLinkUsers::create([
-                'operator_id' => $operators[array_rand($operators)],
-                'user_id' => $user->id,
-                'operator_work' => true,
-                'admin_work' => false,
-                'description' => false,
-                'disabled' => false,
-            ]);
+            foreach ($operators as $operator) {
+                $record = OperatorLinkUsers::where([['operator_id', $operator], ['user_id', $user->id]])->exists();
+                if (!$record) {
+                    OperatorLinkUsers::create([
+                        'operator_id' => $operator,
+                        'user_id' => $user->id,
+                        'operator_work' => true,
+                        'admin_work' => false,
+                        'description' => false,
+                        'disabled' => false,]);
+                }
+            }
         }
     }
 }
