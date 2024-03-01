@@ -407,8 +407,8 @@ class User extends Authenticatable
              $this->update(["credits" => $newCredits]);
             return true;
         }
-        if( $creaditsReals->credits >= $cost && in_array($action, (new ActionEnum())->getActions())) { //если из реальных кредитов достаточно средст делаем оплату
-//            dump($creaditsReals->credits, (new ActionEnum())->getActions());
+        if($creaditsReals->credits >= $cost && in_array($action, (new ActionEnum())->getActions())) { //если из реальных кредитов достаточно средст делаем оплату
+            dump($creaditsReals->credits, (new ActionEnum())->getActions());
                     $newCredits = $creaditsReals->credits - $cost;//вычитаем цену за сервис
                     $repository->logPayment($this, $cost, $second_user_id, $service_id,$action);//остаток записывем  на реальные кредиты
                     $creaditsReals->update(["credits" => $newCredits]);//остаток записывем  на реальные кредиты
