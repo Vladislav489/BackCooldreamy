@@ -107,7 +107,7 @@ class CreditsController extends Controller
             // если не false знасит все прошло успешно
             if ($result) {
                 return $result;
-            } elseif($result == false) {
+            } else {
                 return response()->json(['error' => "Цена покупки превышает сумму на счету пользоваетля!", "acquiring" => 1], 500);
             }
         } else {
