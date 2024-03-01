@@ -385,7 +385,7 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth:sanctum', 'role:admin
         // Отправка чата в игнор
         Route::patch('/{id}/ignore', [\App\Http\Controllers\API\V1\Admin\OperatorChatController::class, 'ignore']);
         // Отправка чата в избранное
-        Route::patch('/{id}/favorite', [\App\Http\Controllers\API\V1\Admin\OperatorChatController::class, 'favorite']);
+//        Route::patch('/{id}/favorite', [\App\Http\Controllers\API\V1\Admin\OperatorChatController::class, 'favorite']);
         // Личная страница
         Route::get('/{chat}', [\App\Http\Controllers\API\V1\Admin\OperatorChatController::class, 'show']);
         // Удаление чата
