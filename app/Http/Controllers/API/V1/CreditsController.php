@@ -104,10 +104,12 @@ class CreditsController extends Controller
             //оплата только лоя мужчин
             $result = $user->check_payment_man($servicePrice->price,$service_id,$action,$second_user_id);
             // если не false знасит все прошло успешно
-            dd($result);
+            dump($result);
             if ($result) {
+                dd('if true');
                 return $result;
             } else {
+                dd('id false');
                 return response()->json(['error' => "Цена покупки превышает сумму на счету пользоваетля!", "acquiring" => 1], 500);
             }
         } else {
