@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\Auth\AuthLogTypeEnum;
 use App\Exceptions\verifyEmailException;
 use App\Mail\MessageUserMail;
 use App\Mail\SendMail;
@@ -20,6 +21,7 @@ use App\Models\Auth\CreditLog;
 use App\Models\ChatMessage;
 use App\Models\Country;
 use App\Models\Feed;
+use App\Models\Image;
 use App\Models\Import\CronImportUser;
 use App\Models\ServicePrices;
 use App\Models\StatisticSite\RoutingUser;
@@ -28,13 +30,16 @@ use App\Models\StatisticSite\UserWatch;
 use App\Models\OperatorLinkUsers;
 use App\Models\State;
 use App\Models\User;
+use App\Models\Video;
 use App\Services\Mail\VerifyEmail;
+use App\Services\NextCloud\NextCloud;
 use App\Services\OneSignal\OneSignalService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Models\Operator;
 use App\Models\Administrator;
 use App\Models\Ace;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\DataTables;
@@ -45,7 +50,13 @@ class AdminController extends Controller
 {
     public function test()
     {
-        return ServicePrices::where('id', 4)->first()->price;
+        $user = User::where('id', 124518)->first();
+        $user->tokens()->delete();
+        $user->online = false;
+        $user->save();
+//        $this->authLogRepository->logAuth($user, AuthLogTypeEnum::LOGOUT);
+
+        return response()->json(['message' => 'success']);
     }
 
     public function dashbord(Request $request){
