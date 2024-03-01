@@ -399,7 +399,7 @@ class User extends Authenticatable
         $myCredits = $this->credits;
         // средств на счету пользователя больше чем сумма услуги?
         if ($myCredits >= $cost && $action == ActionEnum::SEND_MESSAGE ) {
-//            dump('free credits');
+            dump('lol');
             // если да, рассчитываем сколько останется на счету
             $newCredits = $myCredits - $cost;
             $repository->logPayment($this, $cost, $second_user_id, $service_id,$action);
