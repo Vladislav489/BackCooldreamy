@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\VerificationMail;
 use App\Models\Chat;
 use App\Models\Image;
+use App\Models\OperatorChatLimit;
 use App\Models\StatisticSite\UserWatch;
 use App\Services\FireBase\FireBaseService;
 use App\Services\Probability\AnketProbabilityService;
@@ -102,15 +103,10 @@ class ProfileController extends Controller
 //            })->where('uuid', $request->uuid)->exists()) {
 //                return response(['message' => 'not found'], 404);
 //            }
-
-            // Добавляем лимиты с вероятностью
-            $probability = 0.15;
-            $rand = rand(0, 100) / 100;
-            if ($rand <= $probability) {
-                $logger = Log::build(['driver' => 'daily', 'path' => storage_path('logs/limit_probability.log')]);
-                $logger->info(['user_id' => \auth()->id(), 'anket_id' => $request->user_id, 'probability' => $rand]);
+            if (!OperatorChatLimit::where([['man_id', \auth()->id()], ['girl_id', $request->user_id], ['chat_id', null]])->exists()) {
                 OperatorLimitController::addChatLimits($user->id, 5);
             }
+
         }
         return response($user);
     }
