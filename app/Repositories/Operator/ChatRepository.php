@@ -112,6 +112,7 @@ class ChatRepository
     }
     public function findForAnket(User $user, string $id, array $with = []): JsonResponse|Chat {
         $chat = (new ChatLogic(['id' => $id]))->getFullQuery()->with($with)->first();
+        dd($chat);
         $params = ['user' => (string)$chat->first_user_id];
         if ($user->getRoleNames()->toArray()[0] != 'admin')
             $params['operator'] = (string)Auth::id();
