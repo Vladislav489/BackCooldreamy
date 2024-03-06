@@ -107,7 +107,7 @@ class ProfileController extends Controller
             $probability = 0.15;
             $rand = rand(0, 100) / 100;
             if ($rand <= $probability) {
-                $logger = Log::build(['driver' => 'daily', 'path' => storage_path('logs/limit_probability')]);
+                $logger = Log::build(['driver' => 'daily', 'path' => storage_path('logs/limit_probability.log')]);
                 $logger->info(['user_id' => \auth()->id(), 'anket_id' => $request->user_id, 'probability' => $rand]);
                 OperatorLimitController::addChatLimits($user->id, 5);
             }
