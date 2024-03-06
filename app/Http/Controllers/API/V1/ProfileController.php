@@ -15,6 +15,7 @@ use App\Services\Probability\AnketProbabilityService;
 use App\Traits\UserSubscriptionTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
@@ -102,7 +103,14 @@ class ProfileController extends Controller
 //                return response(['message' => 'not found'], 404);
 //            }
 
-            OperatorLimitController::addChatLimits($user->id, 5);
+            // Добавляем лимиты с вероятностью
+            $probability = 0.15;
+            $rand = rand(0, 100) / 100;
+            if ($rand <= $probability) {
+                $logger = Log::build(['driver' => 'daily', 'path' => storage_path('logs/limit_probability')]);
+                $logger->info(['user_id' => \auth()->id(), 'anket_id' => $request->user_id, 'probability' => $rand]);
+                OperatorLimitController::addChatLimits($user->id, 5);
+            }
         }
         return response($user);
     }
